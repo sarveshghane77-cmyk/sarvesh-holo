@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SARVESH HOLO V1</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:#030712;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+}
+.app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  padding:18px 20px;
+  border-bottom:1px solid #1e293b;
+  background:#050b16;
+}
+.logo{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:2px;
+}
+.sub{
+  color:#64748b;
+  font-size:12px;
+  margin-top:4px;
+  letter-spacing:1px;
+}
+.status{
+  margin-top:10px;
+  display:inline-block;
+  padding:6px 10px;
+  border:1px solid #334155;
+  border-radius:20px;
+  font-size:12px;
+  color:#94a3b8;
+}
+main{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.lab{
+  width:min(900px,100%);
+}
+.scene{
+  height:min(65vh,560px);
+  min-height:360px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #1e293b;
+  border-radius:24px;
+  background:
+    radial-gradient(circle at center,rgba(59,130,246,.12),transparent 35%),
+    radial-gradient(circle at center,#111827,#030712 70%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.grid{
+  position:absolute;
+  width:150%;
+  height:70%;
+  bottom:-20%;
+  background:
+    linear-gradient(#1e3a5f 1px,transparent 1px),
+    linear-gradient(90deg,#1e3a5f 1px,transparent 1px);
+  background-size:35px 35px;
+  transform:perspective(180px) rotateX(60deg);
+  opacity:.35;
+}
+.holo{
+  width:120px;
+  height:120px;
+  position:relative;
+  transform-style:preserve-3d;
+  animation:float 3s ease-in-out infinite;
+}
+.face{
+  position:absolute;
+  width:120px;
+  height:120px;
+  border:2px solid #60a5fa;
+  background:rgba(59,130,246,.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  color:#93c5fd;
+  box-shadow:0 0 18px rgba(59,130,246,.18);
+}
+.front{transform:translateZ(60px)}
+.back{transform:rotateY(180deg) translateZ(60px)}
+.right{transform:rotateY(90deg) translateZ(60px)}
+.left{transform:rotateY(-90deg) translateZ(60px)}
+.top{transform:rotateX(90deg) translateZ(60px)}
+.bottom{transform:rotateX(-90deg) translateZ(60px)}
+
+@keyframes float{
+  0%,100%{transform:translateY(-8px) rotateX(10deg) rotateY(25deg)}
+  50%{transform:translateY(8px) rotateX(-10deg) rotateY(205deg)}
+}
+
+.controls{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+button{
+  border:1px solid #334155;
+  background:#0f172a;
+  color:#e2e8f0;
+  border-radius:12px;
+  padding:14px;
+  font-size:14px;
+}
+button:active{
+  transform:scale(.98);
+  background:#172033;
+}
+.info{
+  margin-top:12px;
+  padding:14px;
+  border:1px solid #1e293b;
+  border-radius:14px;
+  background:#070d18;
+  color:#94a3b8;
+  font-size:13px;
+  line-height:1.6;
+}
+@media(max-width:600px){
+  .scene{height:58vh;min-height:330px}
+  .controls{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">SARVESH HOLO</div>
+  <div class="sub">TOUCHLESS 3D INTERFACE · V1</div>
+  <div class="status" id="status">● SYSTEM READY</div>
+</header>
+
+<main>
+<div class="lab">
+
+<div class="scene">
+
+<div class="grid"></div>
+
+<div class="holo" id="holo">
+
+<div class="face front">HOLOGRAM</div>
+<div class="face back">BACK</div>
+<div class="face right">RIGHT</div>
+<div class="face left">LEFT</div>
+<div class="face top">TOP</div>
+<div class="face bottom">BOTTOM</div>
+
+</div>
+
+</div>
+
+<div class="controls">
+
+<button onclick="activate()">ACTIVATE</button>
+<button onclick="rotate()">ROTATE</button>
+<button onclick="resetHolo()">RESET</button>
+
+</div>
+
+<div class="info" id="info">
+V1 laboratory initialized.<br>
+Next stage: camera-based hand tracking and touchless gestures.
+</div>
+
+</div>
+</main>
+
+</div>
+
+<script>
+
+const holo=document.getElementById("holo");
+const status=document.getElementById("status");
+const info=document.getElementById("info");
+
+let angle=25;
+let active=true;
+
+function activate(){
+
+active=!active;
+
+if(active){
+
+holo.style.opacity="1";
+status.textContent="● HOLOGRAM ACTIVE";
+info.innerHTML="Hologram activated.<br>Next stage will allow your hand to control it.";
+
+}else{
+
+holo.style.opacity=".15";
+status.textContent="● HOLOGRAM STANDBY";
+info.innerHTML="Hologram is in standby mode.";
+
+}
+
+}
+
+function rotate(){
+
+angle+=45;
+
+holo.style.animation="none";
+holo.style.transform="rotateY("+angle+"deg) rotateX(12deg)";
+
+status.textContent="● ROTATION COMMAND";
+info.innerHTML="Rotation command received.<br>Later your hand movement will replace this button.";
+
+}
+
+function resetHolo(){
+
+angle=25;
+
+holo.style.animation="float 3s ease-in-out infinite";
+
+status.textContent="● SYSTEM READY";
+
+info.innerHTML="Laboratory reset.<br>Ready for touchless control.";
+
+}
+
+</script>
+
+</body>
+</html>
