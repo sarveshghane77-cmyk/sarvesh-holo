@@ -3,193 +3,237 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SARVESH HOLO V2</title>
+<title>SARVESH HOLO V3</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
-margin:0;
-background:#030712;
-color:#fff;
-font-family:Arial,sans-serif;
+  margin:0;
+  background:#030712;
+  color:#fff;
+  font-family:Arial,sans-serif;
 }
 
 .app{
-min-height:100vh;
-padding:16px;
+  min-height:100vh;
+  padding:16px;
 }
 
 header{
-max-width:1000px;
-margin:auto;
-padding:16px 0;
-border-bottom:1px solid #1e293b;
+  max-width:1000px;
+  margin:auto;
+  padding:16px 0;
+  border-bottom:1px solid #1e293b;
 }
 
 .logo{
-font-size:23px;
-font-weight:700;
-letter-spacing:2px;
+  font-size:23px;
+  font-weight:700;
+  letter-spacing:2px;
 }
 
 .sub{
-margin-top:5px;
-font-size:12px;
-color:#64748b;
-letter-spacing:1px;
+  margin-top:5px;
+  font-size:12px;
+  color:#64748b;
+  letter-spacing:1px;
 }
 
 .status{
-display:inline-block;
-margin-top:10px;
-padding:6px 10px;
-border:1px solid #334155;
-border-radius:20px;
-font-size:12px;
-color:#94a3b8;
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 10px;
+  border:1px solid #334155;
+  border-radius:20px;
+  font-size:12px;
+  color:#94a3b8;
 }
 
 .lab{
-max-width:1000px;
-margin:18px auto;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
+  max-width:1000px;
+  margin:18px auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
 }
 
 .panel{
-border:1px solid #1e293b;
-border-radius:20px;
-background:#070d18;
-padding:14px;
+  border:1px solid #1e293b;
+  border-radius:20px;
+  background:#070d18;
+  padding:14px;
 }
 
 .title{
-font-size:14px;
-font-weight:bold;
-margin-bottom:10px;
-color:#cbd5e1;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:10px;
+  color:#cbd5e1;
 }
 
 .camera{
-position:relative;
-width:100%;
-aspect-ratio:4/3;
-background:#020617;
-border-radius:14px;
-overflow:hidden;
+  position:relative;
+  width:100%;
+  aspect-ratio:4/3;
+  background:#020617;
+  border-radius:14px;
+  overflow:hidden;
 }
 
 video{
-width:100%;
-height:100%;
-object-fit:cover;
-transform:scaleX(-1);
-display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scaleX(-1);
+  display:block;
 }
 
-canvas{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-transform:scaleX(-1);
+#handCanvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  transform:scaleX(-1);
 }
 
 .scene{
-height:100%;
-min-height:300px;
-position:relative;
-overflow:hidden;
-border-radius:14px;
-background:
-radial-gradient(circle at center,rgba(59,130,246,.13),transparent 35%),
-#020617;
-display:flex;
-align-items:center;
-justify-content:center;
+  position:relative;
+  height:100%;
+  min-height:300px;
+  overflow:hidden;
+  border-radius:14px;
+  background:
+    radial-gradient(circle at center,
+      rgba(59,130,246,.14),
+      transparent 35%),
+    #020617;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .grid{
-position:absolute;
-width:160%;
-height:65%;
-bottom:-18%;
-background:
-linear-gradient(#1e3a5f 1px,transparent 1px),
-linear-gradient(90deg,#1e3a5f 1px,transparent 1px);
-background-size:30px 30px;
-transform:perspective(160px) rotateX(60deg);
-opacity:.35;
+  position:absolute;
+  width:160%;
+  height:65%;
+  bottom:-18%;
+  background:
+    linear-gradient(#1e3a5f 1px,transparent 1px),
+    linear-gradient(90deg,#1e3a5f 1px,transparent 1px);
+  background-size:30px 30px;
+  transform:perspective(160px) rotateX(60deg);
+  opacity:.35;
 }
 
 .holo{
-width:110px;
-height:110px;
-position:relative;
-transform-style:preserve-3d;
-transition:transform .12s linear;
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:110px;
+  height:110px;
+  transform:
+    translate(-50%,-50%)
+    rotateX(10deg)
+    rotateY(25deg);
+  transform-style:preserve-3d;
+  transition:
+    left .12s linear,
+    top .12s linear,
+    opacity .2s;
 }
 
 .face{
-position:absolute;
-width:110px;
-height:110px;
-border:2px solid #60a5fa;
-background:rgba(59,130,246,.06);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:10px;
-color:#93c5fd;
-box-shadow:0 0 18px rgba(59,130,246,.18);
+  position:absolute;
+  width:110px;
+  height:110px;
+  border:2px solid #60a5fa;
+  background:rgba(59,130,246,.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  color:#93c5fd;
+  box-shadow:0 0 18px rgba(59,130,246,.18);
 }
 
-.front{transform:translateZ(55px)}
-.back{transform:rotateY(180deg) translateZ(55px)}
-.right{transform:rotateY(90deg) translateZ(55px)}
-.left{transform:rotateY(-90deg) translateZ(55px)}
-.top{transform:rotateX(90deg) translateZ(55px)}
-.bottom{transform:rotateX(-90deg) translateZ(55px)}
+.front{
+  transform:translateZ(55px);
+}
+
+.back{
+  transform:rotateY(180deg) translateZ(55px);
+}
+
+.right{
+  transform:rotateY(90deg) translateZ(55px);
+}
+
+.left{
+  transform:rotateY(-90deg) translateZ(55px);
+}
+
+.top{
+  transform:rotateX(90deg) translateZ(55px);
+}
+
+.bottom{
+  transform:rotateX(-90deg) translateZ(55px);
+}
+
+.pointer{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border:2px solid #fff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  display:none;
+  z-index:10;
+}
 
 .controls{
-max-width:1000px;
-margin:0 auto;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+  max-width:1000px;
+  margin:0 auto;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 button{
-border:1px solid #334155;
-background:#0f172a;
-color:#e2e8f0;
-border-radius:12px;
-padding:13px 18px;
-font-size:14px;
+  border:1px solid #334155;
+  background:#0f172a;
+  color:#e2e8f0;
+  border-radius:12px;
+  padding:13px 18px;
+  font-size:14px;
 }
 
 button:active{
-transform:scale(.98);
+  transform:scale(.98);
 }
 
 .info{
-max-width:1000px;
-margin:14px auto;
-padding:14px;
-border:1px solid #1e293b;
-border-radius:14px;
-background:#070d18;
-color:#94a3b8;
-font-size:13px;
-line-height:1.6;
+  max-width:1000px;
+  margin:14px auto;
+  padding:14px;
+  border:1px solid #1e293b;
+  border-radius:14px;
+  background:#070d18;
+  color:#94a3b8;
+  font-size:13px;
+  line-height:1.6;
 }
 
 @media(max-width:700px){
-.lab{
-grid-template-columns:1fr;
-}
+
+  .lab{
+    grid-template-columns:1fr;
+  }
+
 }
 </style>
 </head>
@@ -199,43 +243,91 @@ grid-template-columns:1fr;
 <div class="app">
 
 <header>
-<div class="logo">SARVESH HOLO</div>
-<div class="sub">TOUCHLESS 3D INTERFACE · V2</div>
-<div class="status" id="status">● CAMERA OFF</div>
+
+<div class="logo">
+SARVESH HOLO
+</div>
+
+<div class="sub">
+TOUCHLESS 3D INTERFACE · V3
+</div>
+
+<div class="status" id="status">
+● SYSTEM READY
+</div>
+
 </header>
+
 
 <div class="lab">
 
+<!-- CAMERA -->
+
 <div class="panel">
 
-<div class="title">HAND SENSOR</div>
+<div class="title">
+HAND SENSOR
+</div>
 
 <div class="camera">
 
-<video id="video" autoplay playsinline muted></video>
-<canvas id="canvas"></canvas>
+<video
+  id="video"
+  autoplay
+  playsinline
+  muted>
+</video>
 
+<canvas id="handCanvas"></canvas>
+
+<div
+  class="pointer"
+  id="pointer">
 </div>
 
 </div>
+
+</div>
+
+
+<!-- HOLOGRAM -->
 
 <div class="panel">
 
-<div class="title">VIRTUAL HOLOGRAM</div>
+<div class="title">
+VIRTUAL HOLOGRAM
+</div>
 
-<div class="scene">
+<div class="scene" id="scene">
 
 <div class="grid"></div>
 
-<div class="holo" id="holo">
+<div
+  class="holo"
+  id="holo">
 
-<div class="face front">HOLOGRAM</div>
-<div class="face back">BACK</div>
-<div class="face right">RIGHT</div>
-<div class="face left">LEFT</div>
-<div class="face top">TOP</div>
-<div class="face bottom">BOTTOM</div>
+<div class="face front">
+HOLOGRAM
+</div>
 
+<div class="face back">
+BACK
+</div>
+
+<div class="face right">
+RIGHT
+</div>
+
+<div class="face left">
+LEFT
+</div>
+
+<div class="face top">
+TOP
+</div>
+
+<div class="face bottom">
+BOTTOM
 </div>
 
 </div>
@@ -243,140 +335,701 @@ grid-template-columns:1fr;
 </div>
 
 </div>
+
+</div>
+
 
 <div class="controls">
 
-<button id="start">START CAMERA</button>
-<button id="stop">STOP CAMERA</button>
-<button id="reset">RESET</button>
+<button id="start">
+START CAMERA
+</button>
+
+<button id="stop">
+STOP CAMERA
+</button>
+
+<button id="reset">
+RESET
+</button>
 
 </div>
+
 
 <div class="info" id="info">
-Camera is currently off.<br>
-Start the camera to begin the touchless-control experiment.
+
+Touchless system ready.<br>
+Start the camera and show one hand.
+
 </div>
 
 </div>
+
+
+<!-- MediaPipe -->
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
 
 <script>
 
-const video=document.getElementById("video");
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+const video =
+document.getElementById("video");
 
-const start=document.getElementById("start");
-const stop=document.getElementById("stop");
-const reset=document.getElementById("reset");
+const canvas =
+document.getElementById("handCanvas");
 
-const status=document.getElementById("status");
-const info=document.getElementById("info");
-const holo=document.getElementById("holo");
+const ctx =
+canvas.getContext("2d");
 
-let stream=null;
-let running=false;
+const holo =
+document.getElementById("holo");
+
+const pointer =
+document.getElementById("pointer");
+
+const scene =
+document.getElementById("scene");
+
+const status =
+document.getElementById("status");
+
+const info =
+document.getElementById("info");
+
+const startButton =
+document.getElementById("start");
+
+const stopButton =
+document.getElementById("stop");
+
+const resetButton =
+document.getElementById("reset");
+
+
+let stream = null;
+
+let running = false;
+
+let hands = null;
+
+let animationStarted = false;
+
+
+/*
+--------------------------------
+CAMERA
+--------------------------------
+*/
 
 async function startCamera(){
 
-try{
+  if(running){
+    return;
+  }
 
-stream=await navigator.mediaDevices.getUserMedia({
-video:{
-facingMode:"user",
-width:{ideal:640},
-height:{ideal:480}
-},
-audio:false
-});
+  try{
 
-video.srcObject=stream;
+    if(!navigator.mediaDevices ||
+       !navigator.mediaDevices.getUserMedia){
 
-running=true;
+      throw new Error(
+        "Camera API is not available in this browser."
+      );
 
-status.textContent="● CAMERA ACTIVE";
+    }
 
-info.innerHTML=
-"Camera is active.<br>"+
-"Move your hand in front of the camera.<br>"+
-"Hand tracking will be added to the next stage.";
+    stream =
+      await navigator.mediaDevices.getUserMedia({
 
-resizeCanvas();
+        video:{
+          facingMode:"user",
+          width:{
+            ideal:640
+          },
+          height:{
+            ideal:480
+          }
+        },
 
-}catch(error){
+        audio:false
 
-status.textContent="● CAMERA ERROR";
+      });
 
-info.innerHTML=
-"Camera could not be started.<br>"+
-error.name+": "+error.message;
+
+    video.srcObject = stream;
+
+    running = true;
+
+    status.textContent =
+      "● STARTING HAND TRACKING";
+
+    info.innerHTML =
+      "Camera started.<br>" +
+      "Loading hand tracking...";
+
+
+    await video.play();
+
+
+    setupHands();
+
+    processCamera();
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    status.textContent =
+      "● CAMERA ERROR";
+
+    info.innerHTML =
+      "Camera could not start.<br><br>" +
+      error.name +
+      ": " +
+      error.message;
+
+  }
 
 }
 
+
+/*
+--------------------------------
+MEDIAPIPE HANDS
+--------------------------------
+*/
+
+function setupHands(){
+
+  if(hands){
+    return;
+  }
+
+
+  hands =
+    new Hands({
+
+      locateFile:function(file){
+
+        return (
+          "https://cdn.jsdelivr.net/npm/" +
+          "@mediapipe/hands/" +
+          file
+        );
+
+      }
+
+    });
+
+
+  hands.setOptions({
+
+    maxNumHands:1,
+
+    modelComplexity:1,
+
+    minDetectionConfidence:0.6,
+
+    minTrackingConfidence:0.6
+
+  });
+
+
+  hands.onResults(onResults);
+
 }
+
+
+/*
+--------------------------------
+CAMERA PROCESSING
+--------------------------------
+*/
+
+async function processCamera(){
+
+  if(!running){
+    return;
+  }
+
+
+  if(video.readyState >= 2){
+
+    try{
+
+      await hands.send({
+        image:video
+      });
+
+    }
+
+    catch(error){
+
+      console.error(
+        "Hand tracking error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  requestAnimationFrame(processCamera);
+
+}
+
+
+/*
+--------------------------------
+HAND RESULTS
+--------------------------------
+*/
+
+function onResults(results){
+
+  if(!running){
+    return;
+  }
+
+
+  const width =
+    video.videoWidth || 640;
+
+  const height =
+    video.videoHeight || 480;
+
+
+  canvas.width = width;
+
+  canvas.height = height;
+
+
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  /*
+  NO HAND
+  */
+
+  if(
+    !results.multiHandLandmarks ||
+    results.multiHandLandmarks.length === 0
+  ){
+
+    status.textContent =
+      "● CAMERA ACTIVE · NO HAND";
+
+    info.innerHTML =
+      "Camera is working.<br>" +
+      "Place one hand clearly in front of the camera.";
+
+    pointer.style.display =
+      "none";
+
+    return;
+
+  }
+
+
+  /*
+  HAND FOUND
+  */
+
+  const landmarks =
+    results.multiHandLandmarks[0];
+
+
+  /*
+  DRAW HAND LANDMARKS
+  */
+
+  drawConnectors(
+    ctx,
+    landmarks,
+    HAND_CONNECTIONS,
+    {
+      color:"#60a5fa",
+      lineWidth:3
+    }
+  );
+
+
+  drawLandmarks(
+    ctx,
+    landmarks,
+    {
+      color:"#ffffff",
+      lineWidth:1,
+      radius:4
+    }
+  );
+
+
+  /*
+  INDEX FINGER TIP
+
+  MediaPipe landmark 8
+  */
+
+  const index =
+    landmarks[8];
+
+
+  /*
+  Mirror the X coordinate
+  so it matches the
+  mirrored camera.
+  */
+
+  const x =
+    1 - index.x;
+
+  const y =
+    index.y;
+
+
+  /*
+  POINTER
+  */
+
+  pointer.style.display =
+    "block";
+
+  pointer.style.left =
+    (x * 100) + "%";
+
+  pointer.style.top =
+    (y * 100) + "%";
+
+
+  /*
+  MOVE HOLOGRAM
+
+  Clamp the movement
+  so it stays inside
+  the hologram laboratory.
+  */
+
+  const clampedX =
+    Math.max(
+      12,
+      Math.min(
+        88,
+        x * 100
+      )
+    );
+
+
+  const clampedY =
+    Math.max(
+      15,
+      Math.min(
+        85,
+        y * 100
+      )
+    );
+
+
+  holo.style.left =
+    clampedX + "%";
+
+  holo.style.top =
+    clampedY + "%";
+
+
+  /*
+  SIMPLE GESTURE TEST
+
+  Calculate distances
+  between fingertips and
+  palm.
+  */
+
+  const wrist =
+    landmarks[0];
+
+  const thumb =
+    landmarks[4];
+
+  const indexTip =
+    landmarks[8];
+
+  const middleTip =
+    landmarks[12];
+
+  const ringTip =
+    landmarks[16];
+
+  const pinkyTip =
+    landmarks[20];
+
+
+  function distance(a,b){
+
+    const dx =
+      a.x - b.x;
+
+    const dy =
+      a.y - b.y;
+
+    return Math.sqrt(
+      dx * dx +
+      dy * dy
+    );
+
+  }
+
+
+  const palmSize =
+    Math.max(
+      distance(
+        wrist,
+        middleTip
+      ),
+      0.01
+    );
+
+
+  const indexDistance =
+    distance(
+      indexTip,
+      wrist
+    ) / palmSize;
+
+
+  const middleDistance =
+    distance(
+      middleTip,
+      wrist
+    ) / palmSize;
+
+
+  const ringDistance =
+    distance(
+      ringTip,
+      wrist
+    ) / palmSize;
+
+
+  const pinkyDistance =
+    distance(
+      pinkyTip,
+      wrist
+    ) / palmSize;
+
+
+  /*
+  POINTING
+
+  Index extended while
+  other fingers are closer.
+  */
+
+  const pointing =
+    indexDistance > 1.35 &&
+    middleDistance < 1.25 &&
+    ringDistance < 1.25 &&
+    pinkyDistance < 1.25;
+
+
+  /*
+  OPEN PALM
+  */
+
+  const openPalm =
+    indexDistance > 1.25 &&
+    middleDistance > 1.25 &&
+    ringDistance > 1.15 &&
+    pinkyDistance > 1.05;
+
+
+  /*
+  FIST
+  */
+
+  const fist =
+    indexDistance < 1.15 &&
+    middleDistance < 1.15 &&
+    ringDistance < 1.15 &&
+    pinkyDistance < 1.15;
+
+
+  /*
+  SHOW CURRENT STATE
+  */
+
+  if(pointing){
+
+    status.textContent =
+      "● POINTING · HOLOGRAM CONTROL";
+
+    info.innerHTML =
+      "☝️ Pointing detected.<br>" +
+      "Your index finger is controlling the hologram position.";
+
+  }
+
+  else if(openPalm){
+
+    status.textContent =
+      "● OPEN PALM · ACTIVE";
+
+    info.innerHTML =
+      "✋ Open palm detected.<br>" +
+      "Hologram active.";
+
+    holo.style.opacity =
+      "1";
+
+  }
+
+  else if(fist){
+
+    status.textContent =
+      "● FIST · STANDBY";
+
+    info.innerHTML =
+      "✊ Fist detected.<br>" +
+      "Hologram placed in standby mode.";
+
+    holo.style.opacity =
+      "0.2";
+
+  }
+
+  else{
+
+    status.textContent =
+      "● HAND DETECTED";
+
+    info.innerHTML =
+      "Hand detected.<br>" +
+      "Move your index finger around the camera view.";
+
+    holo.style.opacity =
+      "1";
+
+  }
+
+}
+
+
+/*
+--------------------------------
+STOP
+--------------------------------
+*/
 
 function stopCamera(){
 
-running=false;
+  running = false;
 
-if(stream){
 
-stream.getTracks().forEach(track=>track.stop());
+  if(stream){
 
-stream=null;
+    stream
+      .getTracks()
+      .forEach(
+        track =>
+          track.stop()
+      );
+
+    stream = null;
+
+  }
+
+
+  video.srcObject = null;
+
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  pointer.style.display =
+    "none";
+
+
+  status.textContent =
+    "● CAMERA OFF";
+
+
+  info.innerHTML =
+    "Camera stopped.<br>" +
+    "Tap START CAMERA to begin.";
 
 }
 
-video.srcObject=null;
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+/*
+--------------------------------
+RESET
+--------------------------------
+*/
 
-status.textContent="● CAMERA OFF";
+function resetHologram(){
 
-info.innerHTML=
-"Camera stopped.<br>"+
-"Tap START CAMERA to begin again.";
+  holo.style.left =
+    "50%";
+
+  holo.style.top =
+    "50%";
+
+  holo.style.opacity =
+    "1";
+
+  holo.style.transform =
+    "translate(-50%,-50%) rotateX(10deg) rotateY(25deg)";
+
+
+  status.textContent =
+    running
+      ? "● CAMERA ACTIVE"
+      : "● SYSTEM READY";
+
+
+  info.innerHTML =
+    "Hologram reset.<br>" +
+    "Ready for touchless control.";
 
 }
 
-function resizeCanvas(){
 
-canvas.width=video.videoWidth||640;
-canvas.height=video.videoHeight||480;
+/*
+--------------------------------
+BUTTONS
+--------------------------------
+*/
 
-}
+startButton.addEventListener(
+  "click",
+  startCamera
+);
 
-function drawTest(){
+stopButton.addEventListener(
+  "click",
+  stopCamera
+);
 
-if(!running)return;
-
-resizeCanvas();
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-requestAnimationFrame(drawTest);
-
-}
-
-start.addEventListener("click",startCamera);
-
-stop.addEventListener("click",stopCamera);
-
-reset.addEventListener("click",()=>{
-
-holo.style.transform=
-"rotateX(10deg) rotateY(25deg)";
-
-info.innerHTML=
-"System reset.<br>"+
-"Ready for touchless control.";
-
-});
-
-video.addEventListener("loadeddata",()=>{
-
-drawTest();
-
-});
+resetButton.addEventListener(
+  "click",
+  resetHologram
+);
 
 </script>
 
