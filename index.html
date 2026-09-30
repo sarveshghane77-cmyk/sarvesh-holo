@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SARVESH HOLO V3</title>
+<title>SARVESH HOLO V4</title>
 
 <style>
 *{
@@ -15,6 +15,7 @@ body{
   background:#030712;
   color:#fff;
   font-family:Arial,sans-serif;
+  overflow-x:hidden;
 }
 
 .app{
@@ -99,6 +100,19 @@ video{
   transform:scaleX(-1);
 }
 
+.pointer{
+  position:absolute;
+  width:20px;
+  height:20px;
+  border:2px solid #fff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  display:none;
+  z-index:10;
+  box-shadow:0 0 15px rgba(255,255,255,.7);
+}
+
 .scene{
   position:relative;
   height:100%;
@@ -106,13 +120,16 @@ video{
   overflow:hidden;
   border-radius:14px;
   background:
-    radial-gradient(circle at center,
+    radial-gradient(
+      circle at center,
       rgba(59,130,246,.14),
-      transparent 35%),
+      transparent 35%
+    ),
     #020617;
   display:flex;
   align-items:center;
   justify-content:center;
+  perspective:900px;
 }
 
 .grid{
@@ -134,14 +151,17 @@ video{
   top:50%;
   width:110px;
   height:110px;
+
   transform:
     translate(-50%,-50%)
     rotateX(10deg)
     rotateY(25deg);
+
   transform-style:preserve-3d;
+
   transition:
-    left .12s linear,
-    top .12s linear,
+    left .08s linear,
+    top .08s linear,
     opacity .2s;
 }
 
@@ -149,14 +169,21 @@ video{
   position:absolute;
   width:110px;
   height:110px;
+
   border:2px solid #60a5fa;
-  background:rgba(59,130,246,.06);
+
+  background:
+    rgba(59,130,246,.06);
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   font-size:10px;
   color:#93c5fd;
-  box-shadow:0 0 18px rgba(59,130,246,.18);
+
+  box-shadow:
+    0 0 18px rgba(59,130,246,.18);
 }
 
 .front{
@@ -183,21 +210,10 @@ video{
   transform:rotateX(-90deg) translateZ(55px);
 }
 
-.pointer{
-  position:absolute;
-  width:18px;
-  height:18px;
-  border:2px solid #fff;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-  display:none;
-  z-index:10;
-}
-
 .controls{
   max-width:1000px;
   margin:0 auto;
+
   display:flex;
   gap:10px;
   flex-wrap:wrap;
@@ -220,9 +236,12 @@ button:active{
   max-width:1000px;
   margin:14px auto;
   padding:14px;
+
   border:1px solid #1e293b;
   border-radius:14px;
+
   background:#070d18;
+
   color:#94a3b8;
   font-size:13px;
   line-height:1.6;
@@ -249,7 +268,7 @@ SARVESH HOLO
 </div>
 
 <div class="sub">
-TOUCHLESS 3D INTERFACE · V3
+TOUCHLESS 3D INTERFACE · V4
 </div>
 
 <div class="status" id="status">
@@ -272,17 +291,17 @@ HAND SENSOR
 <div class="camera">
 
 <video
-  id="video"
-  autoplay
-  playsinline
-  muted>
+id="video"
+autoplay
+playsinline
+muted>
 </video>
 
 <canvas id="handCanvas"></canvas>
 
 <div
-  class="pointer"
-  id="pointer">
+id="pointer"
+class="pointer">
 </div>
 
 </div>
@@ -298,13 +317,16 @@ HAND SENSOR
 VIRTUAL HOLOGRAM
 </div>
 
-<div class="scene" id="scene">
+<div
+class="scene"
+id="scene">
 
 <div class="grid"></div>
 
+
 <div
-  class="holo"
-  id="holo">
+class="holo"
+id="holo">
 
 <div class="face front">
 HOLOGRAM
@@ -356,9 +378,11 @@ RESET
 </div>
 
 
-<div class="info" id="info">
+<div
+class="info"
+id="info">
 
-Touchless system ready.<br>
+Touchless V4 system ready.<br>
 Start the camera and show one hand.
 
 </div>
@@ -366,7 +390,7 @@ Start the camera and show one hand.
 </div>
 
 
-<!-- MediaPipe -->
+<!-- MEDIAPIPE -->
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
@@ -390,9 +414,6 @@ document.getElementById("holo");
 const pointer =
 document.getElementById("pointer");
 
-const scene =
-document.getElementById("scene");
-
 const status =
 document.getElementById("status");
 
@@ -415,12 +436,41 @@ let running = false;
 
 let hands = null;
 
-let animationStarted = false;
+
+/*
+--------------------------------
+3D STATE
+--------------------------------
+*/
+
+let posX = 50;
+let posY = 50;
+
+let rotationX = 10;
+let rotationY = 25;
+
+let targetX = 50;
+let targetY = 50;
+
+let targetRotationX = 10;
+let targetRotationY = 25;
 
 
 /*
 --------------------------------
-CAMERA
+PINCH STATE
+--------------------------------
+*/
+
+let pinchActive = false;
+
+let grabOffsetX = 0;
+let grabOffsetY = 0;
+
+
+/*
+--------------------------------
+START CAMERA
 --------------------------------
 */
 
@@ -432,14 +482,17 @@ async function startCamera(){
 
   try{
 
-    if(!navigator.mediaDevices ||
-       !navigator.mediaDevices.getUserMedia){
+    if(
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ){
 
       throw new Error(
-        "Camera API is not available in this browser."
+        "Camera API is not available."
       );
 
     }
+
 
     stream =
       await navigator.mediaDevices.getUserMedia({
@@ -459,16 +512,19 @@ async function startCamera(){
       });
 
 
-    video.srcObject = stream;
+    video.srcObject =
+      stream;
 
     running = true;
 
+
     status.textContent =
-      "● STARTING HAND TRACKING";
+      "● STARTING V4";
+
 
     info.innerHTML =
       "Camera started.<br>" +
-      "Loading hand tracking...";
+      "Loading touchless 3D control...";
 
 
     await video.play();
@@ -477,6 +533,8 @@ async function startCamera(){
     setupHands();
 
     processCamera();
+
+    animateHologram();
 
   }
 
@@ -500,7 +558,7 @@ async function startCamera(){
 
 /*
 --------------------------------
-MEDIAPIPE HANDS
+MEDIAPIPE
 --------------------------------
 */
 
@@ -540,14 +598,16 @@ function setupHands(){
   });
 
 
-  hands.onResults(onResults);
+  hands.onResults(
+    onResults
+  );
 
 }
 
 
 /*
 --------------------------------
-CAMERA PROCESSING
+PROCESS CAMERA
 --------------------------------
 */
 
@@ -571,7 +631,7 @@ async function processCamera(){
     catch(error){
 
       console.error(
-        "Hand tracking error:",
+        "Tracking error:",
         error
       );
 
@@ -580,7 +640,31 @@ async function processCamera(){
   }
 
 
-  requestAnimationFrame(processCamera);
+  requestAnimationFrame(
+    processCamera
+  );
+
+}
+
+
+/*
+--------------------------------
+DISTANCE
+--------------------------------
+*/
+
+function distance(a,b){
+
+  const dx =
+    a.x - b.x;
+
+  const dy =
+    a.y - b.y;
+
+  return Math.sqrt(
+    dx * dx +
+    dy * dy
+  );
 
 }
 
@@ -605,9 +689,11 @@ function onResults(results){
     video.videoHeight || 480;
 
 
-  canvas.width = width;
+  canvas.width =
+    width;
 
-  canvas.height = height;
+  canvas.height =
+    height;
 
 
   ctx.clearRect(
@@ -628,14 +714,16 @@ function onResults(results){
   ){
 
     status.textContent =
-      "● CAMERA ACTIVE · NO HAND";
+      "● CAMERA ACTIVE · SEARCHING";
 
     info.innerHTML =
       "Camera is working.<br>" +
-      "Place one hand clearly in front of the camera.";
+      "Show one hand clearly.";
 
     pointer.style.display =
       "none";
+
+    pinchActive = false;
 
     return;
 
@@ -643,7 +731,7 @@ function onResults(results){
 
 
   /*
-  HAND FOUND
+  HAND DETECTED
   */
 
   const landmarks =
@@ -651,7 +739,7 @@ function onResults(results){
 
 
   /*
-  DRAW HAND LANDMARKS
+  DRAW HAND
   */
 
   drawConnectors(
@@ -677,26 +765,37 @@ function onResults(results){
 
 
   /*
-  INDEX FINGER TIP
-
-  MediaPipe landmark 8
+  LANDMARKS
   */
 
-  const index =
+  const wrist =
+    landmarks[0];
+
+  const thumbTip =
+    landmarks[4];
+
+  const indexTip =
     landmarks[8];
+
+  const middleTip =
+    landmarks[12];
+
+  const ringTip =
+    landmarks[16];
+
+  const pinkyTip =
+    landmarks[20];
 
 
   /*
-  Mirror the X coordinate
-  so it matches the
-  mirrored camera.
+  INDEX POSITION
   */
 
   const x =
-    1 - index.x;
+    1 - indexTip.x;
 
   const y =
-    index.y;
+    indexTip.y;
 
 
   /*
@@ -714,82 +813,32 @@ function onResults(results){
 
 
   /*
-  MOVE HOLOGRAM
-
-  Clamp the movement
-  so it stays inside
-  the hologram laboratory.
+  CLAMP
   */
 
-  const clampedX =
+  const handX =
     Math.max(
-      12,
+      10,
       Math.min(
-        88,
+        90,
         x * 100
       )
     );
 
 
-  const clampedY =
+  const handY =
     Math.max(
-      15,
+      12,
       Math.min(
-        85,
+        88,
         y * 100
       )
     );
 
 
-  holo.style.left =
-    clampedX + "%";
-
-  holo.style.top =
-    clampedY + "%";
-
-
   /*
-  SIMPLE GESTURE TEST
-
-  Calculate distances
-  between fingertips and
-  palm.
+  FINGER STATES
   */
-
-  const wrist =
-    landmarks[0];
-
-  const thumb =
-    landmarks[4];
-
-  const indexTip =
-    landmarks[8];
-
-  const middleTip =
-    landmarks[12];
-
-  const ringTip =
-    landmarks[16];
-
-  const pinkyTip =
-    landmarks[20];
-
-
-  function distance(a,b){
-
-    const dx =
-      a.x - b.x;
-
-    const dy =
-      a.y - b.y;
-
-    return Math.sqrt(
-      dx * dx +
-      dy * dy
-    );
-
-  }
-
 
   const palmSize =
     Math.max(
@@ -830,17 +879,21 @@ function onResults(results){
 
 
   /*
-  POINTING
+  PINCH
 
-  Index extended while
-  other fingers are closer.
+  Thumb + index finger
+  close together.
   */
 
-  const pointing =
-    indexDistance > 1.35 &&
-    middleDistance < 1.25 &&
-    ringDistance < 1.25 &&
-    pinkyDistance < 1.25;
+  const pinchDistance =
+    distance(
+      thumbTip,
+      indexTip
+    );
+
+
+  const isPinching =
+    pinchDistance < 0.075;
 
 
   /*
@@ -866,19 +919,76 @@ function onResults(results){
 
 
   /*
-  SHOW CURRENT STATE
+  PINCH START
   */
 
-  if(pointing){
+  if(
+    isPinching &&
+    !pinchActive
+  ){
 
-    status.textContent =
-      "● POINTING · HOLOGRAM CONTROL";
+    pinchActive = true;
 
-    info.innerHTML =
-      "☝️ Pointing detected.<br>" +
-      "Your index finger is controlling the hologram position.";
+    grabOffsetX =
+      posX - handX;
+
+    grabOffsetY =
+      posY - handY;
 
   }
+
+
+  /*
+  PINCH RELEASE
+  */
+
+  if(
+    !isPinching &&
+    pinchActive
+  ){
+
+    pinchActive = false;
+
+  }
+
+
+  /*
+  GRABBING
+  */
+
+  if(isPinching){
+
+    targetX =
+      handX + grabOffsetX;
+
+    targetY =
+      handY + grabOffsetY;
+
+
+    targetRotationY =
+      25 +
+      (handX - 50) * 2.5;
+
+
+    targetRotationX =
+      10 +
+      (50 - handY) * 1.6;
+
+
+    status.textContent =
+      "● PINCH · HOLOGRAM GRABBED";
+
+
+    info.innerHTML =
+      "🤏 Pinch detected.<br>" +
+      "You are grabbing and manipulating the hologram.";
+
+  }
+
+
+  /*
+  OPEN PALM
+  */
 
   else if(openPalm){
 
@@ -887,12 +997,17 @@ function onResults(results){
 
     info.innerHTML =
       "✋ Open palm detected.<br>" +
-      "Hologram active.";
+      "Touchless system active.";
 
     holo.style.opacity =
       "1";
 
   }
+
+
+  /*
+  FIST
+  */
 
   else if(fist){
 
@@ -901,26 +1016,97 @@ function onResults(results){
 
     info.innerHTML =
       "✊ Fist detected.<br>" +
-      "Hologram placed in standby mode.";
+      "Hologram standby mode.";
 
     holo.style.opacity =
       "0.2";
 
   }
 
+
+  /*
+  NORMAL HAND
+  */
+
   else{
 
     status.textContent =
-      "● HAND DETECTED";
+      "● HAND TRACKING";
 
     info.innerHTML =
-      "Hand detected.<br>" +
-      "Move your index finger around the camera view.";
+      "☝️ Move your index finger.<br>" +
+      "Pinch thumb + index to grab the hologram.";
 
     holo.style.opacity =
       "1";
 
   }
+
+}
+
+
+/*
+--------------------------------
+SMOOTH 3D ANIMATION
+--------------------------------
+*/
+
+function animateHologram(){
+
+  if(!running){
+    return;
+  }
+
+
+  /*
+  Smooth position
+  */
+
+  posX +=
+    (targetX - posX) *
+    0.16;
+
+
+  posY +=
+    (targetY - posY) *
+    0.16;
+
+
+  /*
+  Smooth rotation
+  */
+
+  rotationX +=
+    (targetRotationX - rotationX) *
+    0.12;
+
+
+  rotationY +=
+    (targetRotationY - rotationY) *
+    0.12;
+
+
+  holo.style.left =
+    posX + "%";
+
+
+  holo.style.top =
+    posY + "%";
+
+
+  holo.style.transform =
+    "translate(-50%,-50%) " +
+    "rotateX(" +
+    rotationX +
+    "deg) " +
+    "rotateY(" +
+    rotationY +
+    "deg)";
+
+
+  requestAnimationFrame(
+    animateHologram
+  );
 
 }
 
@@ -950,7 +1136,8 @@ function stopCamera(){
   }
 
 
-  video.srcObject = null;
+  video.srcObject =
+    null;
 
 
   ctx.clearRect(
@@ -984,17 +1171,23 @@ RESET
 
 function resetHologram(){
 
-  holo.style.left =
-    "50%";
+  posX = 50;
+  posY = 50;
 
-  holo.style.top =
-    "50%";
+  targetX = 50;
+  targetY = 50;
+
+  rotationX = 10;
+  rotationY = 25;
+
+  targetRotationX = 10;
+  targetRotationY = 25;
+
+  pinchActive = false;
+
 
   holo.style.opacity =
     "1";
-
-  holo.style.transform =
-    "translate(-50%,-50%) rotateX(10deg) rotateY(25deg)";
 
 
   status.textContent =
