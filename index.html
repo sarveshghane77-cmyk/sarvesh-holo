@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>SARVESH HOLO — Boss Arena</title>
+<title>SARVESH HOLO — Reactor Lab</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
@@ -18,13 +18,53 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#02040b;
+  background:#02050b;
   color:#fff;
   font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
   position:relative;
+}
+
+#space{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(0,200,255,.12),transparent 28%),
+    radial-gradient(circle at 20% 80%,rgba(130,0,255,.12),transparent 28%),
+    #02050b;
+  pointer-events:none;
+}
+
+.stars{
+  position:absolute;
+  inset:0;
+  opacity:.3;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.9) 1px,transparent 1px),
+    radial-gradient(circle,rgba(0,220,255,.7) 1px,transparent 1px);
+  background-size:70px 70px,130px 130px;
+  animation:starMove 20s linear infinite;
+}
+
+@keyframes starMove{
+  from{transform:translateY(0)}
+  to{transform:translateY(70px)}
+}
+
+#grid{
+  position:absolute;
+  left:-20%;
+  bottom:-22%;
+  width:140%;
+  height:48%;
+  transform:perspective(500px) rotateX(65deg);
+  background:
+    linear-gradient(rgba(0,220,255,.15) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,220,255,.15) 1px,transparent 1px);
+  background-size:45px 45px;
 }
 
 #camera{
@@ -34,7 +74,7 @@ body{
   height:100%;
   object-fit:cover;
   transform:scaleX(-1);
-  opacity:.18;
+  opacity:.12;
   pointer-events:none;
 }
 
@@ -46,131 +86,88 @@ body{
   pointer-events:none;
 }
 
-#space{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 50% 45%,rgba(0,170,255,.12),transparent 28%),
-    radial-gradient(circle at 20% 80%,rgba(130,0,255,.12),transparent 25%),
-    #02040b;
-}
-
-.stars{
-  position:absolute;
-  inset:0;
-  background-image:
-    radial-gradient(circle,rgba(255,255,255,.8) 1px,transparent 1px),
-    radial-gradient(circle,rgba(0,220,255,.55) 1px,transparent 1px);
-  background-size:67px 67px,113px 113px;
-  opacity:.25;
-  animation:stars 18s linear infinite;
-}
-
-@keyframes stars{
-  from{transform:translateY(0)}
-  to{transform:translateY(67px)}
-}
-
-#grid{
-  position:absolute;
-  left:-20%;
-  width:140%;
-  height:45%;
-  bottom:-18%;
-  transform:perspective(500px) rotateX(65deg);
-  background:
-    linear-gradient(rgba(0,200,255,.16) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,200,255,.16) 1px,transparent 1px);
-  background-size:45px 45px;
-  opacity:.5;
-}
-
 #header{
   position:fixed;
-  top:14px;
+  top:12px;
   left:14px;
   right:14px;
-  z-index:20;
+  z-index:30;
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
   pointer-events:none;
 }
 
 .brand{
-  letter-spacing:4px;
+  font-size:18px;
   font-weight:bold;
-  font-size:19px;
-  text-shadow:0 0 14px #00d9ff;
+  letter-spacing:4px;
+  text-shadow:0 0 15px #00d9ff;
 }
 
 .sub{
   margin-top:4px;
-  font-size:10px;
+  font-size:9px;
   letter-spacing:2px;
-  opacity:.65;
+  opacity:.6;
 }
 
 .hud{
   text-align:right;
-  font-size:11px;
+  font-size:10px;
   line-height:1.8;
   letter-spacing:1px;
 }
 
 .hud span{
-  color:#5de8ff;
+  color:#65eaff;
 }
 
-#mission{
+#labTitle{
   position:fixed;
-  top:88px;
+  top:76px;
   left:50%;
   transform:translateX(-50%);
-  z-index:20;
+  z-index:30;
   text-align:center;
-  width:min(90%,420px);
   pointer-events:none;
 }
 
-.missionTitle{
-  font-size:11px;
+.labSmall{
+  font-size:9px;
   letter-spacing:3px;
-  color:#7cecff;
+  color:#63eaff;
 }
 
-#bossName{
+#labName{
   margin-top:5px;
-  font-size:18px;
-  font-weight:bold;
+  font-size:17px;
   letter-spacing:3px;
+  font-weight:bold;
 }
 
-#bossBar{
+#reactorBar{
   margin:10px auto 0;
+  width:min(78vw,330px);
   height:9px;
-  width:min(82vw,360px);
-  border:1px solid rgba(0,220,255,.6);
   padding:2px;
-  background:rgba(0,0,0,.45);
+  border:1px solid rgba(0,220,255,.55);
+  background:rgba(0,0,0,.5);
 }
 
-#bossHealth{
+#stability{
   height:100%;
   width:100%;
-  background:linear-gradient(90deg,#00d9ff,#b500ff);
+  background:linear-gradient(90deg,#00eaff,#7b00ff);
   box-shadow:0 0 12px #00d9ff;
-  transition:width .15s linear;
+  transition:width .2s linear;
 }
 
 #arena{
   position:absolute;
   left:50%;
   top:51%;
-  width:min(92vw,560px);
-  height:min(65vh,560px);
+  width:min(94vw,600px);
+  height:min(66vh,600px);
   transform:translate(-50%,-50%);
   pointer-events:none;
 }
@@ -178,262 +175,253 @@ body{
 #reactor{
   position:absolute;
   left:50%;
-  top:50%;
-  width:120px;
-  height:120px;
-  transform:translate(-50%,-50%);
-  border:1px solid rgba(0,220,255,.7);
-  border-radius:50%;
-  box-shadow:
-    0 0 20px rgba(0,220,255,.5),
-    inset 0 0 30px rgba(0,220,255,.15);
-}
-
-#reactor:before,
-#reactor:after{
-  content:"";
-  position:absolute;
-  inset:18px;
-  border:1px solid rgba(150,0,255,.7);
-  border-radius:50%;
-  animation:spin 5s linear infinite;
-}
-
-#reactor:after{
-  inset:30px;
-  border-color:rgba(0,220,255,.8);
-  animation-direction:reverse;
-  animation-duration:3s;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-#boss{
-  position:absolute;
-  left:50%;
-  top:30%;
+  top:52%;
   width:150px;
   height:150px;
   transform:translate(-50%,-50%);
-  transition:transform .15s linear;
+  border:2px solid rgba(0,230,255,.7);
+  border-radius:50%;
+  box-shadow:
+    0 0 20px rgba(0,220,255,.5),
+    inset 0 0 35px rgba(0,220,255,.12);
 }
 
-.bossCore{
+#reactorCore{
   position:absolute;
   left:50%;
   top:50%;
-  width:70px;
-  height:70px;
-  transform:translate(-50%,-50%) rotate(45deg);
-  border:2px solid #c000ff;
-  background:rgba(120,0,255,.15);
-  box-shadow:
-    0 0 15px #b000ff,
-    0 0 45px rgba(160,0,255,.7);
-}
-
-.bossCore:before,
-.bossCore:after{
-  content:"";
-  position:absolute;
-  inset:12px;
-  border:1px solid #00eaff;
-}
-
-.bossCore:after{
-  inset:-18px;
-  border-radius:50%;
-  border-color:rgba(0,220,255,.7);
-  animation:spin 2.5s linear infinite;
-}
-
-.wing{
-  position:absolute;
-  top:50%;
   width:55px;
-  height:80px;
-  border:2px solid rgba(0,220,255,.7);
-  background:rgba(0,160,255,.06);
-  transform:translateY(-50%) skewY(-18deg);
+  height:55px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:rgba(0,220,255,.15);
+  border:2px solid #00eaff;
+  box-shadow:
+    0 0 15px #00eaff,
+    0 0 45px rgba(0,220,255,.7);
+  animation:corePulse 1s infinite alternate;
 }
 
-.wing.left{right:72px}
-.wing.right{
-  left:72px;
-  transform:translateY(-50%) scaleX(-1) skewY(-18deg);
+@keyframes corePulse{
+  from{transform:translate(-50%,-50%) scale(.85)}
+  to{transform:translate(-50%,-50%) scale(1.12)}
 }
 
-#target{
+.ring{
+  position:absolute;
+  left:50%;
+  top:50%;
+  border-radius:50%;
+  border:1px solid rgba(130,0,255,.65);
+  transform:translate(-50%,-50%);
+}
+
+.r1{
+  width:190px;
+  height:70px;
+  animation:rotateX 5s linear infinite;
+}
+
+.r2{
+  width:70px;
+  height:190px;
+  animation:rotateY 4s linear infinite;
+}
+
+.r3{
+  width:215px;
+  height:215px;
+  border-color:rgba(0,220,255,.35);
+  animation:rotate 8s linear infinite;
+}
+
+@keyframes rotate{
+  to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+
+@keyframes rotateX{
+  to{transform:translate(-50%,-50%) rotateX(360deg)}
+}
+
+@keyframes rotateY{
+  to{transform:translate(-50%,-50%) rotateY(360deg)}
+}
+
+.slot{
   position:absolute;
   width:58px;
   height:58px;
-  border:2px solid #fff;
+  border:1px dashed rgba(255,255,255,.55);
   border-radius:50%;
   transform:translate(-50%,-50%);
-  box-shadow:
-    0 0 10px #fff,
-    0 0 30px #00d9ff;
-  display:none;
+  box-shadow:0 0 15px rgba(0,220,255,.2);
 }
 
-#target:before,
-#target:after{
+#slot1{
+  left:18%;
+  top:27%;
+}
+
+#slot2{
+  left:82%;
+  top:30%;
+}
+
+#slot3{
+  left:18%;
+  top:76%;
+}
+
+#slot4{
+  left:82%;
+  top:74%;
+}
+
+.node{
+  position:absolute;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  cursor:pointer;
+  pointer-events:none;
+  transition:transform .12s linear;
+}
+
+.node:before{
+  content:"";
+  position:absolute;
+  inset:5px;
+  border-radius:50%;
+  border:2px solid currentColor;
+  box-shadow:
+    0 0 10px currentColor,
+    0 0 25px currentColor;
+}
+
+.node:after{
   content:"";
   position:absolute;
   left:50%;
   top:50%;
-  background:#fff;
+  width:9px;
+  height:9px;
   transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:currentColor;
+  box-shadow:0 0 14px currentColor;
 }
 
-#target:before{
-  width:78px;
-  height:1px;
-}
-
-#target:after{
-  height:78px;
-  width:1px;
-}
+.node.cyan{color:#00eaff}
+.node.purple{color:#c000ff}
+.node.green{color:#5cff9a}
+.node.orange{color:#ffb347}
 
 #cursor{
   position:absolute;
-  width:22px;
-  height:22px;
+  width:28px;
+  height:28px;
+  border:2px solid #fff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  display:none;
+  box-shadow:
+    0 0 10px #fff,
+    0 0 25px #00eaff;
+}
+
+#cursor:before,
+#cursor:after{
+  content:"";
+  position:absolute;
+  background:#fff;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
+
+#cursor:before{
+  width:48px;
+  height:1px;
+}
+
+#cursor:after{
+  width:1px;
+  height:48px;
+}
+
+#shield{
+  position:absolute;
+  left:50%;
+  top:52%;
+  width:230px;
+  height:230px;
+  transform:translate(-50%,-50%);
   border:2px solid #00eaff;
   border-radius:50%;
-  transform:translate(-50%,-50%);
-  box-shadow:0 0 16px #00eaff;
   display:none;
-}
-
-#cursorPinch{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:5px;
-  height:5px;
-  transform:translate(-50%,-50%);
-  background:#fff;
-  border-radius:50%;
-}
-
-#beam{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:5px;
-  height:0;
-  transform-origin:top center;
-  background:#fff;
   box-shadow:
-    0 0 8px #00eaff,
-    0 0 25px #a000ff;
-  opacity:0;
+    0 0 20px #00eaff,
+    inset 0 0 30px rgba(0,220,255,.2);
+  animation:shieldPulse .5s infinite alternate;
 }
 
-#beam.active{
+@keyframes shieldPulse{
+  from{opacity:.45;transform:translate(-50%,-50%) scale(.95)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.04)}
+}
+
+#power{
+  position:absolute;
+  left:50%;
+  top:52%;
+  width:3px;
+  height:0;
+  background:#fff;
+  transform-origin:top center;
+  opacity:0;
+  box-shadow:0 0 10px #00eaff,0 0 30px #b000ff;
+}
+
+#power.active{
   opacity:1;
   height:260px;
-  animation:beamPulse .15s infinite alternate;
+  animation:powerPulse .15s infinite alternate;
 }
 
-@keyframes beamPulse{
-  from{width:4px}
-  to{width:9px}
+@keyframes powerPulse{
+  from{width:3px}
+  to{width:10px}
 }
 
 #gesture{
   position:fixed;
   left:50%;
-  bottom:92px;
+  bottom:91px;
   transform:translateX(-50%);
-  z-index:25;
+  z-index:40;
+  padding:8px 15px;
   min-width:210px;
-  padding:8px 14px;
   text-align:center;
-  border:1px solid rgba(0,220,255,.4);
-  background:rgba(0,10,25,.72);
-  backdrop-filter:blur(8px);
-  font-size:11px;
-  letter-spacing:2px;
-}
-
-#controls{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  z-index:100;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  justify-content:center;
-  width:96%;
-  pointer-events:auto;
-}
-
-button{
-  min-height:44px;
-  padding:10px 15px;
-  border:1px solid rgba(0,220,255,.55);
-  border-radius:9px;
-  background:rgba(2,15,30,.88);
-  color:#dffaff;
-  font-weight:bold;
-  font-size:11px;
-  letter-spacing:1px;
-  cursor:pointer;
-  touch-action:manipulation;
-}
-
-button:active{
-  transform:scale(.96);
-}
-
-button.primary{
-  border-color:#00eaff;
-  box-shadow:0 0 12px rgba(0,220,255,.3);
-}
-
-#startScreen{
-  position:fixed;
-  inset:0;
-  z-index:200;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(1,3,10,.92);
-  padding:25px;
-}
-
-.startCard{
-  width:min(92vw,430px);
-  padding:30px 22px;
-  text-align:center;
+  background:rgba(0,10,25,.75);
   border:1px solid rgba(0,220,255,.45);
-  background:rgba(3,12,25,.95);
-  box-shadow:0 0 50px rgba(0,170,255,.12);
+  backdrop-filter:blur(8px);
+  font-size:10px;
+  letter-spacing:2px;
+  pointer-events:none;
 }
 
-.startCard h1{
-  margin:0;
-  letter-spacing:6px;
-  font-size:27px;
-}
-
-.startCard p{
-  color:#a6d8e5;
-  line-height:1.6;
-  font-size:12px;
-}
-
-#startGame{
-  margin-top:12px;
-  width:100%;
-  min-height:50px;
+#status{
+  position:fixed;
+  top:150px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:30;
+  font-size:9px;
+  letter-spacing:2px;
+  opacity:.7;
+  pointer-events:none;
+  white-space:nowrap;
 }
 
 #message{
@@ -441,9 +429,8 @@ button.primary{
   left:50%;
   top:70%;
   transform:translate(-50%,-50%);
-  z-index:50;
-  text-align:center;
-  font-size:24px;
+  z-index:60;
+  font-size:23px;
   font-weight:bold;
   letter-spacing:4px;
   opacity:0;
@@ -456,23 +443,97 @@ button.primary{
 }
 
 @keyframes message{
-  0%{opacity:0;transform:translate(-50%,-40%) scale(.7)}
+  0%{
+    opacity:0;
+    transform:translate(-50%,-40%) scale(.7);
+  }
   25%{opacity:1}
   75%{opacity:1}
-  100%{opacity:0;transform:translate(-50%,-60%) scale(1.15)}
+  100%{
+    opacity:0;
+    transform:translate(-50%,-60%) scale(1.15);
+  }
 }
 
-#status{
+#controls{
   position:fixed;
-  top:150px;
   left:50%;
+  bottom:17px;
   transform:translateX(-50%);
-  z-index:20;
+  z-index:100;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  width:96%;
+  pointer-events:auto;
+}
+
+button{
+  min-height:44px;
+  padding:10px 14px;
+  border-radius:9px;
+  border:1px solid rgba(0,220,255,.55);
+  background:rgba(2,15,30,.9);
+  color:#e5fbff;
   font-size:10px;
-  letter-spacing:2px;
-  opacity:.7;
-  pointer-events:none;
-  white-space:nowrap;
+  font-weight:bold;
+  letter-spacing:1px;
+  touch-action:manipulation;
+}
+
+button.primary{
+  border-color:#00eaff;
+  box-shadow:0 0 14px rgba(0,220,255,.25);
+}
+
+button:active{
+  transform:scale(.96);
+}
+
+#startScreen{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+  background:rgba(1,3,9,.94);
+}
+
+.startCard{
+  width:min(92vw,440px);
+  padding:28px 22px;
+  text-align:center;
+  background:rgba(3,12,25,.97);
+  border:1px solid rgba(0,220,255,.45);
+  box-shadow:0 0 50px rgba(0,180,255,.12);
+}
+
+.startCard h1{
+  margin:0;
+  font-size:26px;
+  letter-spacing:6px;
+}
+
+.startCard h2{
+  margin:10px 0;
+  font-size:13px;
+  letter-spacing:3px;
+  color:#67eaff;
+}
+
+.startCard p{
+  font-size:11px;
+  line-height:1.7;
+  color:#a8dbe5;
+}
+
+#startGame{
+  width:100%;
+  min-height:50px;
+  margin-top:8px;
 }
 
 .hidden{
@@ -480,24 +541,21 @@ button.primary{
 }
 
 @media(max-width:500px){
-  #header{
-    top:10px;
-  }
 
   .brand{
-    font-size:16px;
+    font-size:15px;
   }
 
   .hud{
-    font-size:9px;
+    font-size:8px;
   }
 
-  #mission{
-    top:74px;
+  #labTitle{
+    top:70px;
   }
 
-  #bossName{
-    font-size:15px;
+  #labName{
+    font-size:14px;
   }
 
   #arena{
@@ -506,12 +564,12 @@ button.primary{
   }
 
   #gesture{
-    bottom:78px;
+    bottom:77px;
   }
 
   button{
-    padding:9px 12px;
-    font-size:10px;
+    padding:9px 11px;
+    font-size:9px;
   }
 }
 </style>
@@ -528,9 +586,10 @@ button.primary{
 <canvas id="output"></canvas>
 
 <div id="header">
+
   <div>
     <div class="brand">SARVESH HOLO</div>
-    <div class="sub">GESTURE COMBAT SYSTEM · V15</div>
+    <div class="sub">TOUCHLESS REACTOR LAB · V16</div>
   </div>
 
   <div class="hud">
@@ -538,120 +597,194 @@ button.primary{
     ENERGY <span id="energy">100%</span><br>
     LIVES <span id="lives">♥ ♥ ♥</span>
   </div>
+
 </div>
 
-<div id="mission">
-  <div class="missionTitle">MISSION // HOLO GUARDIAN</div>
-  <div id="bossName">HOLO GUARDIAN</div>
-  <div id="bossBar">
-    <div id="bossHealth"></div>
+<div id="labTitle">
+
+  <div class="labSmall">
+    LABORATORY // REACTOR CORE
   </div>
+
+  <div id="labName">
+    QUANTUM REACTOR
+  </div>
+
+  <div id="reactorBar">
+    <div id="stability"></div>
+  </div>
+
 </div>
 
-<div id="status">SYSTEM READY</div>
+<div id="status">
+  SYSTEM READY
+</div>
 
 <div id="arena">
 
-  <div id="reactor"></div>
+  <div id="reactor">
 
-  <div id="boss">
-    <div class="wing left"></div>
-    <div class="wing right"></div>
-    <div class="bossCore"></div>
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+
+    <div id="reactorCore"></div>
+
   </div>
 
-  <div id="target"></div>
+  <div id="slot1" class="slot"></div>
+  <div id="slot2" class="slot"></div>
+  <div id="slot3" class="slot"></div>
+  <div id="slot4" class="slot"></div>
 
-  <div id="cursor">
-    <div id="cursorPinch"></div>
-  </div>
+  <div id="node1" class="node cyan"></div>
+  <div id="node2" class="node purple"></div>
+  <div id="node3" class="node green"></div>
+  <div id="node4" class="node orange"></div>
 
-  <div id="beam"></div>
+  <div id="shield"></div>
+
+  <div id="cursor"></div>
+
+  <div id="power"></div>
 
 </div>
 
-<div id="gesture">WAITING FOR HAND</div>
+<div id="gesture">
+  WAITING FOR HAND
+</div>
 
 <div id="message"></div>
 
 <div id="controls">
-  <button id="startBtn" class="primary">START CAMERA</button>
-  <button id="stopBtn">STOP</button>
-  <button id="pauseBtn">PAUSE</button>
-  <button id="resetBtn">RESET</button>
+
+  <button id="startBtn" class="primary">
+    START CAMERA
+  </button>
+
+  <button id="stopBtn">
+    STOP
+  </button>
+
+  <button id="pauseBtn">
+    PAUSE
+  </button>
+
+  <button id="resetBtn">
+    RESET
+  </button>
+
 </div>
 
 <div id="startScreen">
+
   <div class="startCard">
+
     <h1>SARVESH HOLO</h1>
+
+    <h2>REACTOR LAB</h2>
+
     <p>
-      HOLOGRAM BOSS ARENA<br><br>
-      ☝ POINT — AIM<br>
-      🤏 PINCH — LOCK / FIRE<br>
+      Stabilize the quantum reactor using your hands.
+      <br><br>
+
+      ☝ POINT — SELECT NODE<br>
+      🤏 PINCH — GRAB NODE<br>
       🖐 OPEN PALM — SHIELD<br>
       ✊ FIST — EMERGENCY PAUSE<br>
-      🤏🤏 TWO HANDS — CHARGE BEAM
+      🤏🤏 TWO HANDS — POWER CONTROL
+      <br><br>
+
+      Place the energy nodes into their matching
+      reactor slots before stability reaches zero.
     </p>
 
     <button id="startGame" class="primary">
-      ENTER HOLO ARENA
+      ENTER REACTOR LAB
     </button>
+
   </div>
+
 </div>
 
 <script>
 (() => {
 
-  const video = document.getElementById("camera");
-  const canvas = document.getElementById("output");
-  const ctx = canvas.getContext("2d");
+  const video=document.getElementById("camera");
+  const canvas=document.getElementById("output");
+  const ctx=canvas.getContext("2d");
 
-  const startScreen = document.getElementById("startScreen");
-  const startGame = document.getElementById("startGame");
+  const startScreen=document.getElementById("startScreen");
+  const startGame=document.getElementById("startGame");
 
-  const startBtn = document.getElementById("startBtn");
-  const stopBtn = document.getElementById("stopBtn");
-  const pauseBtn = document.getElementById("pauseBtn");
-  const resetBtn = document.getElementById("resetBtn");
+  const startBtn=document.getElementById("startBtn");
+  const stopBtn=document.getElementById("stopBtn");
+  const pauseBtn=document.getElementById("pauseBtn");
+  const resetBtn=document.getElementById("resetBtn");
 
-  const scoreEl = document.getElementById("score");
-  const energyEl = document.getElementById("energy");
-  const livesEl = document.getElementById("lives");
-  const healthEl = document.getElementById("bossHealth");
+  const scoreEl=document.getElementById("score");
+  const energyEl=document.getElementById("energy");
+  const livesEl=document.getElementById("lives");
+  const stabilityEl=document.getElementById("stability");
 
-  const gestureEl = document.getElementById("gesture");
-  const statusEl = document.getElementById("status");
+  const gestureEl=document.getElementById("gesture");
+  const statusEl=document.getElementById("status");
 
-  const arena = document.getElementById("arena");
-  const boss = document.getElementById("boss");
-  const target = document.getElementById("target");
-  const cursor = document.getElementById("cursor");
-  const beam = document.getElementById("beam");
-  const message = document.getElementById("message");
+  const arena=document.getElementById("arena");
+  const cursor=document.getElementById("cursor");
+  const shield=document.getElementById("shield");
+  const power=document.getElementById("power");
+  const message=document.getElementById("message");
 
-  let stream = null;
-  let hands = null;
-  let running = false;
-  let paused = false;
-  let raf = 0;
+  const nodes=[
+    {
+      el:document.getElementById("node1"),
+      slot:document.getElementById("slot1"),
+      x:.25,y:.25,
+      color:"cyan",
+      placed:false
+    },
+    {
+      el:document.getElementById("node2"),
+      slot:document.getElementById("slot2"),
+      x:.75,y:.25,
+      color:"purple",
+      placed:false
+    },
+    {
+      el:document.getElementById("node3"),
+      slot:document.getElementById("slot3"),
+      x:.25,y:.75,
+      color:"green",
+      placed:false
+    },
+    {
+      el:document.getElementById("node4"),
+      slot:document.getElementById("slot4"),
+      x:.75,y:.75,
+      color:"orange",
+      placed:false
+    }
+  ];
 
-  let score = 0;
-  let energy = 100;
-  let lives = 3;
-  let bossHealth = 100;
+  let stream=null;
+  let hands=null;
+  let running=false;
+  let paused=false;
+  let raf=0;
 
-  let lastShot = 0;
-  let lastDamage = 0;
-  let targetX = .5;
-  let targetY = .5;
-  let bossX = .5;
-  let bossY = .3;
+  let score=0;
+  let energy=100;
+  let stability=100;
+  let lives=3;
 
-  let currentGesture = "WAITING";
-  let handData = [];
+  let selectedNode=null;
+  let grabbedNode=null;
 
-  let twoHandCharge = 0;
-  let shieldActive = false;
+  let lastTime=performance.now();
+  let twoHandPower=0;
+
+  let level=1;
 
   function clamp(v,min,max){
     return Math.max(min,Math.min(max,v));
@@ -664,180 +797,237 @@ button.primary{
   }
 
   function showMessage(text){
+
     message.textContent=text;
+
     message.classList.remove("show");
+
     void message.offsetWidth;
+
     message.classList.add("show");
   }
 
   function updateHUD(){
-    scoreEl.textContent=String(score).padStart(6,"0");
-    energyEl.textContent=Math.round(energy)+"%";
+
+    scoreEl.textContent=
+      String(score).padStart(6,"0");
+
+    energyEl.textContent=
+      Math.round(energy)+"%";
+
+    stabilityEl.style.width=
+      clamp(stability,0,100)+"%";
+
     livesEl.textContent=
       "♥ ".repeat(Math.max(0,lives)).trim()+
       (lives<3 ? " ♡".repeat(3-lives) : "");
-    healthEl.style.width=clamp(bossHealth,0,100)+"%";
   }
 
   function resetGame(){
+
     score=0;
     energy=100;
+    stability=100;
     lives=3;
-    bossHealth=100;
+    level=1;
 
-    targetX=.5;
-    targetY=.5;
-    bossX=.5;
-    bossY=.3;
+    selectedNode=null;
+    grabbedNode=null;
+    twoHandPower=0;
 
-    twoHandCharge=0;
-    shieldActive=false;
+    nodes.forEach((n,i)=>{
 
-    target.style.display="none";
-    beam.classList.remove("active");
+      n.placed=false;
+
+      const positions=[
+        [.25,.25],
+        [.75,.25],
+        [.25,.75],
+        [.75,.75]
+      ];
+
+      n.x=positions[i][0];
+      n.y=positions[i][1];
+
+      n.el.style.left=(n.x*100)+"%";
+      n.el.style.top=(n.y*100)+"%";
+
+      n.el.style.opacity="1";
+      n.el.style.display="block";
+    });
 
     statusEl.textContent="SYSTEM READY";
     gestureEl.textContent="WAITING FOR HAND";
 
+    shield.style.display="none";
+    power.classList.remove("active");
+
     updateHUD();
   }
 
-  function spawnTarget(){
-    targetX=.22+Math.random()*.56;
-    targetY=.18+Math.random()*.58;
+  function nodeCenter(node){
 
-    target.style.left=(targetX*100)+"%";
-    target.style.top=(targetY*100)+"%";
-    target.style.display="block";
+    return {
+      x:node.x,
+      y:node.y
+    };
   }
 
-  function hideTarget(){
-    target.style.display="none";
+  function slotCenter(slot){
+
+    const r=arena.getBoundingClientRect();
+    const s=slot.getBoundingClientRect();
+
+    return {
+      x:(s.left+s.width/2-r.left)/r.width,
+      y:(s.top+s.height/2-r.top)/r.height
+    };
   }
 
-  function damageBoss(amount){
-    bossHealth-=amount;
+  function placeNode(node){
 
-    if(bossHealth<=0){
-      bossHealth=0;
+    const slot=slotCenter(node.slot);
+    const d=distance(
+      {x:node.x,y:node.y},
+      slot
+    );
+
+    if(d<.12){
+
+      node.x=slot.x;
+      node.y=slot.y;
+
+      node.el.style.left=(node.x*100)+"%";
+      node.el.style.top=(node.y*100)+"%";
+
+      node.placed=true;
+      node.el.style.opacity=".25";
+
+      score+=500;
+      energy=Math.min(100,energy+8);
+
+      showMessage("NODE CONNECTED");
+
+      checkComplete();
+
       updateHUD();
-
-      showMessage("BOSS DEFEATED");
-      statusEl.textContent="MISSION COMPLETE";
-
-      score+=5000;
-      updateHUD();
-
-      setTimeout(() => {
-        bossHealth=100;
-        score+=1000;
-        spawnTarget();
-        statusEl.textContent="NEW GUARDIAN DETECTED";
-        updateHUD();
-      },2500);
-
-      return;
     }
-
-    updateHUD();
   }
 
-  function takeDamage(){
-    if(shieldActive)return;
+  function checkComplete(){
 
-    const now=performance.now();
+    if(nodes.every(n=>n.placed)){
 
-    if(now-lastDamage<1200)return;
+      score+=2000;
+      stability=Math.min(100,stability+25);
 
-    lastDamage=now;
-    lives--;
-    energy-=15;
+      showMessage("REACTOR STABLE");
 
-    showMessage("IMPACT");
-
-    if(lives<=0){
-      lives=0;
-      paused=true;
-      statusEl.textContent="SYSTEM FAILURE";
-      showMessage("GAME OVER");
-    }
-
-    updateHUD();
-  }
-
-  function shoot(){
-    const now=performance.now();
-
-    if(now-lastShot<500)return;
-    if(energy<=5)return;
-
-    lastShot=now;
-    energy-=5;
-
-    beam.classList.add("active");
-
-    setTimeout(()=>{
-      beam.classList.remove("active");
-    },180);
-
-    const dx=targetX-.5;
-    const dy=targetY-.5;
-    const hitDistance=Math.sqrt(dx*dx+dy*dy);
-
-    if(hitDistance<.22){
-      score+=250;
-      damageBoss(8);
-      hideTarget();
-      showMessage("+250");
+      level++;
 
       setTimeout(()=>{
-        if(running && !paused)spawnTarget();
-      },500);
-    }
 
-    updateHUD();
+        nodes.forEach((n,i)=>{
+
+          const positions=[
+            [.18+Math.random()*.2,.18+Math.random()*.2],
+            [.62+Math.random()*.2,.18+Math.random()*.2],
+            [.18+Math.random()*.2,.62+Math.random()*.2],
+            [.62+Math.random()*.2,.62+Math.random()*.2]
+          ];
+
+          n.x=positions[i][0];
+          n.y=positions[i][1];
+          n.placed=false;
+
+          n.el.style.left=(n.x*100)+"%";
+          n.el.style.top=(n.y*100)+"%";
+          n.el.style.opacity="1";
+        });
+
+        stability=100;
+
+        statusEl.textContent=
+          "LEVEL "+level+" // NEW NODE PATTERN";
+
+        updateHUD();
+
+      },1800);
+    }
   }
 
   function getGesture(lm){
 
-    if(!lm || lm.length<21)return "WAITING";
+    if(!lm || lm.length<21)
+      return "WAITING";
 
     const wrist=lm[0];
-
-    const thumb=distance(lm[4],wrist);
-    const index=distance(lm[8],wrist);
-    const middle=distance(lm[12],wrist);
-    const ring=distance(lm[16],wrist);
-    const pinky=distance(lm[20],wrist);
-
-    const pinch=distance(lm[4],lm[8]);
 
     const palm=Math.max(
       .05,
       distance(lm[5],lm[17])
     );
 
-    const pinchRatio=pinch/palm;
+    const pinch=
+      distance(lm[4],lm[8])/palm;
 
-    const fingersExtended=
-      index>palm*.95 &&
-      middle>palm*.95 &&
-      ring>palm*.9 &&
-      pinky>palm*.75;
+    const index=
+      distance(lm[8],wrist);
 
-    const fist=
+    const middle=
+      distance(lm[12],wrist);
+
+    const ring=
+      distance(lm[16],wrist);
+
+    const pinky=
+      distance(lm[20],wrist);
+
+    if(pinch<.62)
+      return "PINCH";
+
+    if(
       index<palm*.85 &&
       middle<palm*.9 &&
       ring<palm*.85 &&
-      pinky<palm*.75;
+      pinky<palm*.8
+    )
+      return "FIST";
 
-    if(pinchRatio<.62)return "PINCH";
-
-    if(fist)return "FIST";
-
-    if(fingersExtended)return "OPEN PALM";
+    if(
+      index>palm*.95 &&
+      middle>palm*.95 &&
+      ring>palm*.9 &&
+      pinky>palm*.75
+    )
+      return "OPEN PALM";
 
     return "POINT";
+  }
+
+  function findNearestNode(x,y){
+
+    let nearest=null;
+    let best=.2;
+
+    nodes.forEach(n=>{
+
+      if(n.placed)return;
+
+      const d=distance(
+        {x:n.x,y:n.y},
+        {x,y}
+      );
+
+      if(d<best){
+
+        best=d;
+        nearest=n;
+      }
+
+    });
+
+    return nearest;
   }
 
   function drawHands(results){
@@ -845,20 +1035,26 @@ button.primary{
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
-    if(!results.multiHandLandmarks)return;
+    if(!results.multiHandLandmarks)
+      return;
 
     for(const lm of results.multiHandLandmarks){
-
-      ctx.lineWidth=2;
-      ctx.strokeStyle="rgba(0,220,255,.35)";
-      ctx.fillStyle="rgba(0,240,255,.8)";
 
       const points=lm.map(p=>({
         x:(1-p.x)*canvas.width,
         y:p.y*canvas.height
       }));
+
+      ctx.lineWidth=2;
+      ctx.strokeStyle="rgba(0,220,255,.35)";
+      ctx.fillStyle="rgba(0,240,255,.8)";
 
       const connections=[
         [0,1],[1,2],[2,3],[3,4],
@@ -870,190 +1066,401 @@ button.primary{
       ];
 
       for(const [a,b] of connections){
+
         ctx.beginPath();
-        ctx.moveTo(points[a].x,points[a].y);
-        ctx.lineTo(points[b].x,points[b].y);
+
+        ctx.moveTo(
+          points[a].x,
+          points[a].y
+        );
+
+        ctx.lineTo(
+          points[b].x,
+          points[b].y
+        );
+
         ctx.stroke();
       }
 
-      for(const p of points){
+      points.forEach(p=>{
+
         ctx.beginPath();
-        ctx.arc(p.x,p.y,3,0,Math.PI*2);
+
+        ctx.arc(
+          p.x,
+          p.y,
+          3,
+          0,
+          Math.PI*2
+        );
+
         ctx.fill();
-      }
+      });
     }
   }
 
   function processHands(results){
 
-    handData=results.multiHandLandmarks || [];
-
     drawHands(results);
 
-    if(!handData.length){
-      currentGesture="WAITING";
+    const list=
+      results.multiHandLandmarks || [];
+
+    if(!list.length){
+
       gestureEl.textContent="WAITING FOR HAND";
+
       cursor.style.display="none";
+
       return;
     }
 
-    const first=handData[0];
+    const first=list[0];
 
-    currentGesture=getGesture(first);
+    const gesture=getGesture(first);
 
     gestureEl.textContent=
-      handData.length>1
-      ? currentGesture+" · 2 HANDS"
-      : currentGesture;
+      list.length>1
+      ? gesture+" · TWO HANDS"
+      : gesture;
 
     const index=first[8];
 
-    const screenX=1-index.x;
-    const screenY=index.y;
+    const x=1-index.x;
+    const y=index.y;
 
     cursor.style.display="block";
-    cursor.style.left=(screenX*100)+"%";
-    cursor.style.top=(screenY*100)+"%";
 
-    if(!paused){
+    cursor.style.left=(x*100)+"%";
+    cursor.style.top=(y*100)+"%";
 
-      bossX += ((screenX-.5)*.35-bossX)*.04;
-      bossY += ((screenY-.5)*.15+.3-bossY)*.04;
+    if(paused)
+      return;
 
-      boss.style.left=(bossX*100)+"%";
-      boss.style.top=(bossY*100)+"%";
+    if(gesture==="FIST"){
 
-      if(currentGesture==="OPEN PALM"){
-        shieldActive=true;
-        statusEl.textContent="SHIELD ACTIVE";
-        energy=Math.min(100,energy+.12);
-      }else{
-        shieldActive=false;
+      paused=true;
+
+      statusEl.textContent=
+        "EMERGENCY PAUSE";
+
+      pauseBtn.textContent="RESUME";
+
+      return;
+    }
+
+    if(gesture==="OPEN PALM"){
+
+      shield.style.display="block";
+
+      shield.style.left=(x*100)+"%";
+      shield.style.top=(y*100)+"%";
+
+      statusEl.textContent=
+        "SHIELD ACTIVE";
+
+      energy=
+        Math.min(100,energy+.08);
+
+    }else{
+
+      shield.style.display="none";
+    }
+
+    if(gesture==="POINT"){
+
+      selectedNode=
+        findNearestNode(x,y);
+
+      if(selectedNode){
+
+        selectedNode.el.style.transform=
+          "translate(-50%,-50%) scale(1.35)";
+
+        statusEl.textContent=
+          "NODE SELECTED";
       }
 
-      if(currentGesture==="PINCH"){
-        statusEl.textContent="TARGET LOCK";
+    }else{
 
-        const dx=screenX-targetX;
-        const dy=screenY-targetY;
+      nodes.forEach(n=>{
+        n.el.style.transform=
+          "translate(-50%,-50%) scale(1)";
+      });
+    }
 
-        if(Math.sqrt(dx*dx+dy*dy)<.18){
-          shoot();
+    if(gesture==="PINCH"){
+
+      if(!grabbedNode){
+
+        grabbedNode=
+          findNearestNode(x,y);
+
+        if(grabbedNode){
+
+          statusEl.textContent=
+            "NODE GRABBED";
         }
       }
 
-      if(currentGesture==="FIST"){
-        statusEl.textContent="EMERGENCY PAUSE";
-        paused=true;
+      if(grabbedNode){
+
+        grabbedNode.x=
+          clamp(x,.06,.94);
+
+        grabbedNode.y=
+          clamp(y,.08,.92);
+
+        grabbedNode.el.style.left=
+          (grabbedNode.x*100)+"%";
+
+        grabbedNode.el.style.top=
+          (grabbedNode.y*100)+"%";
+
+        placeNode(grabbedNode);
       }
 
-      if(handData.length>=2){
+    }else{
 
-        const h1=handData[0][9];
-        const h2=handData[1][9];
+      if(grabbedNode){
 
-        const d=distance(h1,h2);
+        placeNode(grabbedNode);
 
-        if(
-          getGesture(handData[0])==="PINCH" &&
-          getGesture(handData[1])==="PINCH"
-        ){
-          twoHandCharge=clamp(
-            twoHandCharge+(d>.22?.8:-.4),
+        grabbedNode=null;
+      }
+    }
+
+    if(list.length>=2){
+
+      const g1=getGesture(list[0]);
+      const g2=getGesture(list[1]);
+
+      if(
+        g1==="PINCH" &&
+        g2==="PINCH"
+      ){
+
+        const p1=list[0][9];
+        const p2=list[1][9];
+
+        const d=distance(p1,p2);
+
+        twoHandPower=
+          clamp(
+            twoHandPower+
+            (d>.23 ? 1.2 : -.7),
             0,
             100
           );
 
-          statusEl.textContent=
-            "DUAL-HAND BEAM · "+Math.round(twoHandCharge)+"%";
+        statusEl.textContent=
+          "REACTOR POWER "+
+          Math.round(twoHandPower)+"%";
 
-          if(twoHandCharge>=100){
-            score+=1000;
-            damageBoss(20);
-            twoHandCharge=0;
-            showMessage("POWER BEAM");
-          }
-        }else{
-          twoHandCharge=Math.max(0,twoHandCharge-1);
+        if(twoHandPower>=100){
+
+          power.classList.add("active");
+
+          score+=100;
+
+          stability=
+            Math.min(
+              100,
+              stability+10
+            );
+
+          energy=
+            Math.max(
+              0,
+              energy-3
+            );
+
+          showMessage("POWER SURGE");
+
+          twoHandPower=0;
+
+          setTimeout(()=>{
+            power.classList.remove("active");
+          },350);
         }
+
+      }else{
+
+        twoHandPower=
+          Math.max(
+            0,
+            twoHandPower-1
+          );
       }
     }
 
     updateHUD();
   }
 
+  function gameTick(){
+
+    if(!running)
+      return;
+
+    const now=performance.now();
+
+    const dt=
+      Math.min(
+        100,
+        now-lastTime
+      );
+
+    lastTime=now;
+
+    if(!paused){
+
+      const drain=
+        .0035*
+        (1+level*.15)*
+        dt;
+
+      stability=
+        Math.max(
+          0,
+          stability-drain
+        );
+
+      energy=
+        Math.max(
+          0,
+          energy-.0015*dt
+        );
+
+      if(stability<=0){
+
+        lives--;
+
+        stability=100;
+
+        showMessage("REACTOR FAILURE");
+
+        if(lives<=0){
+
+          lives=0;
+          paused=true;
+
+          statusEl.textContent=
+            "LAB FAILURE";
+
+          showMessage("GAME OVER");
+
+        }
+      }
+
+      updateHUD();
+    }
+
+    raf=requestAnimationFrame(gameTick);
+  }
+
   async function startCamera(){
 
-    if(running)return;
+    if(running)
+      return;
 
     try{
 
-      stream=await navigator.mediaDevices.getUserMedia({
-        video:{
-          facingMode:"user",
-          width:{ideal:1280},
-          height:{ideal:720}
-        },
-        audio:false
-      });
+      stream=
+        await navigator.mediaDevices.getUserMedia({
+          video:{
+            facingMode:"user",
+            width:{ideal:1280},
+            height:{ideal:720}
+          },
+          audio:false
+        });
 
       video.srcObject=stream;
+
       await video.play();
 
       running=true;
       paused=false;
 
-      statusEl.textContent="CAMERA ONLINE";
-      startBtn.textContent="CAMERA RUNNING";
+      statusEl.textContent=
+        "CAMERA ONLINE";
+
+      startBtn.textContent=
+        "CAMERA RUNNING";
 
       if(!hands){
 
         hands=new Hands({
+
           locateFile:(file)=>{
-            return "https://cdn.jsdelivr.net/npm/@mediapipe/hands/"+file;
+            return
+              "https://cdn.jsdelivr.net/npm/@mediapipe/hands/"+file;
           }
+
         });
 
         hands.setOptions({
+
           maxNumHands:2,
+
           modelComplexity:1,
+
           minDetectionConfidence:.6,
+
           minTrackingConfidence:.6
+
         });
 
-        hands.onResults(processHands);
+        hands.onResults(
+          processHands
+        );
       }
 
-      loop();
+      lastTime=performance.now();
+
+      gameTick();
+
+      processVideo();
 
     }catch(err){
 
       console.error(err);
 
-      statusEl.textContent="CAMERA ERROR";
+      statusEl.textContent=
+        "CAMERA ERROR";
 
       alert(
-        "Camera could not start. Please allow camera permission and try again."
+        "Camera could not start. Allow camera permission and try again."
       );
     }
   }
 
-  async function loop(){
+  async function processVideo(){
 
-    if(!running)return;
+    if(!running)
+      return;
 
     if(
-      !paused &&
-      video.readyState>=2
+      video.readyState>=2 &&
+      hands &&
+      !paused
     ){
+
       try{
-        await hands.send({image:video});
+
+        await hands.send({
+          image:video
+        });
+
       }catch(err){
+
         console.warn(err);
       }
     }
 
-    raf=requestAnimationFrame(loop);
+    requestAnimationFrame(
+      processVideo
+    );
   }
 
   function stopCamera(){
@@ -1063,75 +1470,94 @@ button.primary{
     cancelAnimationFrame(raf);
 
     if(stream){
-      stream.getTracks().forEach(track=>track.stop());
+
+      stream
+        .getTracks()
+        .forEach(track=>track.stop());
+
       stream=null;
     }
 
     video.srcObject=null;
 
-    statusEl.textContent="CAMERA STOPPED";
-    startBtn.textContent="START CAMERA";
+    statusEl.textContent=
+      "CAMERA STOPPED";
+
+    startBtn.textContent=
+      "START CAMERA";
 
     cursor.style.display="none";
-    beam.classList.remove("active");
+
+    shield.style.display="none";
+
+    power.classList.remove("active");
   }
 
-  startGame.addEventListener("click",()=>{
-    startScreen.classList.add("hidden");
-    resetGame();
-    startCamera();
+  startGame.addEventListener(
+    "click",
+    ()=>{
 
-    setTimeout(()=>{
-      spawnTarget();
-    },1200);
-  });
+      startScreen.classList.add(
+        "hidden"
+      );
 
-  startBtn.addEventListener("click",()=>{
-    startCamera();
-  });
+      resetGame();
 
-  stopBtn.addEventListener("click",()=>{
-    stopCamera();
-  });
-
-  pauseBtn.addEventListener("click",()=>{
-
-    paused=!paused;
-
-    pauseBtn.textContent=paused?"RESUME":"PAUSE";
-
-    statusEl.textContent=
-      paused
-      ? "SYSTEM PAUSED"
-      : "SYSTEM ACTIVE";
-  });
-
-  resetBtn.addEventListener("click",()=>{
-    paused=false;
-    pauseBtn.textContent="PAUSE";
-    resetGame();
-
-    if(running){
-      spawnTarget();
+      startCamera();
     }
-  });
+  );
 
-  window.addEventListener("keydown",(e)=>{
+  startBtn.addEventListener(
+    "click",
+    startCamera
+  );
 
-    if(e.key==="Escape"){
+  stopBtn.addEventListener(
+    "click",
+    stopCamera
+  );
+
+  pauseBtn.addEventListener(
+    "click",
+    ()=>{
+
       paused=!paused;
-      pauseBtn.textContent=paused?"RESUME":"PAUSE";
-    }
 
-    if(e.key.toLowerCase()==="r"){
+      pauseBtn.textContent=
+        paused
+        ? "RESUME"
+        : "PAUSE";
+
+      statusEl.textContent=
+        paused
+        ? "SYSTEM PAUSED"
+        : "SYSTEM ACTIVE";
+    }
+  );
+
+  resetBtn.addEventListener(
+    "click",
+    ()=>{
+
+      paused=false;
+
+      pauseBtn.textContent=
+        "PAUSE";
+
       resetGame();
     }
-  });
+  );
 
-  window.addEventListener("resize",()=>{
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
-  });
+  window.addEventListener(
+    "resize",
+    ()=>{
+      canvas.width=
+        window.innerWidth;
+
+      canvas.height=
+        window.innerHeight;
+    }
+  );
 
   resetGame();
 
