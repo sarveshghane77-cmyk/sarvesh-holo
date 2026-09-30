@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SARVESH HOLO V7</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>SARVESH HOLO V8</title>
 
 <style>
 *{
@@ -17,12 +17,14 @@ html,body{
   height:100%;
   overflow:hidden;
   background:#02040a;
-  color:#fff;
+  color:white;
   font-family:Arial,sans-serif;
+  touch-action:none;
 }
 
 #app{
-  position:relative;
+  position:fixed;
+  inset:0;
   width:100vw;
   height:100vh;
   overflow:hidden;
@@ -30,37 +32,51 @@ html,body{
     radial-gradient(circle at 50% 50%,#10243b 0%,#050b14 45%,#010207 100%);
 }
 
+/* CAMERA */
 #camera{
-  position:absolute;
+  position:fixed;
+  inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
   transform:scaleX(-1);
   opacity:.18;
-}
-
-#canvas{
-  position:absolute;
-  inset:0;
+  z-index:1;
   pointer-events:none;
 }
 
-#holoArea{
-  position:absolute;
+/* HAND LANDMARK CANVAS */
+#canvas{
+  position:fixed;
   inset:0;
+  width:100%;
+  height:100%;
+  z-index:2;
+  pointer-events:none;
+}
+
+/* HOLOGRAM AREA */
+#holoArea{
+  position:fixed;
+  inset:0;
+  z-index:5;
   perspective:900px;
   pointer-events:none;
 }
 
+/* CUBES */
 .cube{
   position:absolute;
   width:160px;
   height:160px;
   left:50%;
   top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
   transform-style:preserve-3d;
-  transform:translate(-50%,-50%);
-  transition:none;
+  pointer-events:none;
   will-change:transform;
 }
 
@@ -68,41 +84,68 @@ html,body{
   position:absolute;
   width:160px;
   height:160px;
+
   border:2px solid rgba(0,220,255,.95);
+
   background:rgba(0,180,255,.055);
+
   box-shadow:
     inset 0 0 25px rgba(0,220,255,.12),
     0 0 18px rgba(0,220,255,.18);
+
   backface-visibility:visible;
 }
 
-.front  { transform:translateZ(80px); }
-.back   { transform:rotateY(180deg) translateZ(80px); }
-.right  { transform:rotateY(90deg) translateZ(80px); }
-.left   { transform:rotateY(-90deg) translateZ(80px); }
-.top    { transform:rotateX(90deg) translateZ(80px); }
-.bottom { transform:rotateX(-90deg) translateZ(80px); }
+.front{
+  transform:translateZ(80px);
+}
+
+.back{
+  transform:rotateY(180deg) translateZ(80px);
+}
+
+.right{
+  transform:rotateY(90deg) translateZ(80px);
+}
+
+.left{
+  transform:rotateY(-90deg) translateZ(80px);
+}
+
+.top{
+  transform:rotateX(90deg) translateZ(80px);
+}
+
+.bottom{
+  transform:rotateX(-90deg) translateZ(80px);
+}
+
+/* SECOND CUBE */
+#cube2{
+  display:none;
+}
 
 #cube2 .face{
   border-color:rgba(180,80,255,.95);
+
   box-shadow:
     inset 0 0 25px rgba(180,80,255,.12),
     0 0 18px rgba(180,80,255,.18);
 }
 
-#cube2{
-  display:none;
-}
-
+/* TOP HUD */
 #hud{
-  position:absolute;
-  top:18px;
-  left:18px;
-  right:18px;
-  z-index:10;
+  position:fixed;
+  top:16px;
+  left:16px;
+  right:16px;
+
+  z-index:100;
+
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
+
   pointer-events:none;
 }
 
@@ -114,75 +157,215 @@ html,body{
 
 .subtitle{
   margin-top:4px;
-  font-size:11px;
+  font-size:10px;
   color:#6edfff;
   letter-spacing:2px;
 }
 
 #status{
-  padding:9px 13px;
+  padding:9px 12px;
+
   border:1px solid rgba(0,220,255,.35);
   border-radius:12px;
-  background:rgba(0,10,20,.55);
+
+  background:rgba(0,10,20,.75);
+
   color:#74e8ff;
-  font-size:11px;
+
+  font-size:10px;
   letter-spacing:1px;
+
   text-align:right;
 }
 
-#controls{
-  position:absolute;
-  left:50%;
-  bottom:22px;
-  transform:translateX(-50%);
-  z-index:20;
-  display:flex;
-  gap:10px;
-}
-
-button{
-  border:1px solid rgba(0,220,255,.55);
-  background:rgba(0,15,25,.78);
-  color:#8eeeff;
-  padding:11px 16px;
-  border-radius:10px;
-  font-size:12px;
-  letter-spacing:1px;
-  cursor:pointer;
-}
-
-button:active{
-  transform:scale(.96);
-}
-
+/* INFORMATION */
 #info{
-  position:absolute;
+  position:fixed;
+
   left:50%;
-  bottom:75px;
+  bottom:82px;
+
   transform:translateX(-50%);
-  z-index:10;
-  width:90%;
+
+  width:92%;
+  max-width:600px;
+
+  z-index:90;
+
   text-align:center;
-  font-size:11px;
-  color:rgba(220,245,255,.7);
+
+  font-size:10px;
   line-height:1.5;
+
+  color:rgba(220,245,255,.72);
+
   pointer-events:none;
 }
 
+/* MOBILE CONTROL BAR */
+#controls{
+  position:fixed;
+
+  left:50%;
+  bottom:16px;
+
+  transform:translateX(-50%);
+
+  z-index:9999;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:8px;
+
+  width:max-content;
+  max-width:96vw;
+
+  padding:5px;
+
+  border:1px solid rgba(0,220,255,.25);
+  border-radius:15px;
+
+  background:rgba(0,8,16,.88);
+
+  box-shadow:
+    0 0 20px rgba(0,180,255,.12);
+
+  pointer-events:auto;
+
+  touch-action:manipulation;
+}
+
+#controls button{
+  position:relative;
+
+  z-index:10000;
+
+  min-width:96px;
+  min-height:44px;
+
+  padding:10px 12px;
+
+  border:1px solid rgba(0,220,255,.55);
+  border-radius:10px;
+
+  background:rgba(0,18,30,.98);
+
+  color:#8eeeff;
+
+  font-size:10px;
+  font-weight:600;
+
+  letter-spacing:1px;
+
+  cursor:pointer;
+
+  pointer-events:auto;
+
+  touch-action:manipulation;
+
+  -webkit-tap-highlight-color:transparent;
+
+  user-select:none;
+}
+
+#controls button:active{
+  transform:scale(.94);
+
+  background:rgba(0,80,110,.9);
+}
+
+/* LOADING */
 #loading{
-  position:absolute;
+  position:fixed;
   inset:0;
-  z-index:50;
+
+  z-index:20000;
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   background:#02040a;
+
   color:#7deaff;
+
+  font-size:12px;
+
   letter-spacing:3px;
+
+  pointer-events:none;
 }
 
 .hidden{
   display:none!important;
+}
+
+/* SMALL PHONES */
+@media(max-width:430px){
+
+  .title{
+    font-size:16px;
+    letter-spacing:2px;
+  }
+
+  #status{
+    font-size:8px;
+    padding:8px;
+  }
+
+  #controls{
+    bottom:12px;
+    gap:5px;
+    padding:4px;
+  }
+
+  #controls button{
+    min-width:88px;
+    min-height:44px;
+    padding:9px 7px;
+    font-size:9px;
+  }
+
+  #info{
+    bottom:72px;
+    font-size:9px;
+  }
+
+  .cube{
+    width:140px;
+    height:140px;
+  }
+
+  .face{
+    width:140px;
+    height:140px;
+  }
+
+  .front{
+    transform:translateZ(70px);
+  }
+
+  .back{
+    transform:rotateY(180deg) translateZ(70px);
+  }
+
+  .right{
+    transform:rotateY(90deg) translateZ(70px);
+  }
+
+  .left{
+    transform:rotateY(-90deg) translateZ(70px);
+  }
+
+  .top{
+    transform:rotateX(90deg) translateZ(70px);
+  }
+
+  .bottom{
+    transform:rotateX(-90deg) translateZ(70px);
+  }
 }
 </style>
 </head>
@@ -191,74 +374,135 @@ button:active{
 
 <div id="app">
 
-  <video id="camera" autoplay playsinline muted></video>
+  <video
+    id="camera"
+    autoplay
+    playsinline
+    muted>
+  </video>
+
   <canvas id="canvas"></canvas>
 
   <div id="holoArea">
 
-    <!-- ORIGINAL FULL-SIZE CUBE -->
+    <!-- FULL-SIZE ORIGINAL CUBE -->
     <div id="cube1" class="cube">
+
       <div class="face front"></div>
       <div class="face back"></div>
       <div class="face right"></div>
       <div class="face left"></div>
       <div class="face top"></div>
       <div class="face bottom"></div>
+
     </div>
 
-    <!-- SECOND CUBE -->
+    <!-- SECOND HALF-SIZE CUBE -->
     <div id="cube2" class="cube">
+
       <div class="face front"></div>
       <div class="face back"></div>
       <div class="face right"></div>
       <div class="face left"></div>
       <div class="face top"></div>
       <div class="face bottom"></div>
+
     </div>
 
   </div>
 
+  <!-- HUD -->
   <div id="hud">
+
     <div>
       <div class="title">SARVESH HOLO</div>
-      <div class="subtitle">TOUCHLESS 3D CONTROL · V7</div>
+      <div class="subtitle">
+        TOUCHLESS 3D CONTROL · V8
+      </div>
     </div>
 
-    <div id="status">SYSTEM READY</div>
+    <div id="status">
+      SYSTEM READY
+    </div>
+
   </div>
 
+  <!-- INFO -->
   <div id="info">
-    One hand: control the cube · Two hands: nothing changes ·
-    Pinch both hands + move apart: split · Bring pinched hands together: merge
+    One hand: control cube · Two hands: nothing changes ·
+    Pinch both hands + move apart: split ·
+    Bring pinched hands together: merge
   </div>
 
+  <!-- ALWAYS-ON-TOP TOUCH CONTROLS -->
   <div id="controls">
-    <button id="startBtn">START CAMERA</button>
-    <button id="stopBtn">STOP CAMERA</button>
-    <button id="resetBtn">RESET</button>
+
+    <button id="startBtn">
+      START CAMERA
+    </button>
+
+    <button id="stopBtn">
+      STOP CAMERA
+    </button>
+
+    <button id="resetBtn">
+      RESET
+    </button>
+
   </div>
 
-  <div id="loading">INITIALIZING HOLOGRAM...</div>
+  <div id="loading">
+    INITIALIZING HOLOGRAM...
+  </div>
 
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
+
 <script>
-const video = document.getElementById("camera");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 
-const cube1 = document.getElementById("cube1");
-const cube2 = document.getElementById("cube2");
+/* =========================
+   ELEMENTS
+========================= */
 
-const statusEl = document.getElementById("status");
-const loading = document.getElementById("loading");
+const video =
+  document.getElementById("camera");
+
+const canvas =
+  document.getElementById("canvas");
+
+const ctx =
+  canvas.getContext("2d");
+
+const cube1 =
+  document.getElementById("cube1");
+
+const cube2 =
+  document.getElementById("cube2");
+
+const statusEl =
+  document.getElementById("status");
+
+const loading =
+  document.getElementById("loading");
+
+
+/* =========================
+   CAMERA STATE
+========================= */
 
 let cameraStream = null;
+
 let running = false;
 
 let dualMode = false;
+
+
+/* =========================
+   CUBE STATES
+========================= */
 
 const state1 = {
   x:50,
@@ -279,54 +523,134 @@ const state2 = {
 };
 
 let target1 = {...state1};
+
 let target2 = {...state2};
 
+
+/* =========================
+   HELPERS
+========================= */
+
 function lerp(a,b,t){
+
   return a+(b-a)*t;
+
 }
 
-function smoothState(current,target,s=.28){
-  current.x = lerp(current.x,target.x,s);
-  current.y = lerp(current.y,target.y,s);
-  current.rx = lerp(current.rx,target.rx,s);
-  current.ry = lerp(current.ry,target.ry,s);
-  current.rz = lerp(current.rz,target.rz,s);
-  current.scale = lerp(current.scale,target.scale,s);
+
+function smoothState(
+  current,
+  target,
+  speed=.30
+){
+
+  current.x =
+    lerp(current.x,target.x,speed);
+
+  current.y =
+    lerp(current.y,target.y,speed);
+
+  current.rx =
+    lerp(current.rx,target.rx,speed);
+
+  current.ry =
+    lerp(current.ry,target.ry,speed);
+
+  current.rz =
+    lerp(current.rz,target.rz,speed);
+
+  current.scale =
+    lerp(current.scale,target.scale,speed);
 }
 
-function applyCube(el,state){
-  el.style.transform =
-    `translate(-50%,-50%)
-     translate(${state.x - 50}vw,${state.y - 50}vh)
-     rotateX(${state.rx}deg)
-     rotateY(${state.ry}deg)
-     rotateZ(${state.rz}deg)
-     scale3d(${state.scale},${state.scale},${state.scale})`;
+
+/* =========================
+   RENDER CUBE
+========================= */
+
+function applyCube(
+  element,
+  state
+){
+
+  element.style.transform =
+    `
+    translate(-50%,-50%)
+    translate(
+      ${state.x-50}vw,
+      ${state.y-50}vh
+    )
+    rotateX(${state.rx}deg)
+    rotateY(${state.ry}deg)
+    rotateZ(${state.rz}deg)
+    scale3d(
+      ${state.scale},
+      ${state.scale},
+      ${state.scale}
+    )
+    `;
 }
+
+
+/* =========================
+   ANIMATION LOOP
+========================= */
 
 function render(){
-  smoothState(state1,target1,.30);
-  smoothState(state2,target2,.30);
 
-  applyCube(cube1,state1);
-  applyCube(cube2,state2);
+  smoothState(
+    state1,
+    target1,
+    .30
+  );
+
+  smoothState(
+    state2,
+    target2,
+    .30
+  );
+
+  applyCube(
+    cube1,
+    state1
+  );
+
+  applyCube(
+    cube2,
+    state2
+  );
 
   requestAnimationFrame(render);
 }
 
 render();
 
+
+/* =========================
+   STATUS
+========================= */
+
 function setStatus(text){
-  statusEl.textContent = text;
+
+  statusEl.textContent=text;
+
 }
 
+
+/* =========================
+   RESET
+========================= */
+
 function resetCube(){
-  dualMode = false;
 
-  cube1.style.display = "block";
-  cube2.style.display = "none";
+  dualMode=false;
 
-  target1 = {
+  cube1.style.display="block";
+
+  cube2.style.display="none";
+
+
+  target1={
     x:50,
     y:50,
     rx:0,
@@ -335,7 +659,8 @@ function resetCube(){
     scale:1
   };
 
-  target2 = {
+
+  target2={
     x:50,
     y:50,
     rx:0,
@@ -344,6 +669,7 @@ function resetCube(){
     scale:.5
   };
 
+
   state1.x=50;
   state1.y=50;
   state1.rx=0;
@@ -351,100 +677,374 @@ function resetCube(){
   state1.rz=0;
   state1.scale=1;
 
-  setStatus("SYSTEM READY");
+
+  state2.x=50;
+  state2.y=50;
+  state2.rx=0;
+  state2.ry=0;
+  state2.rz=0;
+  state2.scale=.5;
+
+
+  setStatus(
+    "SYSTEM READY"
+  );
+
 }
 
-function splitCubes(handA,handB){
 
-  if(dualMode) return;
+/* =========================
+   PALM DATA
+========================= */
+
+function getPalmData(points){
+
+  const wrist =
+    points[0];
+
+  const indexMCP =
+    points[5];
+
+  const middleMCP =
+    points[9];
+
+  const ringMCP =
+    points[13];
+
+  const pinkyMCP =
+    points[17];
+
+
+  const cx =
+    (
+      wrist.x+
+      indexMCP.x+
+      middleMCP.x+
+      ringMCP.x+
+      pinkyMCP.x
+    )/5;
+
+
+  const cy =
+    (
+      wrist.y+
+      indexMCP.y+
+      middleMCP.y+
+      ringMCP.y+
+      pinkyMCP.y
+    )/5;
+
+
+  /* Mirror camera coordinates */
+
+  const x =
+    (1-cx)*100;
+
+  const y =
+    cy*100;
+
+
+  /* Palm horizontal direction */
+
+  const acrossX =
+    pinkyMCP.x-
+    indexMCP.x;
+
+  const acrossY =
+    pinkyMCP.y-
+    indexMCP.y;
+
+
+  /* Palm upward direction */
+
+  const upX =
+    middleMCP.x-
+    wrist.x;
+
+  const upY =
+    middleMCP.y-
+    wrist.y;
+
+
+  /* Palm normal */
+
+  const normalX =
+    acrossY*upX;
+
+  const normalY =
+    -acrossX*upY;
+
+  const normalZ =
+    acrossX*upY-
+    acrossY*upX;
+
+
+  const roll =
+    Math.atan2(
+      acrossY,
+      acrossX
+    )*180/Math.PI;
+
+
+  const yaw =
+    Math.atan2(
+      normalX,
+      Math.abs(normalZ)
+    )*180/Math.PI;
+
+
+  const pitch =
+    Math.atan2(
+      normalY,
+      Math.abs(normalZ)
+    )*180/Math.PI;
+
+
+  return {
+    x,
+    y,
+    roll,
+    yaw,
+    pitch
+  };
+
+}
+
+
+/* =========================
+   PINCH DETECTION
+========================= */
+
+function isPinching(points){
+
+  const thumb =
+    points[4];
+
+  const index =
+    points[8];
+
+
+  const dx =
+    thumb.x-index.x;
+
+  const dy =
+    thumb.y-index.y;
+
+
+  const fingerDistance =
+    Math.sqrt(
+      dx*dx+
+      dy*dy
+    );
+
+
+  const wrist =
+    points[0];
+
+  const middle =
+    points[9];
+
+
+  const px =
+    wrist.x-middle.x;
+
+  const py =
+    wrist.y-middle.y;
+
+
+  const palmSize =
+    Math.sqrt(
+      px*px+
+      py*py
+    );
+
+
+  if(palmSize===0)
+    return false;
+
+
+  return (
+    fingerDistance/palmSize
+  ) < .48;
+
+}
+
+
+/* =========================
+   HAND DISTANCE
+========================= */
+
+function distanceBetween(a,b){
+
+  const dx =
+    a.x-b.x;
+
+  const dy =
+    a.y-b.y;
+
+  return Math.sqrt(
+    dx*dx+
+    dy*dy
+  )/100;
+
+}
+
+
+/* =========================
+   SINGLE HAND
+========================= */
+
+function updateSingleHand(hand){
+
+  target1.x =
+    hand.x;
+
+  target1.y =
+    hand.y;
+
+  target1.rx =
+    hand.pitch;
+
+  target1.ry =
+    hand.yaw;
+
+  target1.rz =
+    hand.roll;
+
+  target1.scale=1;
+
+
+  setStatus(
+    "ONE HAND · 3D CONTROL"
+  );
+
+}
+
+
+/* =========================
+   SPLIT
+========================= */
+
+function splitCubes(a,b){
+
+  if(dualMode)
+    return;
+
 
   /*
-    IMPORTANT V7 FIX:
+    IMPORTANT:
 
-    The original cube is NOT resized.
-
-    It remains a full-size cube until this exact
+    The original cube remains
+    FULL SIZE until this exact
     split moment.
 
-    Then it is hidden FIRST.
+    We NEVER shrink it.
 
-    Only after that are the two half-size cubes shown.
+    We hide it first.
   */
 
-  cube1.style.display = "none";
-  cube2.style.display = "block";
+  cube1.style.display="none";
 
-  dualMode = true;
 
-  target1.scale = .5;
-  target2.scale = .5;
+  dualMode=true;
 
-  target1.x = handA.x;
-  target1.y = handA.y;
 
-  target2.x = handB.x;
-  target2.y = handB.y;
+  /* Show both half cubes */
 
-  target1.rx = handA.pitch;
-  target1.ry = handA.yaw;
-  target1.rz = handA.roll;
+  cube2.style.display="block";
 
-  target2.rx = handB.pitch;
-  target2.ry = handB.yaw;
-  target2.rz = handB.roll;
+
+  target1={
+    x:a.x,
+    y:a.y,
+    rx:a.pitch,
+    ry:a.yaw,
+    rz:a.roll,
+    scale:.5
+  };
+
+
+  target2={
+    x:b.x,
+    y:b.y,
+    rx:b.pitch,
+    ry:b.yaw,
+    rz:b.roll,
+    scale:.5
+  };
+
 
   /*
-    Instantly synchronize the hidden cube states
-    so no tiny single cube can flash on screen.
+    Synchronize immediately.
+
+    This prevents a small single cube
+    from flashing during the transition.
   */
 
-  state1.x = target1.x;
-  state1.y = target1.y;
-  state1.rx = target1.rx;
-  state1.ry = target1.ry;
-  state1.rz = target1.rz;
-  state1.scale = .5;
+  state1.x=a.x;
+  state1.y=a.y;
+  state1.rx=a.pitch;
+  state1.ry=a.yaw;
+  state1.rz=a.roll;
+  state1.scale=.5;
 
-  state2.x = target2.x;
-  state2.y = target2.y;
-  state2.rx = target2.rx;
-  state2.ry = target2.ry;
-  state2.rz = target2.rz;
-  state2.scale = .5;
 
-  setStatus("HOLOGRAM SPLIT · 2 CUBES");
+  state2.x=b.x;
+  state2.y=b.y;
+  state2.rx=b.pitch;
+  state2.ry=b.yaw;
+  state2.rz=b.roll;
+  state2.scale=.5;
+
+
+  setStatus(
+    "HOLOGRAM SPLIT · 2 CUBES"
+  );
+
 }
+
+
+/* =========================
+   MERGE
+========================= */
 
 function mergeCubes(){
 
-  if(!dualMode) return;
+  if(!dualMode)
+    return;
+
+
+  const x =
+    (state1.x+
+     state2.x)/2;
+
+  const y =
+    (state1.y+
+     state2.y)/2;
+
+  const rx =
+    (state1.rx+
+     state2.rx)/2;
+
+  const ry =
+    (state1.ry+
+     state2.ry)/2;
+
+  const rz =
+    (state1.rz+
+     state2.rz)/2;
+
 
   /*
-    First calculate the final merged position.
+    Hide second cube first.
   */
 
-  const x = (state1.x + state2.x) / 2;
-  const y = (state1.y + state2.y) / 2;
+  cube2.style.display="none";
 
-  const rx = (state1.rx + state2.rx) / 2;
-  const ry = (state1.ry + state2.ry) / 2;
-  const rz = (state1.rz + state2.rz) / 2;
 
   /*
-    Hide the second cube BEFORE showing the
-    full-size original cube.
+    Prepare FULL SIZE cube.
   */
-
-  cube2.style.display = "none";
-
-  target1 = {
-    x:x,
-    y:y,
-    rx:rx,
-    ry:ry,
-    rz:rz,
-    scale:1
-  };
 
   state1.x=x;
   state1.y=y;
@@ -453,165 +1053,96 @@ function mergeCubes(){
   state1.rz=rz;
   state1.scale=1;
 
+
+  target1={
+    x:x,
+    y:y,
+    rx:rx,
+    ry:ry,
+    rz:rz,
+    scale:1
+  };
+
+
   /*
-    Now show exactly one full-size cube.
+    Now show exactly one
+    full-size cube.
   */
 
-  cube1.style.display = "block";
+  cube1.style.display="block";
 
-  dualMode = false;
 
-  setStatus("HOLOGRAM MERGED · 1 CUBE");
+  dualMode=false;
+
+
+  setStatus(
+    "HOLOGRAM MERGED · 1 CUBE"
+  );
+
 }
 
-function getPalmData(p){
 
-  const wrist = p[0];
-  const indexMCP = p[5];
-  const middleMCP = p[9];
-  const ringMCP = p[13];
-  const pinkyMCP = p[17];
-
-  const cx =
-    (wrist.x +
-     indexMCP.x +
-     middleMCP.x +
-     ringMCP.x +
-     pinkyMCP.x) / 5;
-
-  const cy =
-    (wrist.y +
-     indexMCP.y +
-     middleMCP.y +
-     ringMCP.y +
-     pinkyMCP.y) / 5;
-
-  const mirrorX = 1-cx;
-
-  const acrossX = pinkyMCP.x-indexMCP.x;
-  const acrossY = pinkyMCP.y-indexMCP.y;
-
-  const upX = middleMCP.x-wrist.x;
-  const upY = middleMCP.y-wrist.y;
-
-  const normalX =
-    acrossY*upX -
-    0*upY;
-
-  const normalY =
-    0*upX -
-    acrossX*upY;
-
-  const normalZ =
-    acrossX*upY -
-    acrossY*upX;
-
-  const roll =
-    Math.atan2(acrossY,acrossX)*180/Math.PI;
-
-  const yaw =
-    Math.atan2(normalX,Math.abs(normalZ))*180/Math.PI;
-
-  const pitch =
-    Math.atan2(normalY,Math.abs(normalZ))*180/Math.PI;
-
-  const dx = middleMCP.x-wrist.x;
-  const dy = middleMCP.y-wrist.y;
-
-  const palmSize =
-    Math.sqrt(dx*dx+dy*dy);
-
-  return {
-    x:mirrorX*100,
-    y:cy*100,
-    roll:roll,
-    yaw:yaw,
-    pitch:pitch,
-    palmSize:palmSize
-  };
-}
-
-function isPinching(p){
-
-  const thumb=p[4];
-  const index=p[8];
-
-  const dx=thumb.x-index.x;
-  const dy=thumb.y-index.y;
-
-  const distance=Math.sqrt(dx*dx+dy*dy);
-
-  const wrist=p[0];
-  const middle=p[9];
-
-  const px=wrist.x-middle.x;
-  const py=wrist.y-middle.y;
-
-  const palm=Math.sqrt(px*px+py*py);
-
-  return distance/palm < .48;
-}
-
-function distanceBetween(a,b){
-
-  const dx=a.x-b.x;
-  const dy=a.y-b.y;
-
-  return Math.sqrt(dx*dx+dy*dy);
-}
-
-function updateSingleHand(hand){
-
-  target1.x=hand.x;
-  target1.y=hand.y;
-
-  target1.rx=hand.pitch;
-  target1.ry=hand.yaw;
-  target1.rz=hand.roll;
-
-  target1.scale=1;
-
-  setStatus("ONE HAND · 3D CONTROL");
-}
+/* =========================
+   TWO HAND CONTROL
+========================= */
 
 function updateDualHands(a,b){
 
-  const d=distanceBetween(a,b);
+  const distance =
+    distanceBetween(a,b);
+
 
   /*
-    Not both pinching:
-    absolutely nothing happens.
+    Two hands but not both
+    pinching = NOTHING CHANGES.
   */
 
-  if(!a.pinching || !b.pinching){
+  if(
+    !a.pinching ||
+    !b.pinching
+  ){
 
-    setStatus("TWO HANDS · WAITING");
+    setStatus(
+      "TWO HANDS · WAITING"
+    );
 
     return;
   }
 
+
   /*
-    Both pinching and hands move apart.
+    Both pinch + move apart.
   */
 
-  if(!dualMode && d > .18){
+  if(
+    !dualMode &&
+    distance>.18
+  ){
 
     splitCubes(a,b);
+
     return;
   }
 
+
   /*
-    Already split and hands come together.
+    Both pinching + bring together.
   */
 
-  if(dualMode && d < .14){
+  if(
+    dualMode &&
+    distance<.14
+  ){
 
     mergeCubes();
+
     return;
   }
 
+
   /*
-    Two independent half-size cubes.
+    Two half-size cubes follow
+    their respective palms.
   */
 
   if(dualMode){
@@ -625,6 +1156,7 @@ function updateDualHands(a,b){
 
     target1.scale=.5;
 
+
     target2.x=b.x;
     target2.y=b.y;
 
@@ -634,176 +1166,398 @@ function updateDualHands(a,b){
 
     target2.scale=.5;
 
-    setStatus("2 CUBES · HAND LINK ACTIVE");
 
-  }else{
+    setStatus(
+      "2 CUBES · HAND LINK ACTIVE"
+    );
 
-    setStatus("BOTH PINCHING · MOVE APART");
   }
+  else{
+
+    setStatus(
+      "BOTH PINCHING · MOVE APART"
+    );
+
+  }
+
 }
 
-const hands = new Hands({
-  locateFile:(file)=>{
-    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-  }
-});
+
+/* =========================
+   MEDIAPIPE
+========================= */
+
+const hands =
+  new Hands({
+    locateFile:(file)=>{
+      return (
+        "https://cdn.jsdelivr.net/npm/" +
+        "@mediapipe/hands/" +
+        file
+      );
+    }
+  });
+
 
 hands.setOptions({
+
   maxNumHands:2,
+
   modelComplexity:1,
+
   minDetectionConfidence:.6,
+
   minTrackingConfidence:.6
+
 });
 
-hands.onResults(results=>{
 
-  if(!running) return;
+hands.onResults(
+  results=>{
 
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
+    if(!running)
+      return;
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  const landmarks=results.multiHandLandmarks || [];
+    const landmarks =
+      results.multiHandLandmarks ||
+      [];
 
-  if(landmarks.length===0){
 
-    setStatus("SEARCHING FOR HAND");
+    if(
+      landmarks.length===0
+    ){
 
-    return;
-  }
+      setStatus(
+        "SEARCHING FOR HAND"
+      );
 
-  const detected=[];
-
-  for(let i=0;i<landmarks.length;i++){
-
-    const hand=getPalmData(landmarks[i]);
-
-    hand.pinching=isPinching(landmarks[i]);
-
-    detected.push(hand);
-  }
-
-  if(detected.length===1){
-
-    /*
-      If we were split and one hand disappears,
-      immediately return to one full cube.
-    */
-
-    if(dualMode){
-
-      mergeCubes();
+      return;
     }
 
-    updateSingleHand(detected[0]);
 
-    return;
+    const detected=[];
+
+
+    for(
+      let i=0;
+      i<landmarks.length;
+      i++
+    ){
+
+      const hand =
+        getPalmData(
+          landmarks[i]
+        );
+
+
+      hand.pinching =
+        isPinching(
+          landmarks[i]
+        );
+
+
+      detected.push(hand);
+    }
+
+
+    /*
+      ONE HAND
+    */
+
+    if(
+      detected.length===1
+    ){
+
+      if(dualMode){
+
+        mergeCubes();
+
+      }
+
+      updateSingleHand(
+        detected[0]
+      );
+
+      return;
+    }
+
+
+    /*
+      TWO HANDS
+    */
+
+    if(
+      detected.length>=2
+    ){
+
+      updateDualHands(
+        detected[0],
+        detected[1]
+      );
+
+    }
+
   }
+);
 
-  if(detected.length>=2){
 
-    updateDualHands(
-      detected[0],
-      detected[1]
-    );
-  }
-});
+/* =========================
+   START CAMERA
+========================= */
 
 async function startCamera(){
 
-  if(running) return;
+  if(running)
+    return;
+
 
   try{
 
-    loading.classList.remove("hidden");
+    loading.classList.remove(
+      "hidden"
+    );
+
 
     cameraStream =
-      await navigator.mediaDevices.getUserMedia({
+      await navigator.mediaDevices
+      .getUserMedia({
+
         video:{
           facingMode:"user",
-          width:{ideal:1280},
-          height:{ideal:720}
+
+          width:{
+            ideal:1280
+          },
+
+          height:{
+            ideal:720
+          }
         },
+
         audio:false
+
       });
 
-    video.srcObject=cameraStream;
+
+    video.srcObject =
+      cameraStream;
+
 
     await video.play();
 
+
     running=true;
 
-    loading.classList.add("hidden");
 
-    setStatus("CAMERA ONLINE");
+    loading.classList.add(
+      "hidden"
+    );
+
+
+    setStatus(
+      "CAMERA ONLINE"
+    );
+
 
     processVideo();
 
+
   }catch(error){
 
-    loading.classList.add("hidden");
+    loading.classList.add(
+      "hidden"
+    );
 
-    setStatus("CAMERA ERROR");
+
+    setStatus(
+      "CAMERA ERROR"
+    );
+
 
     alert(
-      "Camera could not start.\n\n" +
+      "Camera could not start.\n\n"+
       error.message
     );
+
   }
+
 }
+
+
+/* =========================
+   PROCESS CAMERA
+========================= */
 
 async function processVideo(){
 
-  if(!running) return;
+  if(!running)
+    return;
+
 
   if(video.readyState>=2){
 
-    await hands.send({
-      image:video
-    });
+    try{
+
+      await hands.send({
+        image:video
+      });
+
+    }catch(error){
+
+      console.log(
+        "Hand tracking error:",
+        error
+      );
+
+    }
+
   }
 
-  requestAnimationFrame(processVideo);
+
+  requestAnimationFrame(
+    processVideo
+  );
+
 }
+
+
+/* =========================
+   STOP CAMERA
+========================= */
 
 function stopCamera(){
 
   running=false;
 
+
   if(cameraStream){
 
-    cameraStream.getTracks().forEach(
-      track=>track.stop()
-    );
+    cameraStream
+      .getTracks()
+      .forEach(
+        track=>track.stop()
+      );
 
     cameraStream=null;
+
   }
+
 
   video.srcObject=null;
 
-  setStatus("CAMERA OFF");
+
+  setStatus(
+    "CAMERA OFF"
+  );
+
 }
 
-document.getElementById("startBtn")
-  .addEventListener("click",startCamera);
 
-document.getElementById("stopBtn")
-  .addEventListener("click",stopCamera);
+/* =========================
+   BUTTON EVENTS
+========================= */
 
-document.getElementById("resetBtn")
-  .addEventListener("click",resetCube);
+document
+  .getElementById("startBtn")
+  .addEventListener(
+    "click",
+    startCamera
+  );
 
-window.addEventListener("resize",()=>{
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-});
+
+document
+  .getElementById("stopBtn")
+  .addEventListener(
+    "click",
+    stopCamera
+  );
+
+
+document
+  .getElementById("resetBtn")
+  .addEventListener(
+    "click",
+    resetCube
+  );
+
+
+/* Mobile touch backup */
+
+document
+  .getElementById("startBtn")
+  .addEventListener(
+    "touchend",
+    event=>{
+      event.preventDefault();
+      startCamera();
+    },
+    {passive:false}
+  );
+
+
+document
+  .getElementById("stopBtn")
+  .addEventListener(
+    "touchend",
+    event=>{
+      event.preventDefault();
+      stopCamera();
+    },
+    {passive:false}
+  );
+
+
+document
+  .getElementById("resetBtn")
+  .addEventListener(
+    "touchend",
+    event=>{
+      event.preventDefault();
+      resetCube();
+    },
+    {passive:false}
+  );
+
+
+/* =========================
+   RESIZE
+========================= */
+
+window.addEventListener(
+  "resize",
+  ()=>{
+    canvas.width =
+      window.innerWidth;
+
+    canvas.height =
+      window.innerHeight;
+  }
+);
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+canvas.width =
+  window.innerWidth;
+
+canvas.height =
+  window.innerHeight;
 
 resetCube();
 
-setTimeout(()=>{
-  loading.classList.add("hidden");
-},1200);
+
+setTimeout(
+  ()=>{
+    loading.classList.add(
+      "hidden"
+    );
+  },
+  1200
+);
+
 </script>
 
 </body>
