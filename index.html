@@ -3,147 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SARVESH HOLO V1</title>
+<title>SARVESH HOLO V2</title>
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  min-height:100vh;
-  background:#030712;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  overflow:hidden;
-}
-.app{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-header{
-  padding:18px 20px;
-  border-bottom:1px solid #1e293b;
-  background:#050b16;
-}
-.logo{
-  font-size:22px;
-  font-weight:700;
-  letter-spacing:2px;
-}
-.sub{
-  color:#64748b;
-  font-size:12px;
-  margin-top:4px;
-  letter-spacing:1px;
-}
-.status{
-  margin-top:10px;
-  display:inline-block;
-  padding:6px 10px;
-  border:1px solid #334155;
-  border-radius:20px;
-  font-size:12px;
-  color:#94a3b8;
-}
-main{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-.lab{
-  width:min(900px,100%);
-}
-.scene{
-  height:min(65vh,560px);
-  min-height:360px;
-  position:relative;
-  overflow:hidden;
-  border:1px solid #1e293b;
-  border-radius:24px;
-  background:
-    radial-gradient(circle at center,rgba(59,130,246,.12),transparent 35%),
-    radial-gradient(circle at center,#111827,#030712 70%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.grid{
-  position:absolute;
-  width:150%;
-  height:70%;
-  bottom:-20%;
-  background:
-    linear-gradient(#1e3a5f 1px,transparent 1px),
-    linear-gradient(90deg,#1e3a5f 1px,transparent 1px);
-  background-size:35px 35px;
-  transform:perspective(180px) rotateX(60deg);
-  opacity:.35;
-}
-.holo{
-  width:120px;
-  height:120px;
-  position:relative;
-  transform-style:preserve-3d;
-  animation:float 3s ease-in-out infinite;
-}
-.face{
-  position:absolute;
-  width:120px;
-  height:120px;
-  border:2px solid #60a5fa;
-  background:rgba(59,130,246,.06);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  color:#93c5fd;
-  box-shadow:0 0 18px rgba(59,130,246,.18);
-}
-.front{transform:translateZ(60px)}
-.back{transform:rotateY(180deg) translateZ(60px)}
-.right{transform:rotateY(90deg) translateZ(60px)}
-.left{transform:rotateY(-90deg) translateZ(60px)}
-.top{transform:rotateX(90deg) translateZ(60px)}
-.bottom{transform:rotateX(-90deg) translateZ(60px)}
 
-@keyframes float{
-  0%,100%{transform:translateY(-8px) rotateX(10deg) rotateY(25deg)}
-  50%{transform:translateY(8px) rotateX(-10deg) rotateY(205deg)}
+body{
+margin:0;
+background:#030712;
+color:#fff;
+font-family:Arial,sans-serif;
 }
+
+.app{
+min-height:100vh;
+padding:16px;
+}
+
+header{
+max-width:1000px;
+margin:auto;
+padding:16px 0;
+border-bottom:1px solid #1e293b;
+}
+
+.logo{
+font-size:23px;
+font-weight:700;
+letter-spacing:2px;
+}
+
+.sub{
+margin-top:5px;
+font-size:12px;
+color:#64748b;
+letter-spacing:1px;
+}
+
+.status{
+display:inline-block;
+margin-top:10px;
+padding:6px 10px;
+border:1px solid #334155;
+border-radius:20px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.lab{
+max-width:1000px;
+margin:18px auto;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.panel{
+border:1px solid #1e293b;
+border-radius:20px;
+background:#070d18;
+padding:14px;
+}
+
+.title{
+font-size:14px;
+font-weight:bold;
+margin-bottom:10px;
+color:#cbd5e1;
+}
+
+.camera{
+position:relative;
+width:100%;
+aspect-ratio:4/3;
+background:#020617;
+border-radius:14px;
+overflow:hidden;
+}
+
+video{
+width:100%;
+height:100%;
+object-fit:cover;
+transform:scaleX(-1);
+display:block;
+}
+
+canvas{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+transform:scaleX(-1);
+}
+
+.scene{
+height:100%;
+min-height:300px;
+position:relative;
+overflow:hidden;
+border-radius:14px;
+background:
+radial-gradient(circle at center,rgba(59,130,246,.13),transparent 35%),
+#020617;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.grid{
+position:absolute;
+width:160%;
+height:65%;
+bottom:-18%;
+background:
+linear-gradient(#1e3a5f 1px,transparent 1px),
+linear-gradient(90deg,#1e3a5f 1px,transparent 1px);
+background-size:30px 30px;
+transform:perspective(160px) rotateX(60deg);
+opacity:.35;
+}
+
+.holo{
+width:110px;
+height:110px;
+position:relative;
+transform-style:preserve-3d;
+transition:transform .12s linear;
+}
+
+.face{
+position:absolute;
+width:110px;
+height:110px;
+border:2px solid #60a5fa;
+background:rgba(59,130,246,.06);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:10px;
+color:#93c5fd;
+box-shadow:0 0 18px rgba(59,130,246,.18);
+}
+
+.front{transform:translateZ(55px)}
+.back{transform:rotateY(180deg) translateZ(55px)}
+.right{transform:rotateY(90deg) translateZ(55px)}
+.left{transform:rotateY(-90deg) translateZ(55px)}
+.top{transform:rotateX(90deg) translateZ(55px)}
+.bottom{transform:rotateX(-90deg) translateZ(55px)}
 
 .controls{
-  margin-top:14px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+max-width:1000px;
+margin:0 auto;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
 }
+
 button{
-  border:1px solid #334155;
-  background:#0f172a;
-  color:#e2e8f0;
-  border-radius:12px;
-  padding:14px;
-  font-size:14px;
+border:1px solid #334155;
+background:#0f172a;
+color:#e2e8f0;
+border-radius:12px;
+padding:13px 18px;
+font-size:14px;
 }
+
 button:active{
-  transform:scale(.98);
-  background:#172033;
+transform:scale(.98);
 }
+
 .info{
-  margin-top:12px;
-  padding:14px;
-  border:1px solid #1e293b;
-  border-radius:14px;
-  background:#070d18;
-  color:#94a3b8;
-  font-size:13px;
-  line-height:1.6;
+max-width:1000px;
+margin:14px auto;
+padding:14px;
+border:1px solid #1e293b;
+border-radius:14px;
+background:#070d18;
+color:#94a3b8;
+font-size:13px;
+line-height:1.6;
 }
-@media(max-width:600px){
-  .scene{height:58vh;min-height:330px}
-  .controls{grid-template-columns:1fr}
+
+@media(max-width:700px){
+.lab{
+grid-template-columns:1fr;
+}
 }
 </style>
 </head>
@@ -153,13 +199,29 @@ button:active{
 <div class="app">
 
 <header>
-  <div class="logo">SARVESH HOLO</div>
-  <div class="sub">TOUCHLESS 3D INTERFACE · V1</div>
-  <div class="status" id="status">● SYSTEM READY</div>
+<div class="logo">SARVESH HOLO</div>
+<div class="sub">TOUCHLESS 3D INTERFACE · V2</div>
+<div class="status" id="status">● CAMERA OFF</div>
 </header>
 
-<main>
 <div class="lab">
+
+<div class="panel">
+
+<div class="title">HAND SENSOR</div>
+
+<div class="camera">
+
+<video id="video" autoplay playsinline muted></video>
+<canvas id="canvas"></canvas>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="title">VIRTUAL HOLOGRAM</div>
 
 <div class="scene">
 
@@ -178,76 +240,143 @@ button:active{
 
 </div>
 
+</div>
+
+</div>
+
 <div class="controls">
 
-<button onclick="activate()">ACTIVATE</button>
-<button onclick="rotate()">ROTATE</button>
-<button onclick="resetHolo()">RESET</button>
+<button id="start">START CAMERA</button>
+<button id="stop">STOP CAMERA</button>
+<button id="reset">RESET</button>
 
 </div>
 
 <div class="info" id="info">
-V1 laboratory initialized.<br>
-Next stage: camera-based hand tracking and touchless gestures.
+Camera is currently off.<br>
+Start the camera to begin the touchless-control experiment.
 </div>
-
-</div>
-</main>
 
 </div>
 
 <script>
 
-const holo=document.getElementById("holo");
+const video=document.getElementById("video");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+const start=document.getElementById("start");
+const stop=document.getElementById("stop");
+const reset=document.getElementById("reset");
+
 const status=document.getElementById("status");
 const info=document.getElementById("info");
+const holo=document.getElementById("holo");
 
-let angle=25;
-let active=true;
+let stream=null;
+let running=false;
 
-function activate(){
+async function startCamera(){
 
-active=!active;
+try{
 
-if(active){
+stream=await navigator.mediaDevices.getUserMedia({
+video:{
+facingMode:"user",
+width:{ideal:640},
+height:{ideal:480}
+},
+audio:false
+});
 
-holo.style.opacity="1";
-status.textContent="● HOLOGRAM ACTIVE";
-info.innerHTML="Hologram activated.<br>Next stage will allow your hand to control it.";
+video.srcObject=stream;
 
-}else{
+running=true;
 
-holo.style.opacity=".15";
-status.textContent="● HOLOGRAM STANDBY";
-info.innerHTML="Hologram is in standby mode.";
+status.textContent="● CAMERA ACTIVE";
+
+info.innerHTML=
+"Camera is active.<br>"+
+"Move your hand in front of the camera.<br>"+
+"Hand tracking will be added to the next stage.";
+
+resizeCanvas();
+
+}catch(error){
+
+status.textContent="● CAMERA ERROR";
+
+info.innerHTML=
+"Camera could not be started.<br>"+
+error.name+": "+error.message;
+
+}
 
 }
 
-}
+function stopCamera(){
 
-function rotate(){
+running=false;
 
-angle+=45;
+if(stream){
 
-holo.style.animation="none";
-holo.style.transform="rotateY("+angle+"deg) rotateX(12deg)";
+stream.getTracks().forEach(track=>track.stop());
 
-status.textContent="● ROTATION COMMAND";
-info.innerHTML="Rotation command received.<br>Later your hand movement will replace this button.";
+stream=null;
 
 }
 
-function resetHolo(){
+video.srcObject=null;
 
-angle=25;
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-holo.style.animation="float 3s ease-in-out infinite";
+status.textContent="● CAMERA OFF";
 
-status.textContent="● SYSTEM READY";
-
-info.innerHTML="Laboratory reset.<br>Ready for touchless control.";
+info.innerHTML=
+"Camera stopped.<br>"+
+"Tap START CAMERA to begin again.";
 
 }
+
+function resizeCanvas(){
+
+canvas.width=video.videoWidth||640;
+canvas.height=video.videoHeight||480;
+
+}
+
+function drawTest(){
+
+if(!running)return;
+
+resizeCanvas();
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+requestAnimationFrame(drawTest);
+
+}
+
+start.addEventListener("click",startCamera);
+
+stop.addEventListener("click",stopCamera);
+
+reset.addEventListener("click",()=>{
+
+holo.style.transform=
+"rotateX(10deg) rotateY(25deg)";
+
+info.innerHTML=
+"System reset.<br>"+
+"Ready for touchless control.";
+
+});
+
+video.addEventListener("loadeddata",()=>{
+
+drawTest();
+
+});
 
 </script>
 
