@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>SARVESH HOLO V8</title>
+<title>SARVESH HOLO V9</title>
 
 <style>
 *{
@@ -17,7 +17,7 @@ html,body{
   height:100%;
   overflow:hidden;
   background:#02040a;
-  color:white;
+  color:#fff;
   font-family:Arial,sans-serif;
   touch-action:none;
 }
@@ -45,7 +45,7 @@ html,body{
   pointer-events:none;
 }
 
-/* HAND LANDMARK CANVAS */
+/* CANVAS */
 #canvas{
   position:fixed;
   inset:0;
@@ -64,11 +64,12 @@ html,body{
   pointer-events:none;
 }
 
-/* CUBES */
+/* CUBE */
 .cube{
   position:absolute;
   width:160px;
   height:160px;
+
   left:50%;
   top:50%;
 
@@ -76,12 +77,16 @@ html,body{
     translate(-50%,-50%);
 
   transform-style:preserve-3d;
+
   pointer-events:none;
+
   will-change:transform;
 }
 
+/* CUBE FACES */
 .face{
   position:absolute;
+
   width:160px;
   height:160px;
 
@@ -120,22 +125,23 @@ html,body{
   transform:rotateX(-90deg) translateZ(80px);
 }
 
-/* SECOND CUBE */
-#cube2{
-  display:none;
-}
 
+/* SECOND CUBE = PURPLE */
 #cube2 .face{
-  border-color:rgba(180,80,255,.95);
+  border-color:rgba(190,90,255,.98);
+
+  background:rgba(160,60,255,.055);
 
   box-shadow:
-    inset 0 0 25px rgba(180,80,255,.12),
-    0 0 18px rgba(180,80,255,.18);
+    inset 0 0 25px rgba(180,70,255,.12),
+    0 0 18px rgba(180,70,255,.22);
 }
 
-/* TOP HUD */
+
+/* HUD */
 #hud{
   position:fixed;
+
   top:16px;
   left:16px;
   right:16px;
@@ -178,7 +184,8 @@ html,body{
   text-align:right;
 }
 
-/* INFORMATION */
+
+/* INFO */
 #info{
   position:fixed;
 
@@ -202,7 +209,8 @@ html,body{
   pointer-events:none;
 }
 
-/* MOBILE CONTROL BAR */
+
+/* BUTTONS */
 #controls{
   position:fixed;
 
@@ -227,7 +235,7 @@ html,body{
   border:1px solid rgba(0,220,255,.25);
   border-radius:15px;
 
-  background:rgba(0,8,16,.88);
+  background:rgba(0,8,16,.92);
 
   box-shadow:
     0 0 20px rgba(0,180,255,.12);
@@ -238,10 +246,6 @@ html,body{
 }
 
 #controls button{
-  position:relative;
-
-  z-index:10000;
-
   min-width:96px;
   min-height:44px;
 
@@ -266,8 +270,6 @@ html,body{
   touch-action:manipulation;
 
   -webkit-tap-highlight-color:transparent;
-
-  user-select:none;
 }
 
 #controls button:active{
@@ -275,6 +277,7 @@ html,body{
 
   background:rgba(0,80,110,.9);
 }
+
 
 /* LOADING */
 #loading{
@@ -302,7 +305,8 @@ html,body{
   display:none!important;
 }
 
-/* SMALL PHONES */
+
+/* MOBILE */
 @media(max-width:430px){
 
   .title{
@@ -318,7 +322,6 @@ html,body{
   #controls{
     bottom:12px;
     gap:5px;
-    padding:4px;
   }
 
   #controls button{
@@ -333,42 +336,10 @@ html,body{
     font-size:9px;
   }
 
-  .cube{
-    width:140px;
-    height:140px;
-  }
-
-  .face{
-    width:140px;
-    height:140px;
-  }
-
-  .front{
-    transform:translateZ(70px);
-  }
-
-  .back{
-    transform:rotateY(180deg) translateZ(70px);
-  }
-
-  .right{
-    transform:rotateY(90deg) translateZ(70px);
-  }
-
-  .left{
-    transform:rotateY(-90deg) translateZ(70px);
-  }
-
-  .top{
-    transform:rotateX(90deg) translateZ(70px);
-  }
-
-  .bottom{
-    transform:rotateX(-90deg) translateZ(70px);
-  }
 }
 </style>
 </head>
+
 
 <body>
 
@@ -383,9 +354,15 @@ html,body{
 
   <canvas id="canvas"></canvas>
 
+
   <div id="holoArea">
 
-    <!-- FULL-SIZE ORIGINAL CUBE -->
+    <!--
+      CUBE 1
+      CYAN
+      FULL SIZE BEFORE SPLIT
+    -->
+
     <div id="cube1" class="cube">
 
       <div class="face front"></div>
@@ -397,7 +374,13 @@ html,body{
 
     </div>
 
-    <!-- SECOND HALF-SIZE CUBE -->
+
+    <!--
+      CUBE 2
+      PURPLE
+      HIDDEN UNTIL SPLIT
+    -->
+
     <div id="cube2" class="cube">
 
       <div class="face front"></div>
@@ -411,15 +394,23 @@ html,body{
 
   </div>
 
+
   <!-- HUD -->
+
   <div id="hud">
 
     <div>
-      <div class="title">SARVESH HOLO</div>
-      <div class="subtitle">
-        TOUCHLESS 3D CONTROL · V8
+
+      <div class="title">
+        SARVESH HOLO
       </div>
+
+      <div class="subtitle">
+        TOUCHLESS 3D CONTROL · V9
+      </div>
+
     </div>
+
 
     <div id="status">
       SYSTEM READY
@@ -427,14 +418,17 @@ html,body{
 
   </div>
 
-  <!-- INFO -->
+
   <div id="info">
-    One hand: control cube · Two hands: nothing changes ·
-    Pinch both hands + move apart: split ·
-    Bring pinched hands together: merge
+    One hand: control cube ·
+    Two hands: nothing changes ·
+    Pinch both + move apart: split ·
+    Bring together: merge
   </div>
 
-  <!-- ALWAYS-ON-TOP TOUCH CONTROLS -->
+
+  <!-- TOUCH CONTROLS -->
+
   <div id="controls">
 
     <button id="startBtn">
@@ -451,6 +445,7 @@ html,body{
 
   </div>
 
+
   <div id="loading">
     INITIALIZING HOLOGRAM...
   </div>
@@ -463,9 +458,9 @@ html,body{
 
 <script>
 
-/* =========================
+/* =====================================================
    ELEMENTS
-========================= */
+===================================================== */
 
 const video =
   document.getElementById("camera");
@@ -489,22 +484,27 @@ const loading =
   document.getElementById("loading");
 
 
-/* =========================
-   CAMERA STATE
-========================= */
+/* =====================================================
+   CAMERA
+===================================================== */
 
-let cameraStream = null;
+let cameraStream=null;
 
-let running = false;
-
-let dualMode = false;
+let running=false;
 
 
-/* =========================
+/* =====================================================
+   HOLOGRAM MODE
+===================================================== */
+
+let dualMode=false;
+
+
+/* =====================================================
    CUBE STATES
-========================= */
+===================================================== */
 
-const state1 = {
+const state1={
   x:50,
   y:50,
   rx:0,
@@ -513,7 +513,7 @@ const state1 = {
   scale:1
 };
 
-const state2 = {
+const state2={
   x:50,
   y:50,
   rx:0,
@@ -522,14 +522,15 @@ const state2 = {
   scale:.5
 };
 
-let target1 = {...state1};
 
-let target2 = {...state2};
+let target1={...state1};
+
+let target2={...state2};
 
 
-/* =========================
-   HELPERS
-========================= */
+/* =====================================================
+   MATH
+===================================================== */
 
 function lerp(a,b,t){
 
@@ -544,36 +545,61 @@ function smoothState(
   speed=.30
 ){
 
-  current.x =
-    lerp(current.x,target.x,speed);
+  current.x=
+    lerp(
+      current.x,
+      target.x,
+      speed
+    );
 
-  current.y =
-    lerp(current.y,target.y,speed);
+  current.y=
+    lerp(
+      current.y,
+      target.y,
+      speed
+    );
 
-  current.rx =
-    lerp(current.rx,target.rx,speed);
+  current.rx=
+    lerp(
+      current.rx,
+      target.rx,
+      speed
+    );
 
-  current.ry =
-    lerp(current.ry,target.ry,speed);
+  current.ry=
+    lerp(
+      current.ry,
+      target.ry,
+      speed
+    );
 
-  current.rz =
-    lerp(current.rz,target.rz,speed);
+  current.rz=
+    lerp(
+      current.rz,
+      target.rz,
+      speed
+    );
 
-  current.scale =
-    lerp(current.scale,target.scale,speed);
+  current.scale=
+    lerp(
+      current.scale,
+      target.scale,
+      speed
+    );
+
 }
 
 
-/* =========================
-   RENDER CUBE
-========================= */
+/* =====================================================
+   RENDER
+===================================================== */
 
 function applyCube(
   element,
   state
 ){
 
-  element.style.transform =
+  element.style.transform=
     `
     translate(-50%,-50%)
     translate(
@@ -592,10 +618,6 @@ function applyCube(
 }
 
 
-/* =========================
-   ANIMATION LOOP
-========================= */
-
 function render(){
 
   smoothState(
@@ -610,6 +632,7 @@ function render(){
     .30
   );
 
+
   applyCube(
     cube1,
     state1
@@ -620,15 +643,19 @@ function render(){
     state2
   );
 
-  requestAnimationFrame(render);
+
+  requestAnimationFrame(
+    render
+  );
+
 }
 
 render();
 
 
-/* =========================
+/* =====================================================
    STATUS
-========================= */
+===================================================== */
 
 function setStatus(text){
 
@@ -637,13 +664,19 @@ function setStatus(text){
 }
 
 
-/* =========================
+/* =====================================================
    RESET
-========================= */
+===================================================== */
 
 function resetCube(){
 
   dualMode=false;
+
+
+  /* IMPORTANT:
+     cube 1 visible
+     cube 2 hidden
+  */
 
   cube1.style.display="block";
 
@@ -693,29 +726,24 @@ function resetCube(){
 }
 
 
-/* =========================
-   PALM DATA
-========================= */
+/* =====================================================
+   PALM
+===================================================== */
 
-function getPalmData(points){
+function getPalmData(p){
 
-  const wrist =
-    points[0];
+  const wrist=p[0];
 
-  const indexMCP =
-    points[5];
+  const indexMCP=p[5];
 
-  const middleMCP =
-    points[9];
+  const middleMCP=p[9];
 
-  const ringMCP =
-    points[13];
+  const ringMCP=p[13];
 
-  const pinkyMCP =
-    points[17];
+  const pinkyMCP=p[17];
 
 
-  const cx =
+  const cx=
     (
       wrist.x+
       indexMCP.x+
@@ -725,7 +753,7 @@ function getPalmData(points){
     )/5;
 
 
-  const cy =
+  const cy=
     (
       wrist.y+
       indexMCP.y+
@@ -735,72 +763,64 @@ function getPalmData(points){
     )/5;
 
 
-  /* Mirror camera coordinates */
-
-  const x =
+  const x=
     (1-cx)*100;
 
-  const y =
+  const y=
     cy*100;
 
 
-  /* Palm horizontal direction */
-
-  const acrossX =
+  const acrossX=
     pinkyMCP.x-
     indexMCP.x;
 
-  const acrossY =
+  const acrossY=
     pinkyMCP.y-
     indexMCP.y;
 
 
-  /* Palm upward direction */
-
-  const upX =
+  const upX=
     middleMCP.x-
     wrist.x;
 
-  const upY =
+  const upY=
     middleMCP.y-
     wrist.y;
 
 
-  /* Palm normal */
-
-  const normalX =
+  const normalX=
     acrossY*upX;
 
-  const normalY =
+  const normalY=
     -acrossX*upY;
 
-  const normalZ =
+  const normalZ=
     acrossX*upY-
     acrossY*upX;
 
 
-  const roll =
+  const roll=
     Math.atan2(
       acrossY,
       acrossX
     )*180/Math.PI;
 
 
-  const yaw =
+  const yaw=
     Math.atan2(
       normalX,
       Math.abs(normalZ)
     )*180/Math.PI;
 
 
-  const pitch =
+  const pitch=
     Math.atan2(
       normalY,
       Math.abs(normalZ)
     )*180/Math.PI;
 
 
-  return {
+  return{
     x,
     y,
     roll,
@@ -811,48 +831,44 @@ function getPalmData(points){
 }
 
 
-/* =========================
-   PINCH DETECTION
-========================= */
+/* =====================================================
+   PINCH
+===================================================== */
 
-function isPinching(points){
+function isPinching(p){
 
-  const thumb =
-    points[4];
+  const thumb=p[4];
 
-  const index =
-    points[8];
+  const index=p[8];
 
 
-  const dx =
+  const dx=
     thumb.x-index.x;
 
-  const dy =
+  const dy=
     thumb.y-index.y;
 
 
-  const fingerDistance =
+  const fingerDistance=
     Math.sqrt(
       dx*dx+
       dy*dy
     );
 
 
-  const wrist =
-    points[0];
+  const wrist=p[0];
 
-  const middle =
-    points[9];
+  const middle=p[9];
 
 
-  const px =
+  const px=
     wrist.x-middle.x;
 
-  const py =
+  const py=
     wrist.y-middle.y;
 
 
-  const palmSize =
+  const palmSize=
     Math.sqrt(
       px*px+
       py*py
@@ -863,24 +879,25 @@ function isPinching(points){
     return false;
 
 
-  return (
+  return(
     fingerDistance/palmSize
-  ) < .48;
+  )<.48;
 
 }
 
 
-/* =========================
+/* =====================================================
    HAND DISTANCE
-========================= */
+===================================================== */
 
-function distanceBetween(a,b){
+function handDistance(a,b){
 
-  const dx =
+  const dx=
     a.x-b.x;
 
-  const dy =
+  const dy=
     a.y-b.y;
+
 
   return Math.sqrt(
     dx*dx+
@@ -890,26 +907,21 @@ function distanceBetween(a,b){
 }
 
 
-/* =========================
-   SINGLE HAND
-========================= */
+/* =====================================================
+   ONE HAND
+===================================================== */
 
-function updateSingleHand(hand){
+function oneHand(hand){
 
-  target1.x =
-    hand.x;
+  target1.x=hand.x;
 
-  target1.y =
-    hand.y;
+  target1.y=hand.y;
 
-  target1.rx =
-    hand.pitch;
+  target1.rx=hand.pitch;
 
-  target1.ry =
-    hand.yaw;
+  target1.ry=hand.yaw;
 
-  target1.rz =
-    hand.roll;
+  target1.rz=hand.roll;
 
   target1.scale=1;
 
@@ -921,9 +933,9 @@ function updateSingleHand(hand){
 }
 
 
-/* =========================
+/* =====================================================
    SPLIT
-========================= */
+===================================================== */
 
 function splitCubes(a,b){
 
@@ -932,27 +944,28 @@ function splitCubes(a,b){
 
 
   /*
-    IMPORTANT:
+    VERY IMPORTANT:
 
-    The original cube remains
-    FULL SIZE until this exact
-    split moment.
+    CUBE 1 IS NOT HIDDEN.
 
-    We NEVER shrink it.
+    It becomes the FIRST
+    half-size cube.
 
-    We hide it first.
+    CUBE 2 becomes the
+    SECOND half-size cube.
   */
-
-  cube1.style.display="none";
-
 
   dualMode=true;
 
 
-  /* Show both half cubes */
+  cube1.style.display="block";
 
   cube2.style.display="block";
 
+
+  /*
+    FIRST HALF
+  */
 
   target1={
     x:a.x,
@@ -963,6 +976,10 @@ function splitCubes(a,b){
     scale:.5
   };
 
+
+  /*
+    SECOND HALF
+  */
 
   target2={
     x:b.x,
@@ -975,10 +992,7 @@ function splitCubes(a,b){
 
 
   /*
-    Synchronize immediately.
-
-    This prevents a small single cube
-    from flashing during the transition.
+    Immediately synchronize both.
   */
 
   state1.x=a.x;
@@ -1004,9 +1018,9 @@ function splitCubes(a,b){
 }
 
 
-/* =========================
+/* =====================================================
    MERGE
-========================= */
+===================================================== */
 
 function mergeCubes(){
 
@@ -1014,43 +1028,64 @@ function mergeCubes(){
     return;
 
 
-  const x =
-    (state1.x+
-     state2.x)/2;
+  /*
+    Calculate center.
+  */
 
-  const y =
-    (state1.y+
-     state2.y)/2;
+  const x=
+    (
+      state1.x+
+      state2.x
+    )/2;
 
-  const rx =
-    (state1.rx+
-     state2.rx)/2;
 
-  const ry =
-    (state1.ry+
-     state2.ry)/2;
+  const y=
+    (
+      state1.y+
+      state2.y
+    )/2;
 
-  const rz =
-    (state1.rz+
-     state2.rz)/2;
+
+  const rx=
+    (
+      state1.rx+
+      state2.rx
+    )/2;
+
+
+  const ry=
+    (
+      state1.ry+
+      state2.ry
+    )/2;
+
+
+  const rz=
+    (
+      state1.rz+
+      state2.rz
+    )/2;
 
 
   /*
-    Hide second cube first.
+    SECOND CUBE disappears.
   */
 
   cube2.style.display="none";
 
 
   /*
-    Prepare FULL SIZE cube.
+    FIRST CUBE becomes
+    FULL SIZE.
   */
 
   state1.x=x;
   state1.y=y;
+
   state1.rx=rx;
   state1.ry=ry;
   state1.rz=rz;
+
   state1.scale=1;
 
 
@@ -1063,11 +1098,6 @@ function mergeCubes(){
     scale:1
   };
 
-
-  /*
-    Now show exactly one
-    full-size cube.
-  */
 
   cube1.style.display="block";
 
@@ -1082,23 +1112,25 @@ function mergeCubes(){
 }
 
 
-/* =========================
-   TWO HAND CONTROL
-========================= */
+/* =====================================================
+   TWO HANDS
+===================================================== */
 
-function updateDualHands(a,b){
+function twoHands(a,b){
 
-  const distance =
-    distanceBetween(a,b);
+  const distance=
+    handDistance(a,b);
 
 
   /*
-    Two hands but not both
-    pinching = NOTHING CHANGES.
+    TWO HANDS BUT NOT
+    BOTH PINCHING.
+
+    NOTHING CHANGES.
   */
 
   if(
-    !a.pinching ||
+    !a.pinching||
     !b.pinching
   ){
 
@@ -1111,7 +1143,7 @@ function updateDualHands(a,b){
 
 
   /*
-    Both pinch + move apart.
+    PINCH + MOVE APART
   */
 
   if(
@@ -1126,7 +1158,7 @@ function updateDualHands(a,b){
 
 
   /*
-    Both pinching + bring together.
+    PINCH + MOVE TOGETHER
   */
 
   if(
@@ -1141,8 +1173,10 @@ function updateDualHands(a,b){
 
 
   /*
-    Two half-size cubes follow
-    their respective palms.
+    AFTER SPLIT:
+
+    CUBE 1 follows hand A
+    CUBE 2 follows hand B
   */
 
   if(dualMode){
@@ -1183,19 +1217,23 @@ function updateDualHands(a,b){
 }
 
 
-/* =========================
+/* =====================================================
    MEDIAPIPE
-========================= */
+===================================================== */
 
-const hands =
+const hands=
   new Hands({
+
     locateFile:(file)=>{
-      return (
+
+      return(
         "https://cdn.jsdelivr.net/npm/" +
         "@mediapipe/hands/" +
         file
       );
+
     }
+
   });
 
 
@@ -1219,8 +1257,8 @@ hands.onResults(
       return;
 
 
-    const landmarks =
-      results.multiHandLandmarks ||
+    const landmarks=
+      results.multiHandLandmarks||
       [];
 
 
@@ -1245,19 +1283,20 @@ hands.onResults(
       i++
     ){
 
-      const hand =
+      const hand=
         getPalmData(
           landmarks[i]
         );
 
 
-      hand.pinching =
+      hand.pinching=
         isPinching(
           landmarks[i]
         );
 
 
       detected.push(hand);
+
     }
 
 
@@ -1275,7 +1314,8 @@ hands.onResults(
 
       }
 
-      updateSingleHand(
+
+      oneHand(
         detected[0]
       );
 
@@ -1291,7 +1331,7 @@ hands.onResults(
       detected.length>=2
     ){
 
-      updateDualHands(
+      twoHands(
         detected[0],
         detected[1]
       );
@@ -1302,9 +1342,9 @@ hands.onResults(
 );
 
 
-/* =========================
+/* =====================================================
    START CAMERA
-========================= */
+===================================================== */
 
 async function startCamera(){
 
@@ -1319,8 +1359,9 @@ async function startCamera(){
     );
 
 
-    cameraStream =
-      await navigator.mediaDevices
+    cameraStream=
+      await navigator
+      .mediaDevices
       .getUserMedia({
 
         video:{
@@ -1340,7 +1381,7 @@ async function startCamera(){
       });
 
 
-    video.srcObject =
+    video.srcObject=
       cameraStream;
 
 
@@ -1385,9 +1426,9 @@ async function startCamera(){
 }
 
 
-/* =========================
-   PROCESS CAMERA
-========================= */
+/* =====================================================
+   CAMERA PROCESSING
+===================================================== */
 
 async function processVideo(){
 
@@ -1422,9 +1463,9 @@ async function processVideo(){
 }
 
 
-/* =========================
+/* =====================================================
    STOP CAMERA
-========================= */
+===================================================== */
 
 function stopCamera(){
 
@@ -1436,8 +1477,11 @@ function stopCamera(){
     cameraStream
       .getTracks()
       .forEach(
-        track=>track.stop()
+        track=>{
+          track.stop();
+        }
       );
+
 
     cameraStream=null;
 
@@ -1454,9 +1498,9 @@ function stopCamera(){
 }
 
 
-/* =========================
-   BUTTON EVENTS
-========================= */
+/* =====================================================
+   BUTTONS
+===================================================== */
 
 document
   .getElementById("startBtn")
@@ -1482,14 +1526,14 @@ document
   );
 
 
-/* Mobile touch backup */
+/* Android touch support */
 
 document
   .getElementById("startBtn")
   .addEventListener(
     "touchend",
-    event=>{
-      event.preventDefault();
+    e=>{
+      e.preventDefault();
       startCamera();
     },
     {passive:false}
@@ -1500,8 +1544,8 @@ document
   .getElementById("stopBtn")
   .addEventListener(
     "touchend",
-    event=>{
-      event.preventDefault();
+    e=>{
+      e.preventDefault();
       stopCamera();
     },
     {passive:false}
@@ -1512,39 +1556,42 @@ document
   .getElementById("resetBtn")
   .addEventListener(
     "touchend",
-    event=>{
-      event.preventDefault();
+    e=>{
+      e.preventDefault();
       resetCube();
     },
     {passive:false}
   );
 
 
-/* =========================
+/* =====================================================
    RESIZE
-========================= */
+===================================================== */
 
 window.addEventListener(
   "resize",
   ()=>{
-    canvas.width =
+
+    canvas.width=
       window.innerWidth;
 
-    canvas.height =
+    canvas.height=
       window.innerHeight;
+
   }
 );
 
 
-/* =========================
+/* =====================================================
    INITIALIZE
-========================= */
+===================================================== */
 
-canvas.width =
+canvas.width=
   window.innerWidth;
 
-canvas.height =
+canvas.height=
   window.innerHeight;
+
 
 resetCube();
 
