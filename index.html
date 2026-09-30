@@ -2,413 +2,516 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>SARVESH HOLO — Boss Arena</title>
 
-<title>SARVESH HOLO V10</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
+  margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#02040a;
+  background:#02040b;
   color:#fff;
-  font-family:Arial,sans-serif;
-  touch-action:none;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
-#app{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100vh;
-  overflow:hidden;
-
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      #10243b 0%,
-      #050b14 45%,
-      #010207 100%
-    );
+body{
+  position:relative;
 }
-
-/* CAMERA */
 
 #camera{
   position:fixed;
   inset:0;
-
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   transform:scaleX(-1);
-
   opacity:.18;
-
-  z-index:1;
-
   pointer-events:none;
 }
 
-/* CANVAS */
-
-#canvas{
+#output{
   position:fixed;
   inset:0;
-
   width:100%;
   height:100%;
-
-  z-index:2;
-
   pointer-events:none;
 }
 
-/* HOLOGRAM */
-
-#holoArea{
+#space{
   position:fixed;
   inset:0;
-
-  z-index:5;
-
-  perspective:900px;
-
+  overflow:hidden;
   pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(0,170,255,.12),transparent 28%),
+    radial-gradient(circle at 20% 80%,rgba(130,0,255,.12),transparent 25%),
+    #02040b;
 }
 
-/* CUBE */
-
-.cube{
+.stars{
   position:absolute;
-
-  width:160px;
-  height:160px;
-
-  left:50%;
-  top:50%;
-
-  transform:
-    translate(-50%,-50%);
-
-  transform-style:preserve-3d;
-
-  pointer-events:none;
-
-  will-change:transform;
+  inset:0;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.8) 1px,transparent 1px),
+    radial-gradient(circle,rgba(0,220,255,.55) 1px,transparent 1px);
+  background-size:67px 67px,113px 113px;
+  opacity:.25;
+  animation:stars 18s linear infinite;
 }
 
-.face{
+@keyframes stars{
+  from{transform:translateY(0)}
+  to{transform:translateY(67px)}
+}
+
+#grid{
   position:absolute;
-
-  width:160px;
-  height:160px;
-
-  border:2px solid rgba(0,220,255,.95);
-
-  background:rgba(0,180,255,.055);
-
-  box-shadow:
-    inset 0 0 25px rgba(0,220,255,.12),
-    0 0 18px rgba(0,220,255,.18);
-
-  backface-visibility:visible;
+  left:-20%;
+  width:140%;
+  height:45%;
+  bottom:-18%;
+  transform:perspective(500px) rotateX(65deg);
+  background:
+    linear-gradient(rgba(0,200,255,.16) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,200,255,.16) 1px,transparent 1px);
+  background-size:45px 45px;
+  opacity:.5;
 }
 
-.front{
-  transform:translateZ(80px);
-}
-
-.back{
-  transform:rotateY(180deg) translateZ(80px);
-}
-
-.right{
-  transform:rotateY(90deg) translateZ(80px);
-}
-
-.left{
-  transform:rotateY(-90deg) translateZ(80px);
-}
-
-.top{
-  transform:rotateX(90deg) translateZ(80px);
-}
-
-.bottom{
-  transform:rotateX(-90deg) translateZ(80px);
-}
-
-/* SECOND CUBE */
-
-#cube2 .face{
-  border-color:rgba(190,90,255,.98);
-
-  background:rgba(160,60,255,.055);
-
-  box-shadow:
-    inset 0 0 25px rgba(180,70,255,.12),
-    0 0 18px rgba(180,70,255,.22);
-}
-
-
-/* HUD */
-
-#hud{
+#header{
   position:fixed;
-
-  top:16px;
-  left:16px;
-  right:16px;
-
-  z-index:100;
-
+  top:14px;
+  left:14px;
+  right:14px;
+  z-index:20;
   display:flex;
-
   justify-content:space-between;
   align-items:flex-start;
-
   pointer-events:none;
 }
 
-.title{
-  font-size:20px;
-  font-weight:700;
+.brand{
+  letter-spacing:4px;
+  font-weight:bold;
+  font-size:19px;
+  text-shadow:0 0 14px #00d9ff;
+}
+
+.sub{
+  margin-top:4px;
+  font-size:10px;
+  letter-spacing:2px;
+  opacity:.65;
+}
+
+.hud{
+  text-align:right;
+  font-size:11px;
+  line-height:1.8;
+  letter-spacing:1px;
+}
+
+.hud span{
+  color:#5de8ff;
+}
+
+#mission{
+  position:fixed;
+  top:88px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:20;
+  text-align:center;
+  width:min(90%,420px);
+  pointer-events:none;
+}
+
+.missionTitle{
+  font-size:11px;
+  letter-spacing:3px;
+  color:#7cecff;
+}
+
+#bossName{
+  margin-top:5px;
+  font-size:18px;
+  font-weight:bold;
   letter-spacing:3px;
 }
 
-.subtitle{
-  margin-top:4px;
+#bossBar{
+  margin:10px auto 0;
+  height:9px;
+  width:min(82vw,360px);
+  border:1px solid rgba(0,220,255,.6);
+  padding:2px;
+  background:rgba(0,0,0,.45);
+}
 
-  font-size:10px;
+#bossHealth{
+  height:100%;
+  width:100%;
+  background:linear-gradient(90deg,#00d9ff,#b500ff);
+  box-shadow:0 0 12px #00d9ff;
+  transition:width .15s linear;
+}
 
-  color:#6edfff;
+#arena{
+  position:absolute;
+  left:50%;
+  top:51%;
+  width:min(92vw,560px);
+  height:min(65vh,560px);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
 
+#reactor{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:120px;
+  height:120px;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(0,220,255,.7);
+  border-radius:50%;
+  box-shadow:
+    0 0 20px rgba(0,220,255,.5),
+    inset 0 0 30px rgba(0,220,255,.15);
+}
+
+#reactor:before,
+#reactor:after{
+  content:"";
+  position:absolute;
+  inset:18px;
+  border:1px solid rgba(150,0,255,.7);
+  border-radius:50%;
+  animation:spin 5s linear infinite;
+}
+
+#reactor:after{
+  inset:30px;
+  border-color:rgba(0,220,255,.8);
+  animation-direction:reverse;
+  animation-duration:3s;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+#boss{
+  position:absolute;
+  left:50%;
+  top:30%;
+  width:150px;
+  height:150px;
+  transform:translate(-50%,-50%);
+  transition:transform .15s linear;
+}
+
+.bossCore{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:70px;
+  height:70px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  border:2px solid #c000ff;
+  background:rgba(120,0,255,.15);
+  box-shadow:
+    0 0 15px #b000ff,
+    0 0 45px rgba(160,0,255,.7);
+}
+
+.bossCore:before,
+.bossCore:after{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border:1px solid #00eaff;
+}
+
+.bossCore:after{
+  inset:-18px;
+  border-radius:50%;
+  border-color:rgba(0,220,255,.7);
+  animation:spin 2.5s linear infinite;
+}
+
+.wing{
+  position:absolute;
+  top:50%;
+  width:55px;
+  height:80px;
+  border:2px solid rgba(0,220,255,.7);
+  background:rgba(0,160,255,.06);
+  transform:translateY(-50%) skewY(-18deg);
+}
+
+.wing.left{right:72px}
+.wing.right{
+  left:72px;
+  transform:translateY(-50%) scaleX(-1) skewY(-18deg);
+}
+
+#target{
+  position:absolute;
+  width:58px;
+  height:58px;
+  border:2px solid #fff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:
+    0 0 10px #fff,
+    0 0 30px #00d9ff;
+  display:none;
+}
+
+#target:before,
+#target:after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  background:#fff;
+  transform:translate(-50%,-50%);
+}
+
+#target:before{
+  width:78px;
+  height:1px;
+}
+
+#target:after{
+  height:78px;
+  width:1px;
+}
+
+#cursor{
+  position:absolute;
+  width:22px;
+  height:22px;
+  border:2px solid #00eaff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 16px #00eaff;
+  display:none;
+}
+
+#cursorPinch{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:5px;
+  height:5px;
+  transform:translate(-50%,-50%);
+  background:#fff;
+  border-radius:50%;
+}
+
+#beam{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:5px;
+  height:0;
+  transform-origin:top center;
+  background:#fff;
+  box-shadow:
+    0 0 8px #00eaff,
+    0 0 25px #a000ff;
+  opacity:0;
+}
+
+#beam.active{
+  opacity:1;
+  height:260px;
+  animation:beamPulse .15s infinite alternate;
+}
+
+@keyframes beamPulse{
+  from{width:4px}
+  to{width:9px}
+}
+
+#gesture{
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%);
+  z-index:25;
+  min-width:210px;
+  padding:8px 14px;
+  text-align:center;
+  border:1px solid rgba(0,220,255,.4);
+  background:rgba(0,10,25,.72);
+  backdrop-filter:blur(8px);
+  font-size:11px;
   letter-spacing:2px;
 }
 
-#status{
-  padding:9px 12px;
-
-  border:1px solid rgba(0,220,255,.35);
-
-  border-radius:12px;
-
-  background:rgba(0,10,20,.75);
-
-  color:#74e8ff;
-
-  font-size:10px;
-
-  letter-spacing:1px;
-
-  text-align:right;
-}
-
-
-/* SIZE DISPLAY */
-
-#sizeInfo{
-  position:fixed;
-
-  top:72px;
-  left:50%;
-
-  transform:translateX(-50%);
-
-  z-index:100;
-
-  padding:6px 10px;
-
-  border:1px solid rgba(0,220,255,.2);
-
-  border-radius:9px;
-
-  background:rgba(0,8,16,.55);
-
-  color:rgba(180,240,255,.75);
-
-  font-size:9px;
-
-  letter-spacing:1px;
-
-  pointer-events:none;
-}
-
-
-/* INFO */
-
-#info{
-  position:fixed;
-
-  left:50%;
-  bottom:82px;
-
-  transform:translateX(-50%);
-
-  width:92%;
-  max-width:600px;
-
-  z-index:90;
-
-  text-align:center;
-
-  font-size:10px;
-
-  line-height:1.5;
-
-  color:rgba(220,245,255,.72);
-
-  pointer-events:none;
-}
-
-
-/* BUTTONS */
-
 #controls{
   position:fixed;
-
   left:50%;
-  bottom:16px;
-
+  bottom:18px;
   transform:translateX(-50%);
-
-  z-index:9999;
-
+  z-index:100;
   display:flex;
-
-  align-items:center;
-  justify-content:center;
-
   gap:8px;
-
-  width:max-content;
-  max-width:96vw;
-
-  padding:5px;
-
-  border:1px solid rgba(0,220,255,.25);
-
-  border-radius:15px;
-
-  background:rgba(0,8,16,.92);
-
-  box-shadow:
-    0 0 20px rgba(0,180,255,.12);
-
+  flex-wrap:wrap;
+  justify-content:center;
+  width:96%;
   pointer-events:auto;
-
-  touch-action:manipulation;
 }
 
-#controls button{
-  min-width:96px;
+button{
   min-height:44px;
-
-  padding:10px 12px;
-
+  padding:10px 15px;
   border:1px solid rgba(0,220,255,.55);
-
-  border-radius:10px;
-
-  background:rgba(0,18,30,.98);
-
-  color:#8eeeff;
-
-  font-size:10px;
-
-  font-weight:600;
-
+  border-radius:9px;
+  background:rgba(2,15,30,.88);
+  color:#dffaff;
+  font-weight:bold;
+  font-size:11px;
   letter-spacing:1px;
-
   cursor:pointer;
-
-  pointer-events:auto;
-
   touch-action:manipulation;
-
-  -webkit-tap-highlight-color:transparent;
 }
 
-#controls button:active{
-  transform:scale(.94);
-
-  background:rgba(0,80,110,.9);
+button:active{
+  transform:scale(.96);
 }
 
+button.primary{
+  border-color:#00eaff;
+  box-shadow:0 0 12px rgba(0,220,255,.3);
+}
 
-/* LOADING */
-
-#loading{
+#startScreen{
   position:fixed;
   inset:0;
-
-  z-index:20000;
-
+  z-index:200;
   display:flex;
-
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+  background:rgba(1,3,10,.92);
+  padding:25px;
+}
 
-  background:#02040a;
+.startCard{
+  width:min(92vw,430px);
+  padding:30px 22px;
+  text-align:center;
+  border:1px solid rgba(0,220,255,.45);
+  background:rgba(3,12,25,.95);
+  box-shadow:0 0 50px rgba(0,170,255,.12);
+}
 
-  color:#7deaff;
+.startCard h1{
+  margin:0;
+  letter-spacing:6px;
+  font-size:27px;
+}
 
+.startCard p{
+  color:#a6d8e5;
+  line-height:1.6;
   font-size:12px;
+}
 
-  letter-spacing:3px;
+#startGame{
+  margin-top:12px;
+  width:100%;
+  min-height:50px;
+}
 
+#message{
+  position:fixed;
+  left:50%;
+  top:70%;
+  transform:translate(-50%,-50%);
+  z-index:50;
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  letter-spacing:4px;
+  opacity:0;
   pointer-events:none;
+  text-shadow:0 0 18px #00eaff;
+}
+
+#message.show{
+  animation:message .9s ease forwards;
+}
+
+@keyframes message{
+  0%{opacity:0;transform:translate(-50%,-40%) scale(.7)}
+  25%{opacity:1}
+  75%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-60%) scale(1.15)}
+}
+
+#status{
+  position:fixed;
+  top:150px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:20;
+  font-size:10px;
+  letter-spacing:2px;
+  opacity:.7;
+  pointer-events:none;
+  white-space:nowrap;
 }
 
 .hidden{
   display:none!important;
 }
 
+@media(max-width:500px){
+  #header{
+    top:10px;
+  }
 
-/* SMALL PHONES */
-
-@media(max-width:430px){
-
-  .title{
+  .brand{
     font-size:16px;
-    letter-spacing:2px;
   }
 
-  #status{
-    font-size:8px;
-    padding:8px;
-  }
-
-  #sizeInfo{
-    top:64px;
-    font-size:8px;
-  }
-
-  #controls{
-    bottom:12px;
-    gap:5px;
-  }
-
-  #controls button{
-    min-width:88px;
-    min-height:44px;
-    padding:9px 7px;
+  .hud{
     font-size:9px;
   }
 
-  #info{
-    bottom:72px;
-    font-size:9px;
+  #mission{
+    top:74px;
+  }
+
+  #bossName{
+    font-size:15px;
+  }
+
+  #arena{
+    top:50%;
+    height:58vh;
+  }
+
+  #gesture{
+    bottom:78px;
+  }
+
+  button{
+    padding:9px 12px;
+    font-size:10px;
   }
 }
 </style>
@@ -416,1441 +519,623 @@ html,body{
 
 <body>
 
-<div id="app">
+<div id="space">
+  <div class="stars"></div>
+  <div id="grid"></div>
+</div>
 
-  <video
-    id="camera"
-    autoplay
-    playsinline
-    muted>
-  </video>
+<video id="camera" autoplay playsinline muted></video>
+<canvas id="output"></canvas>
 
-  <canvas id="canvas"></canvas>
-
-
-  <div id="holoArea">
-
-    <!-- FIRST CUBE -->
-
-    <div id="cube1" class="cube">
-
-      <div class="face front"></div>
-      <div class="face back"></div>
-      <div class="face right"></div>
-      <div class="face left"></div>
-      <div class="face top"></div>
-      <div class="face bottom"></div>
-
-    </div>
-
-
-    <!-- SECOND CUBE -->
-
-    <div id="cube2" class="cube">
-
-      <div class="face front"></div>
-      <div class="face back"></div>
-      <div class="face right"></div>
-      <div class="face left"></div>
-      <div class="face top"></div>
-      <div class="face bottom"></div>
-
-    </div>
-
+<div id="header">
+  <div>
+    <div class="brand">SARVESH HOLO</div>
+    <div class="sub">GESTURE COMBAT SYSTEM · V15</div>
   </div>
 
+  <div class="hud">
+    SCORE <span id="score">000000</span><br>
+    ENERGY <span id="energy">100%</span><br>
+    LIVES <span id="lives">♥ ♥ ♥</span>
+  </div>
+</div>
 
-  <!-- HUD -->
+<div id="mission">
+  <div class="missionTitle">MISSION // HOLO GUARDIAN</div>
+  <div id="bossName">HOLO GUARDIAN</div>
+  <div id="bossBar">
+    <div id="bossHealth"></div>
+  </div>
+</div>
 
-  <div id="hud">
+<div id="status">SYSTEM READY</div>
 
-    <div>
+<div id="arena">
 
-      <div class="title">
-        SARVESH HOLO
-      </div>
+  <div id="reactor"></div>
 
-      <div class="subtitle">
-        TOUCHLESS 3D CONTROL · V10
-      </div>
-
-    </div>
-
-    <div id="status">
-      SYSTEM READY
-    </div>
-
+  <div id="boss">
+    <div class="wing left"></div>
+    <div class="wing right"></div>
+    <div class="bossCore"></div>
   </div>
 
+  <div id="target"></div>
 
-  <div id="sizeInfo">
-    SIZE CONTROL: PINCH DISTANCE
+  <div id="cursor">
+    <div id="cursorPinch"></div>
   </div>
 
-
-  <div id="info">
-    Palm = movement · 🤏 Pinch distance = size ·
-    Two pinched hands apart = split ·
-    Two pinched hands together = merge
-  </div>
-
-
-  <!-- TOUCH CONTROLS -->
-
-  <div id="controls">
-
-    <button id="startBtn">
-      START CAMERA
-    </button>
-
-    <button id="stopBtn">
-      STOP CAMERA
-    </button>
-
-    <button id="resetBtn">
-      RESET
-    </button>
-
-  </div>
-
-
-  <div id="loading">
-    INITIALIZING HOLOGRAM...
-  </div>
+  <div id="beam"></div>
 
 </div>
 
+<div id="gesture">WAITING FOR HAND</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<div id="message"></div>
 
+<div id="controls">
+  <button id="startBtn" class="primary">START CAMERA</button>
+  <button id="stopBtn">STOP</button>
+  <button id="pauseBtn">PAUSE</button>
+  <button id="resetBtn">RESET</button>
+</div>
+
+<div id="startScreen">
+  <div class="startCard">
+    <h1>SARVESH HOLO</h1>
+    <p>
+      HOLOGRAM BOSS ARENA<br><br>
+      ☝ POINT — AIM<br>
+      🤏 PINCH — LOCK / FIRE<br>
+      🖐 OPEN PALM — SHIELD<br>
+      ✊ FIST — EMERGENCY PAUSE<br>
+      🤏🤏 TWO HANDS — CHARGE BEAM
+    </p>
+
+    <button id="startGame" class="primary">
+      ENTER HOLO ARENA
+    </button>
+  </div>
+</div>
 
 <script>
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const video =
-  document.getElementById("camera");
-
-const canvas =
-  document.getElementById("canvas");
-
-const ctx =
-  canvas.getContext("2d");
-
-const cube1 =
-  document.getElementById("cube1");
-
-const cube2 =
-  document.getElementById("cube2");
-
-const statusEl =
-  document.getElementById("status");
-
-const sizeInfo =
-  document.getElementById("sizeInfo");
-
-const loading =
-  document.getElementById("loading");
-
-
-/* =====================================================
-   CAMERA
-===================================================== */
-
-let cameraStream=null;
-
-let running=false;
-
-
-/* =====================================================
-   HOLOGRAM MODE
-===================================================== */
-
-let dualMode=false;
-
-
-/* =====================================================
-   CUBE STATES
-===================================================== */
-
-const state1={
-  x:50,
-  y:50,
-  rx:0,
-  ry:0,
-  rz:0,
-  scale:1
-};
-
-const state2={
-  x:50,
-  y:50,
-  rx:0,
-  ry:0,
-  rz:0,
-  scale:.5
-};
-
-
-let target1={...state1};
-
-let target2={...state2};
-
-
-/* =====================================================
-   SIZE LIMITS
-===================================================== */
-
-const MIN_SINGLE_SIZE=.55;
-
-const MAX_SINGLE_SIZE=1.45;
-
-const MIN_SPLIT_SIZE=.25;
-
-const MAX_SPLIT_SIZE=.85;
-
-
-/* =====================================================
-   MATH
-===================================================== */
-
-function lerp(a,b,t){
-
-  return a+(b-a)*t;
-
-}
-
-
-function clamp(value,min,max){
-
-  return Math.max(
-    min,
-    Math.min(
-      max,
-      value
-    )
-  );
-
-}
-
-
-function smoothState(
-  current,
-  target,
-  speed=.30
-){
-
-  current.x=
-    lerp(
-      current.x,
-      target.x,
-      speed
-    );
-
-  current.y=
-    lerp(
-      current.y,
-      target.y,
-      speed
-    );
-
-  current.rx=
-    lerp(
-      current.rx,
-      target.rx,
-      speed
-    );
-
-  current.ry=
-    lerp(
-      current.ry,
-      target.ry,
-      speed
-    );
-
-  current.rz=
-    lerp(
-      current.rz,
-      target.rz,
-      speed
-    );
-
-  current.scale=
-    lerp(
-      current.scale,
-      target.scale,
-      speed
-    );
-
-}
-
-
-/* =====================================================
-   RENDER
-===================================================== */
-
-function applyCube(
-  element,
-  state
-){
-
-  element.style.transform=
-    `
-    translate(-50%,-50%)
-    translate(
-      ${state.x-50}vw,
-      ${state.y-50}vh
-    )
-    rotateX(${state.rx}deg)
-    rotateY(${state.ry}deg)
-    rotateZ(${state.rz}deg)
-    scale3d(
-      ${state.scale},
-      ${state.scale},
-      ${state.scale}
-    )
-    `;
-
-}
-
-
-function render(){
-
-  smoothState(
-    state1,
-    target1,
-    .30
-  );
-
-  smoothState(
-    state2,
-    target2,
-    .30
-  );
-
-
-  applyCube(
-    cube1,
-    state1
-  );
-
-  applyCube(
-    cube2,
-    state2
-  );
-
-
-  requestAnimationFrame(
-    render
-  );
-
-}
-
-render();
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-function setStatus(text){
-
-  statusEl.textContent=text;
-
-}
-
-
-/* =====================================================
-   SIZE TEXT
-===================================================== */
-
-function showSize(singleSize){
-
-  const percent=
-    Math.round(
-      singleSize*100
-    );
-
-  sizeInfo.textContent=
-    "SIZE: "+percent+"% · PINCH TO CONTROL";
-
-}
-
-
-/* =====================================================
-   RESET
-===================================================== */
-
-function resetCube(){
-
-  dualMode=false;
-
-
-  cube1.style.display="block";
-
-  cube2.style.display="none";
-
-
-  target1={
-    x:50,
-    y:50,
-    rx:0,
-    ry:0,
-    rz:0,
-    scale:1
-  };
-
-
-  target2={
-    x:50,
-    y:50,
-    rx:0,
-    ry:0,
-    rz:0,
-    scale:.5
-  };
-
-
-  state1.x=50;
-  state1.y=50;
-  state1.rx=0;
-  state1.ry=0;
-  state1.rz=0;
-  state1.scale=1;
-
-
-  state2.x=50;
-  state2.y=50;
-  state2.rx=0;
-  state2.ry=0;
-  state2.rz=0;
-  state2.scale=.5;
-
-
-  showSize(1);
-
-
-  setStatus(
-    "SYSTEM READY"
-  );
-
-}
-
-
-/* =====================================================
-   PALM DATA
-===================================================== */
-
-function getPalmData(p){
-
-  const wrist=p[0];
-
-  const indexMCP=p[5];
-
-  const middleMCP=p[9];
-
-  const ringMCP=p[13];
-
-  const pinkyMCP=p[17];
-
-
-  const cx=
-    (
-      wrist.x+
-      indexMCP.x+
-      middleMCP.x+
-      ringMCP.x+
-      pinkyMCP.x
-    )/5;
-
-
-  const cy=
-    (
-      wrist.y+
-      indexMCP.y+
-      middleMCP.y+
-      ringMCP.y+
-      pinkyMCP.y
-    )/5;
-
-
-  const x=
-    (1-cx)*100;
-
-  const y=
-    cy*100;
-
-
-  const acrossX=
-    pinkyMCP.x-
-    indexMCP.x;
-
-  const acrossY=
-    pinkyMCP.y-
-    indexMCP.y;
-
-
-  const upX=
-    middleMCP.x-
-    wrist.x;
-
-  const upY=
-    middleMCP.y-
-    wrist.y;
-
-
-  const normalX=
-    acrossY*upX;
-
-  const normalY=
-    -acrossX*upY;
-
-  const normalZ=
-    acrossX*upY-
-    acrossY*upX;
-
-
-  const roll=
-    Math.atan2(
-      acrossY,
-      acrossX
-    )*180/Math.PI;
-
-
-  const yaw=
-    Math.atan2(
-      normalX,
-      Math.abs(normalZ)
-    )*180/Math.PI;
-
-
-  const pitch=
-    Math.atan2(
-      normalY,
-      Math.abs(normalZ)
-    )*180/Math.PI;
-
-
-  return{
-    x,
-    y,
-    roll,
-    yaw,
-    pitch
-  };
-
-}
-
-
-/* =====================================================
-   PINCH INFORMATION
-===================================================== */
-
-function getPinchData(p){
-
-  const thumb=p[4];
-
-  const index=p[8];
-
-
-  const dx=
-    thumb.x-index.x;
-
-  const dy=
-    thumb.y-index.y;
-
-
-  const distance=
-    Math.sqrt(
-      dx*dx+
-      dy*dy
-    );
-
-
-  const wrist=p[0];
-
-  const middle=p[9];
-
-
-  const px=
-    wrist.x-middle.x;
-
-  const py=
-    wrist.y-middle.y;
-
-
-  const palmSize=
-    Math.sqrt(
-      px*px+
-      py*py
-    );
-
-
-  if(palmSize===0){
-
-    return{
-      pinching:false,
-      ratio:1,
-      size:.5
-    };
-
+(() => {
+
+  const video = document.getElementById("camera");
+  const canvas = document.getElementById("output");
+  const ctx = canvas.getContext("2d");
+
+  const startScreen = document.getElementById("startScreen");
+  const startGame = document.getElementById("startGame");
+
+  const startBtn = document.getElementById("startBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const scoreEl = document.getElementById("score");
+  const energyEl = document.getElementById("energy");
+  const livesEl = document.getElementById("lives");
+  const healthEl = document.getElementById("bossHealth");
+
+  const gestureEl = document.getElementById("gesture");
+  const statusEl = document.getElementById("status");
+
+  const arena = document.getElementById("arena");
+  const boss = document.getElementById("boss");
+  const target = document.getElementById("target");
+  const cursor = document.getElementById("cursor");
+  const beam = document.getElementById("beam");
+  const message = document.getElementById("message");
+
+  let stream = null;
+  let hands = null;
+  let running = false;
+  let paused = false;
+  let raf = 0;
+
+  let score = 0;
+  let energy = 100;
+  let lives = 3;
+  let bossHealth = 100;
+
+  let lastShot = 0;
+  let lastDamage = 0;
+  let targetX = .5;
+  let targetY = .5;
+  let bossX = .5;
+  let bossY = .3;
+
+  let currentGesture = "WAITING";
+  let handData = [];
+
+  let twoHandCharge = 0;
+  let shieldActive = false;
+
+  function clamp(v,min,max){
+    return Math.max(min,Math.min(max,v));
   }
 
-
-  /*
-    Normalize thumb-index distance
-    against the size of the palm.
-  */
-
-  const ratio=
-    distance/palmSize;
-
-
-  /*
-    Pinch threshold.
-
-    Smaller ratio = fingers closer.
-
-    Larger ratio = fingers farther apart.
-  */
-
-  const pinching=
-    ratio<.70;
-
-
-  /*
-    Convert finger distance into
-    hologram size.
-
-    Closed pinch -> smaller
-
-    Open thumb/index -> larger
-  */
-
-  const normalized=
-    clamp(
-      ratio,
-      .18,
-      1.15
-    );
-
-
-  const size=
-    clamp(
-      .35+
-      normalized*.85,
-      MIN_SPLIT_SIZE,
-      MAX_SINGLE_SIZE
-    );
-
-
-  return{
-    pinching,
-    ratio,
-    size
-  };
-
-}
-
-
-/* =====================================================
-   HAND DISTANCE
-===================================================== */
-
-function handDistance(a,b){
-
-  const dx=
-    a.x-b.x;
-
-  const dy=
-    a.y-b.y;
-
-
-  return Math.sqrt(
-    dx*dx+
-    dy*dy
-  )/100;
-
-}
-
-
-/* =====================================================
-   ONE HAND
-===================================================== */
-
-function oneHand(hand){
-
-  target1.x=
-    hand.x;
-
-  target1.y=
-    hand.y;
-
-  target1.rx=
-    hand.pitch;
-
-  target1.ry=
-    hand.yaw;
-
-  target1.rz=
-    hand.roll;
-
-
-  /*
-    Only change size when
-    the user is pinching.
-
-    This prevents normal open-palm
-    movement from changing size.
-  */
-
-  if(hand.pinching){
-
-    target1.scale=
-      clamp(
-        hand.size,
-        MIN_SINGLE_SIZE,
-        MAX_SINGLE_SIZE
-      );
-
-    showSize(
-      target1.scale
-    );
-
-    setStatus(
-      "ONE HAND · SIZE CONTROL"
-    );
-
-  }
-  else{
-
-    setStatus(
-      "ONE HAND · 3D CONTROL"
-    );
-
+  function distance(a,b){
+    const dx=a.x-b.x;
+    const dy=a.y-b.y;
+    return Math.sqrt(dx*dx+dy*dy);
   }
 
-}
-
-
-/* =====================================================
-   SPLIT
-===================================================== */
-
-function splitCubes(a,b){
-
-  if(dualMode)
-    return;
-
-
-  dualMode=true;
-
-
-  /*
-    BOTH CUBES VISIBLE
-  */
-
-  cube1.style.display="block";
-
-  cube2.style.display="block";
-
-
-  /*
-    Start both at half size.
-
-    Each hand gets one cube.
-  */
-
-  target1={
-    x:a.x,
-    y:a.y,
-
-    rx:a.pitch,
-    ry:a.yaw,
-    rz:a.roll,
-
-    scale:.5
-  };
-
-
-  target2={
-    x:b.x,
-    y:b.y,
-
-    rx:b.pitch,
-    ry:b.yaw,
-    rz:b.roll,
-
-    scale:.5
-  };
-
-
-  state1.x=a.x;
-  state1.y=a.y;
-
-  state1.rx=a.pitch;
-  state1.ry=a.yaw;
-  state1.rz=a.roll;
-
-  state1.scale=.5;
-
-
-  state2.x=b.x;
-  state2.y=b.y;
-
-  state2.rx=b.pitch;
-  state2.ry=b.yaw;
-  state2.rz=b.roll;
-
-  state2.scale=.5;
-
-
-  setStatus(
-    "HOLOGRAM SPLIT · 2 CUBES"
-  );
-
-}
-
-
-/* =====================================================
-   MERGE
-===================================================== */
-
-function mergeCubes(){
-
-  if(!dualMode)
-    return;
-
-
-  const x=
-    (
-      state1.x+
-      state2.x
-    )/2;
-
-
-  const y=
-    (
-      state1.y+
-      state2.y
-    )/2;
-
-
-  const rx=
-    (
-      state1.rx+
-      state2.rx
-    )/2;
-
-
-  const ry=
-    (
-      state1.ry+
-      state2.ry
-    )/2;
-
-
-  const rz=
-    (
-      state1.rz+
-      state2.rz
-    )/2;
-
-
-  /*
-    Purple cube disappears.
-  */
-
-  cube2.style.display="none";
-
-
-  /*
-    First cube returns to
-    FULL SIZE.
-  */
-
-  state1.x=x;
-  state1.y=y;
-
-  state1.rx=rx;
-  state1.ry=ry;
-  state1.rz=rz;
-
-  state1.scale=1;
-
-
-  target1={
-    x:x,
-    y:y,
-
-    rx:rx,
-    ry:ry,
-    rz:rz,
-
-    scale:1
-  };
-
-
-  cube1.style.display="block";
-
-
-  dualMode=false;
-
-
-  showSize(1);
-
-
-  setStatus(
-    "HOLOGRAM MERGED · 1 CUBE"
-  );
-
-}
-
-
-/* =====================================================
-   TWO HANDS
-===================================================== */
-
-function twoHands(a,b){
-
-  const distance=
-    handDistance(a,b);
-
-
-  /*
-    If either hand is not pinching,
-    nothing changes.
-
-    This preserves your V9 behavior.
-  */
-
-  if(
-    !a.pinching||
-    !b.pinching
-  ){
-
-    setStatus(
-      "TWO HANDS · WAITING"
-    );
-
-    return;
-
+  function showMessage(text){
+    message.textContent=text;
+    message.classList.remove("show");
+    void message.offsetWidth;
+    message.classList.add("show");
   }
 
-
-  /*
-    BOTH PINCHING + MOVE APART
-
-    Creates two cubes.
-  */
-
-  if(
-    !dualMode&&
-    distance>.18
-  ){
-
-    splitCubes(a,b);
-
-    return;
-
+  function updateHUD(){
+    scoreEl.textContent=String(score).padStart(6,"0");
+    energyEl.textContent=Math.round(energy)+"%";
+    livesEl.textContent=
+      "♥ ".repeat(Math.max(0,lives)).trim()+
+      (lives<3 ? " ♡".repeat(3-lives) : "");
+    healthEl.style.width=clamp(bossHealth,0,100)+"%";
   }
 
+  function resetGame(){
+    score=0;
+    energy=100;
+    lives=3;
+    bossHealth=100;
 
-  /*
-    BOTH PINCHING + MOVE TOGETHER
+    targetX=.5;
+    targetY=.5;
+    bossX=.5;
+    bossY=.3;
 
-    Merges two cubes.
-  */
+    twoHandCharge=0;
+    shieldActive=false;
 
-  if(
-    dualMode&&
-    distance<.14
-  ){
+    target.style.display="none";
+    beam.classList.remove("active");
 
-    mergeCubes();
+    statusEl.textContent="SYSTEM READY";
+    gestureEl.textContent="WAITING FOR HAND";
 
-    return;
-
+    updateHUD();
   }
 
+  function spawnTarget(){
+    targetX=.22+Math.random()*.56;
+    targetY=.18+Math.random()*.58;
 
-  /*
-    TWO CUBE SIZE CONTROL
-
-    Each hand controls
-    its own cube.
-
-    Bigger thumb-index gap
-    = bigger cube.
-
-    Smaller thumb-index gap
-    = smaller cube.
-  */
-
-  if(dualMode){
-
-    target1.x=a.x;
-    target1.y=a.y;
-
-    target1.rx=a.pitch;
-    target1.ry=a.yaw;
-    target1.rz=a.roll;
-
-
-    target2.x=b.x;
-    target2.y=b.y;
-
-    target2.rx=b.pitch;
-    target2.ry=b.yaw;
-    target2.rz=b.roll;
-
-
-    /*
-      Cube 1 size
-    */
-
-    target1.scale=
-      clamp(
-        a.size,
-        MIN_SPLIT_SIZE,
-        MAX_SPLIT_SIZE
-      );
-
-
-    /*
-      Cube 2 size
-    */
-
-    target2.scale=
-      clamp(
-        b.size,
-        MIN_SPLIT_SIZE,
-        MAX_SPLIT_SIZE
-      );
-
-
-    setStatus(
-      "2 CUBES · SIZE CONTROL"
-    );
-
-
-    sizeInfo.textContent=
-      "CUBE 1 "+
-      Math.round(target1.scale*100)+
-      "% · CUBE 2 "+
-      Math.round(target2.scale*100)+
-      "%";
-
+    target.style.left=(targetX*100)+"%";
+    target.style.top=(targetY*100)+"%";
+    target.style.display="block";
   }
 
-}
+  function hideTarget(){
+    target.style.display="none";
+  }
 
+  function damageBoss(amount){
+    bossHealth-=amount;
 
-/* =====================================================
-   MEDIAPIPE
-===================================================== */
+    if(bossHealth<=0){
+      bossHealth=0;
+      updateHUD();
 
-const hands=
-  new Hands({
+      showMessage("BOSS DEFEATED");
+      statusEl.textContent="MISSION COMPLETE";
 
-    locateFile:(file)=>{
+      score+=5000;
+      updateHUD();
 
-      return(
-        "https://cdn.jsdelivr.net/npm/" +
-        "@mediapipe/hands/" +
-        file
-      );
-
-    }
-
-  });
-
-
-hands.setOptions({
-
-  maxNumHands:2,
-
-  modelComplexity:1,
-
-  minDetectionConfidence:.6,
-
-  minTrackingConfidence:.6
-
-});
-
-
-hands.onResults(
-  results=>{
-
-    if(!running)
-      return;
-
-
-    const landmarks=
-      results.multiHandLandmarks||
-      [];
-
-
-    if(
-      landmarks.length===0
-    ){
-
-      setStatus(
-        "SEARCHING FOR HAND"
-      );
+      setTimeout(() => {
+        bossHealth=100;
+        score+=1000;
+        spawnTarget();
+        statusEl.textContent="NEW GUARDIAN DETECTED";
+        updateHUD();
+      },2500);
 
       return;
-
     }
 
+    updateHUD();
+  }
 
-    const detected=[];
+  function takeDamage(){
+    if(shieldActive)return;
 
+    const now=performance.now();
 
-    for(
-      let i=0;
-      i<landmarks.length;
-      i++
-    ){
+    if(now-lastDamage<1200)return;
 
-      const hand=
-        getPalmData(
-          landmarks[i]
-        );
+    lastDamage=now;
+    lives--;
+    energy-=15;
 
+    showMessage("IMPACT");
 
-      const pinch=
-        getPinchData(
-          landmarks[i]
-        );
-
-
-      hand.pinching=
-        pinch.pinching;
-
-      hand.ratio=
-        pinch.ratio;
-
-      hand.size=
-        pinch.size;
-
-
-      detected.push(hand);
-
+    if(lives<=0){
+      lives=0;
+      paused=true;
+      statusEl.textContent="SYSTEM FAILURE";
+      showMessage("GAME OVER");
     }
 
+    updateHUD();
+  }
 
-    /*
-      ONE HAND
-    */
+  function shoot(){
+    const now=performance.now();
 
-    if(
-      detected.length===1
-    ){
+    if(now-lastShot<500)return;
+    if(energy<=5)return;
 
-      if(dualMode){
+    lastShot=now;
+    energy-=5;
 
-        mergeCubes();
+    beam.classList.add("active");
 
+    setTimeout(()=>{
+      beam.classList.remove("active");
+    },180);
+
+    const dx=targetX-.5;
+    const dy=targetY-.5;
+    const hitDistance=Math.sqrt(dx*dx+dy*dy);
+
+    if(hitDistance<.22){
+      score+=250;
+      damageBoss(8);
+      hideTarget();
+      showMessage("+250");
+
+      setTimeout(()=>{
+        if(running && !paused)spawnTarget();
+      },500);
+    }
+
+    updateHUD();
+  }
+
+  function getGesture(lm){
+
+    if(!lm || lm.length<21)return "WAITING";
+
+    const wrist=lm[0];
+
+    const thumb=distance(lm[4],wrist);
+    const index=distance(lm[8],wrist);
+    const middle=distance(lm[12],wrist);
+    const ring=distance(lm[16],wrist);
+    const pinky=distance(lm[20],wrist);
+
+    const pinch=distance(lm[4],lm[8]);
+
+    const palm=Math.max(
+      .05,
+      distance(lm[5],lm[17])
+    );
+
+    const pinchRatio=pinch/palm;
+
+    const fingersExtended=
+      index>palm*.95 &&
+      middle>palm*.95 &&
+      ring>palm*.9 &&
+      pinky>palm*.75;
+
+    const fist=
+      index<palm*.85 &&
+      middle<palm*.9 &&
+      ring<palm*.85 &&
+      pinky<palm*.75;
+
+    if(pinchRatio<.62)return "PINCH";
+
+    if(fist)return "FIST";
+
+    if(fingersExtended)return "OPEN PALM";
+
+    return "POINT";
+  }
+
+  function drawHands(results){
+
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    if(!results.multiHandLandmarks)return;
+
+    for(const lm of results.multiHandLandmarks){
+
+      ctx.lineWidth=2;
+      ctx.strokeStyle="rgba(0,220,255,.35)";
+      ctx.fillStyle="rgba(0,240,255,.8)";
+
+      const points=lm.map(p=>({
+        x:(1-p.x)*canvas.width,
+        y:p.y*canvas.height
+      }));
+
+      const connections=[
+        [0,1],[1,2],[2,3],[3,4],
+        [0,5],[5,6],[6,7],[7,8],
+        [0,9],[9,10],[10,11],[11,12],
+        [0,13],[13,14],[14,15],[15,16],
+        [0,17],[17,18],[18,19],[19,20],
+        [5,9],[9,13],[13,17]
+      ];
+
+      for(const [a,b] of connections){
+        ctx.beginPath();
+        ctx.moveTo(points[a].x,points[a].y);
+        ctx.lineTo(points[b].x,points[b].y);
+        ctx.stroke();
       }
 
+      for(const p of points){
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,3,0,Math.PI*2);
+        ctx.fill();
+      }
+    }
+  }
 
-      oneHand(
-        detected[0]
-      );
+  function processHands(results){
 
+    handData=results.multiHandLandmarks || [];
+
+    drawHands(results);
+
+    if(!handData.length){
+      currentGesture="WAITING";
+      gestureEl.textContent="WAITING FOR HAND";
+      cursor.style.display="none";
       return;
-
     }
 
+    const first=handData[0];
 
-    /*
-      TWO HANDS
-    */
+    currentGesture=getGesture(first);
 
-    if(
-      detected.length>=2
-    ){
+    gestureEl.textContent=
+      handData.length>1
+      ? currentGesture+" · 2 HANDS"
+      : currentGesture;
 
-      twoHands(
-        detected[0],
-        detected[1]
-      );
+    const index=first[8];
 
-    }
+    const screenX=1-index.x;
+    const screenY=index.y;
 
-  }
-);
+    cursor.style.display="block";
+    cursor.style.left=(screenX*100)+"%";
+    cursor.style.top=(screenY*100)+"%";
 
+    if(!paused){
 
-/* =====================================================
-   START CAMERA
-===================================================== */
+      bossX += ((screenX-.5)*.35-bossX)*.04;
+      bossY += ((screenY-.5)*.15+.3-bossY)*.04;
 
-async function startCamera(){
+      boss.style.left=(bossX*100)+"%";
+      boss.style.top=(bossY*100)+"%";
 
-  if(running)
-    return;
+      if(currentGesture==="OPEN PALM"){
+        shieldActive=true;
+        statusEl.textContent="SHIELD ACTIVE";
+        energy=Math.min(100,energy+.12);
+      }else{
+        shieldActive=false;
+      }
 
+      if(currentGesture==="PINCH"){
+        statusEl.textContent="TARGET LOCK";
 
-  try{
+        const dx=screenX-targetX;
+        const dy=screenY-targetY;
 
-    loading.classList.remove(
-      "hidden"
-    );
+        if(Math.sqrt(dx*dx+dy*dy)<.18){
+          shoot();
+        }
+      }
 
+      if(currentGesture==="FIST"){
+        statusEl.textContent="EMERGENCY PAUSE";
+        paused=true;
+      }
 
-    cameraStream=
-      await navigator
-      .mediaDevices
-      .getUserMedia({
+      if(handData.length>=2){
 
-        video:{
-          facingMode:"user",
+        const h1=handData[0][9];
+        const h2=handData[1][9];
 
-          width:{
-            ideal:1280
-          },
+        const d=distance(h1,h2);
 
-          height:{
-            ideal:720
+        if(
+          getGesture(handData[0])==="PINCH" &&
+          getGesture(handData[1])==="PINCH"
+        ){
+          twoHandCharge=clamp(
+            twoHandCharge+(d>.22?.8:-.4),
+            0,
+            100
+          );
+
+          statusEl.textContent=
+            "DUAL-HAND BEAM · "+Math.round(twoHandCharge)+"%";
+
+          if(twoHandCharge>=100){
+            score+=1000;
+            damageBoss(20);
+            twoHandCharge=0;
+            showMessage("POWER BEAM");
           }
-        },
+        }else{
+          twoHandCharge=Math.max(0,twoHandCharge-1);
+        }
+      }
+    }
 
-        audio:false
-
-      });
-
-
-    video.srcObject=
-      cameraStream;
-
-
-    await video.play();
-
-
-    running=true;
-
-
-    loading.classList.add(
-      "hidden"
-    );
-
-
-    setStatus(
-      "CAMERA ONLINE"
-    );
-
-
-    processVideo();
-
-
-  }
-  catch(error){
-
-    loading.classList.add(
-      "hidden"
-    );
-
-
-    setStatus(
-      "CAMERA ERROR"
-    );
-
-
-    alert(
-      "Camera could not start.\n\n"+
-      error.message
-    );
-
+    updateHUD();
   }
 
-}
+  async function startCamera(){
 
-
-/* =====================================================
-   PROCESS CAMERA
-===================================================== */
-
-async function processVideo(){
-
-  if(!running)
-    return;
-
-
-  if(
-    video.readyState>=2
-  ){
+    if(running)return;
 
     try{
 
-      await hands.send({
-        image:video
+      stream=await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:"user",
+          width:{ideal:1280},
+          height:{ideal:720}
+        },
+        audio:false
       });
 
-    }
-    catch(error){
+      video.srcObject=stream;
+      await video.play();
 
-      console.log(
-        "Hand tracking error:",
-        error
+      running=true;
+      paused=false;
+
+      statusEl.textContent="CAMERA ONLINE";
+      startBtn.textContent="CAMERA RUNNING";
+
+      if(!hands){
+
+        hands=new Hands({
+          locateFile:(file)=>{
+            return "https://cdn.jsdelivr.net/npm/@mediapipe/hands/"+file;
+          }
+        });
+
+        hands.setOptions({
+          maxNumHands:2,
+          modelComplexity:1,
+          minDetectionConfidence:.6,
+          minTrackingConfidence:.6
+        });
+
+        hands.onResults(processHands);
+      }
+
+      loop();
+
+    }catch(err){
+
+      console.error(err);
+
+      statusEl.textContent="CAMERA ERROR";
+
+      alert(
+        "Camera could not start. Please allow camera permission and try again."
       );
+    }
+  }
 
+  async function loop(){
+
+    if(!running)return;
+
+    if(
+      !paused &&
+      video.readyState>=2
+    ){
+      try{
+        await hands.send({image:video});
+      }catch(err){
+        console.warn(err);
+      }
     }
 
+    raf=requestAnimationFrame(loop);
   }
 
+  function stopCamera(){
 
-  requestAnimationFrame(
-    processVideo
-  );
+    running=false;
 
-}
+    cancelAnimationFrame(raf);
 
+    if(stream){
+      stream.getTracks().forEach(track=>track.stop());
+      stream=null;
+    }
 
-/* =====================================================
-   STOP CAMERA
-===================================================== */
+    video.srcObject=null;
 
-function stopCamera(){
+    statusEl.textContent="CAMERA STOPPED";
+    startBtn.textContent="START CAMERA";
 
-  running=false;
-
-
-  if(cameraStream){
-
-    cameraStream
-      .getTracks()
-      .forEach(
-        track=>{
-          track.stop();
-        }
-      );
-
-    cameraStream=null;
-
+    cursor.style.display="none";
+    beam.classList.remove("active");
   }
 
+  startGame.addEventListener("click",()=>{
+    startScreen.classList.add("hidden");
+    resetGame();
+    startCamera();
 
-  video.srcObject=null;
+    setTimeout(()=>{
+      spawnTarget();
+    },1200);
+  });
 
+  startBtn.addEventListener("click",()=>{
+    startCamera();
+  });
 
-  setStatus(
-    "CAMERA OFF"
-  );
+  stopBtn.addEventListener("click",()=>{
+    stopCamera();
+  });
 
-}
+  pauseBtn.addEventListener("click",()=>{
 
+    paused=!paused;
 
-/* =====================================================
-   BUTTONS
-===================================================== */
+    pauseBtn.textContent=paused?"RESUME":"PAUSE";
 
-document
-  .getElementById("startBtn")
-  .addEventListener(
-    "click",
-    startCamera
-  );
+    statusEl.textContent=
+      paused
+      ? "SYSTEM PAUSED"
+      : "SYSTEM ACTIVE";
+  });
 
+  resetBtn.addEventListener("click",()=>{
+    paused=false;
+    pauseBtn.textContent="PAUSE";
+    resetGame();
 
-document
-  .getElementById("stopBtn")
-  .addEventListener(
-    "click",
-    stopCamera
-  );
+    if(running){
+      spawnTarget();
+    }
+  });
 
+  window.addEventListener("keydown",(e)=>{
 
-document
-  .getElementById("resetBtn")
-  .addEventListener(
-    "click",
-    resetCube
-  );
+    if(e.key==="Escape"){
+      paused=!paused;
+      pauseBtn.textContent=paused?"RESUME":"PAUSE";
+    }
 
+    if(e.key.toLowerCase()==="r"){
+      resetGame();
+    }
+  });
 
-/* Android touch support */
+  window.addEventListener("resize",()=>{
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+  });
 
-document
-  .getElementById("startBtn")
-  .addEventListener(
-    "touchend",
-    e=>{
-      e.preventDefault();
-      startCamera();
-    },
-    {passive:false}
-  );
+  resetGame();
 
-
-document
-  .getElementById("stopBtn")
-  .addEventListener(
-    "touchend",
-    e=>{
-      e.preventDefault();
-      stopCamera();
-    },
-    {passive:false}
-  );
-
-
-document
-  .getElementById("resetBtn")
-  .addEventListener(
-    "touchend",
-    e=>{
-      e.preventDefault();
-      resetCube();
-    },
-    {passive:false}
-  );
-
-
-/* =====================================================
-   RESIZE
-===================================================== */
-
-window.addEventListener(
-  "resize",
-  ()=>{
-
-    canvas.width=
-      window.innerWidth;
-
-    canvas.height=
-      window.innerHeight;
-
-  }
-);
-
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
-
-canvas.width=
-  window.innerWidth;
-
-canvas.height=
-  window.innerHeight;
-
-
-resetCube();
-
-
-setTimeout(
-  ()=>{
-    loading.classList.add(
-      "hidden"
-    );
-  },
-  1200
-);
-
+})();
 </script>
 
 </body>
