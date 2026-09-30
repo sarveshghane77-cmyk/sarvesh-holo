@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>SARVESH HOLO V9</title>
+
+<title>SARVESH HOLO V10</title>
 
 <style>
 *{
@@ -28,45 +29,68 @@ html,body{
   width:100vw;
   height:100vh;
   overflow:hidden;
+
   background:
-    radial-gradient(circle at 50% 50%,#10243b 0%,#050b14 45%,#010207 100%);
+    radial-gradient(
+      circle at 50% 50%,
+      #10243b 0%,
+      #050b14 45%,
+      #010207 100%
+    );
 }
 
 /* CAMERA */
+
 #camera{
   position:fixed;
   inset:0;
+
   width:100%;
   height:100%;
+
   object-fit:cover;
+
   transform:scaleX(-1);
+
   opacity:.18;
+
   z-index:1;
+
   pointer-events:none;
 }
 
 /* CANVAS */
+
 #canvas{
   position:fixed;
   inset:0;
+
   width:100%;
   height:100%;
+
   z-index:2;
+
   pointer-events:none;
 }
 
-/* HOLOGRAM AREA */
+/* HOLOGRAM */
+
 #holoArea{
   position:fixed;
   inset:0;
+
   z-index:5;
+
   perspective:900px;
+
   pointer-events:none;
 }
 
 /* CUBE */
+
 .cube{
   position:absolute;
+
   width:160px;
   height:160px;
 
@@ -83,7 +107,6 @@ html,body{
   will-change:transform;
 }
 
-/* CUBE FACES */
 .face{
   position:absolute;
 
@@ -125,8 +148,8 @@ html,body{
   transform:rotateX(-90deg) translateZ(80px);
 }
 
+/* SECOND CUBE */
 
-/* SECOND CUBE = PURPLE */
 #cube2 .face{
   border-color:rgba(190,90,255,.98);
 
@@ -139,6 +162,7 @@ html,body{
 
 
 /* HUD */
+
 #hud{
   position:fixed;
 
@@ -149,6 +173,7 @@ html,body{
   z-index:100;
 
   display:flex;
+
   justify-content:space-between;
   align-items:flex-start;
 
@@ -163,8 +188,11 @@ html,body{
 
 .subtitle{
   margin-top:4px;
+
   font-size:10px;
+
   color:#6edfff;
+
   letter-spacing:2px;
 }
 
@@ -172,6 +200,7 @@ html,body{
   padding:9px 12px;
 
   border:1px solid rgba(0,220,255,.35);
+
   border-radius:12px;
 
   background:rgba(0,10,20,.75);
@@ -179,13 +208,45 @@ html,body{
   color:#74e8ff;
 
   font-size:10px;
+
   letter-spacing:1px;
 
   text-align:right;
 }
 
 
+/* SIZE DISPLAY */
+
+#sizeInfo{
+  position:fixed;
+
+  top:72px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  z-index:100;
+
+  padding:6px 10px;
+
+  border:1px solid rgba(0,220,255,.2);
+
+  border-radius:9px;
+
+  background:rgba(0,8,16,.55);
+
+  color:rgba(180,240,255,.75);
+
+  font-size:9px;
+
+  letter-spacing:1px;
+
+  pointer-events:none;
+}
+
+
 /* INFO */
+
 #info{
   position:fixed;
 
@@ -202,6 +263,7 @@ html,body{
   text-align:center;
 
   font-size:10px;
+
   line-height:1.5;
 
   color:rgba(220,245,255,.72);
@@ -211,6 +273,7 @@ html,body{
 
 
 /* BUTTONS */
+
 #controls{
   position:fixed;
 
@@ -222,6 +285,7 @@ html,body{
   z-index:9999;
 
   display:flex;
+
   align-items:center;
   justify-content:center;
 
@@ -233,6 +297,7 @@ html,body{
   padding:5px;
 
   border:1px solid rgba(0,220,255,.25);
+
   border-radius:15px;
 
   background:rgba(0,8,16,.92);
@@ -252,6 +317,7 @@ html,body{
   padding:10px 12px;
 
   border:1px solid rgba(0,220,255,.55);
+
   border-radius:10px;
 
   background:rgba(0,18,30,.98);
@@ -259,6 +325,7 @@ html,body{
   color:#8eeeff;
 
   font-size:10px;
+
   font-weight:600;
 
   letter-spacing:1px;
@@ -280,6 +347,7 @@ html,body{
 
 
 /* LOADING */
+
 #loading{
   position:fixed;
   inset:0;
@@ -287,6 +355,7 @@ html,body{
   z-index:20000;
 
   display:flex;
+
   justify-content:center;
   align-items:center;
 
@@ -306,7 +375,8 @@ html,body{
 }
 
 
-/* MOBILE */
+/* SMALL PHONES */
+
 @media(max-width:430px){
 
   .title{
@@ -317,6 +387,11 @@ html,body{
   #status{
     font-size:8px;
     padding:8px;
+  }
+
+  #sizeInfo{
+    top:64px;
+    font-size:8px;
   }
 
   #controls{
@@ -335,11 +410,9 @@ html,body{
     bottom:72px;
     font-size:9px;
   }
-
 }
 </style>
 </head>
-
 
 <body>
 
@@ -357,11 +430,7 @@ html,body{
 
   <div id="holoArea">
 
-    <!--
-      CUBE 1
-      CYAN
-      FULL SIZE BEFORE SPLIT
-    -->
+    <!-- FIRST CUBE -->
 
     <div id="cube1" class="cube">
 
@@ -375,11 +444,7 @@ html,body{
     </div>
 
 
-    <!--
-      CUBE 2
-      PURPLE
-      HIDDEN UNTIL SPLIT
-    -->
+    <!-- SECOND CUBE -->
 
     <div id="cube2" class="cube">
 
@@ -406,11 +471,10 @@ html,body{
       </div>
 
       <div class="subtitle">
-        TOUCHLESS 3D CONTROL · V9
+        TOUCHLESS 3D CONTROL · V10
       </div>
 
     </div>
-
 
     <div id="status">
       SYSTEM READY
@@ -419,11 +483,15 @@ html,body{
   </div>
 
 
+  <div id="sizeInfo">
+    SIZE CONTROL: PINCH DISTANCE
+  </div>
+
+
   <div id="info">
-    One hand: control cube ·
-    Two hands: nothing changes ·
-    Pinch both + move apart: split ·
-    Bring together: merge
+    Palm = movement · 🤏 Pinch distance = size ·
+    Two pinched hands apart = split ·
+    Two pinched hands together = merge
   </div>
 
 
@@ -480,6 +548,9 @@ const cube2 =
 const statusEl =
   document.getElementById("status");
 
+const sizeInfo =
+  document.getElementById("sizeInfo");
+
 const loading =
   document.getElementById("loading");
 
@@ -529,12 +600,38 @@ let target2={...state2};
 
 
 /* =====================================================
+   SIZE LIMITS
+===================================================== */
+
+const MIN_SINGLE_SIZE=.55;
+
+const MAX_SINGLE_SIZE=1.45;
+
+const MIN_SPLIT_SIZE=.25;
+
+const MAX_SPLIT_SIZE=.85;
+
+
+/* =====================================================
    MATH
 ===================================================== */
 
 function lerp(a,b,t){
 
   return a+(b-a)*t;
+
+}
+
+
+function clamp(value,min,max){
+
+  return Math.max(
+    min,
+    Math.min(
+      max,
+      value
+    )
+  );
 
 }
 
@@ -615,6 +712,7 @@ function applyCube(
       ${state.scale}
     )
     `;
+
 }
 
 
@@ -665,6 +763,23 @@ function setStatus(text){
 
 
 /* =====================================================
+   SIZE TEXT
+===================================================== */
+
+function showSize(singleSize){
+
+  const percent=
+    Math.round(
+      singleSize*100
+    );
+
+  sizeInfo.textContent=
+    "SIZE: "+percent+"% · PINCH TO CONTROL";
+
+}
+
+
+/* =====================================================
    RESET
 ===================================================== */
 
@@ -672,11 +787,6 @@ function resetCube(){
 
   dualMode=false;
 
-
-  /* IMPORTANT:
-     cube 1 visible
-     cube 2 hidden
-  */
 
   cube1.style.display="block";
 
@@ -719,6 +829,9 @@ function resetCube(){
   state2.scale=.5;
 
 
+  showSize(1);
+
+
   setStatus(
     "SYSTEM READY"
   );
@@ -727,7 +840,7 @@ function resetCube(){
 
 
 /* =====================================================
-   PALM
+   PALM DATA
 ===================================================== */
 
 function getPalmData(p){
@@ -832,10 +945,10 @@ function getPalmData(p){
 
 
 /* =====================================================
-   PINCH
+   PINCH INFORMATION
 ===================================================== */
 
-function isPinching(p){
+function getPinchData(p){
 
   const thumb=p[4];
 
@@ -849,7 +962,7 @@ function isPinching(p){
     thumb.y-index.y;
 
 
-  const fingerDistance=
+  const distance=
     Math.sqrt(
       dx*dx+
       dy*dy
@@ -875,13 +988,69 @@ function isPinching(p){
     );
 
 
-  if(palmSize===0)
-    return false;
+  if(palmSize===0){
+
+    return{
+      pinching:false,
+      ratio:1,
+      size:.5
+    };
+
+  }
 
 
-  return(
-    fingerDistance/palmSize
-  )<.48;
+  /*
+    Normalize thumb-index distance
+    against the size of the palm.
+  */
+
+  const ratio=
+    distance/palmSize;
+
+
+  /*
+    Pinch threshold.
+
+    Smaller ratio = fingers closer.
+
+    Larger ratio = fingers farther apart.
+  */
+
+  const pinching=
+    ratio<.70;
+
+
+  /*
+    Convert finger distance into
+    hologram size.
+
+    Closed pinch -> smaller
+
+    Open thumb/index -> larger
+  */
+
+  const normalized=
+    clamp(
+      ratio,
+      .18,
+      1.15
+    );
+
+
+  const size=
+    clamp(
+      .35+
+      normalized*.85,
+      MIN_SPLIT_SIZE,
+      MAX_SINGLE_SIZE
+    );
+
+
+  return{
+    pinching,
+    ratio,
+    size
+  };
 
 }
 
@@ -913,22 +1082,55 @@ function handDistance(a,b){
 
 function oneHand(hand){
 
-  target1.x=hand.x;
+  target1.x=
+    hand.x;
 
-  target1.y=hand.y;
+  target1.y=
+    hand.y;
 
-  target1.rx=hand.pitch;
+  target1.rx=
+    hand.pitch;
 
-  target1.ry=hand.yaw;
+  target1.ry=
+    hand.yaw;
 
-  target1.rz=hand.roll;
+  target1.rz=
+    hand.roll;
 
-  target1.scale=1;
 
+  /*
+    Only change size when
+    the user is pinching.
 
-  setStatus(
-    "ONE HAND · 3D CONTROL"
-  );
+    This prevents normal open-palm
+    movement from changing size.
+  */
+
+  if(hand.pinching){
+
+    target1.scale=
+      clamp(
+        hand.size,
+        MIN_SINGLE_SIZE,
+        MAX_SINGLE_SIZE
+      );
+
+    showSize(
+      target1.scale
+    );
+
+    setStatus(
+      "ONE HAND · SIZE CONTROL"
+    );
+
+  }
+  else{
+
+    setStatus(
+      "ONE HAND · 3D CONTROL"
+    );
+
+  }
 
 }
 
@@ -943,20 +1145,12 @@ function splitCubes(a,b){
     return;
 
 
-  /*
-    VERY IMPORTANT:
-
-    CUBE 1 IS NOT HIDDEN.
-
-    It becomes the FIRST
-    half-size cube.
-
-    CUBE 2 becomes the
-    SECOND half-size cube.
-  */
-
   dualMode=true;
 
+
+  /*
+    BOTH CUBES VISIBLE
+  */
 
   cube1.style.display="block";
 
@@ -964,50 +1158,52 @@ function splitCubes(a,b){
 
 
   /*
-    FIRST HALF
+    Start both at half size.
+
+    Each hand gets one cube.
   */
 
   target1={
     x:a.x,
     y:a.y,
+
     rx:a.pitch,
     ry:a.yaw,
     rz:a.roll,
+
     scale:.5
   };
 
-
-  /*
-    SECOND HALF
-  */
 
   target2={
     x:b.x,
     y:b.y,
+
     rx:b.pitch,
     ry:b.yaw,
     rz:b.roll,
+
     scale:.5
   };
 
 
-  /*
-    Immediately synchronize both.
-  */
-
   state1.x=a.x;
   state1.y=a.y;
+
   state1.rx=a.pitch;
   state1.ry=a.yaw;
   state1.rz=a.roll;
+
   state1.scale=.5;
 
 
   state2.x=b.x;
   state2.y=b.y;
+
   state2.rx=b.pitch;
   state2.ry=b.yaw;
   state2.rz=b.roll;
+
   state2.scale=.5;
 
 
@@ -1027,10 +1223,6 @@ function mergeCubes(){
   if(!dualMode)
     return;
 
-
-  /*
-    Calculate center.
-  */
 
   const x=
     (
@@ -1068,14 +1260,14 @@ function mergeCubes(){
 
 
   /*
-    SECOND CUBE disappears.
+    Purple cube disappears.
   */
 
   cube2.style.display="none";
 
 
   /*
-    FIRST CUBE becomes
+    First cube returns to
     FULL SIZE.
   */
 
@@ -1092,9 +1284,11 @@ function mergeCubes(){
   target1={
     x:x,
     y:y,
+
     rx:rx,
     ry:ry,
     rz:rz,
+
     scale:1
   };
 
@@ -1103,6 +1297,9 @@ function mergeCubes(){
 
 
   dualMode=false;
+
+
+  showSize(1);
 
 
   setStatus(
@@ -1123,10 +1320,10 @@ function twoHands(a,b){
 
 
   /*
-    TWO HANDS BUT NOT
-    BOTH PINCHING.
+    If either hand is not pinching,
+    nothing changes.
 
-    NOTHING CHANGES.
+    This preserves your V9 behavior.
   */
 
   if(
@@ -1139,44 +1336,57 @@ function twoHands(a,b){
     );
 
     return;
+
   }
 
 
   /*
-    PINCH + MOVE APART
+    BOTH PINCHING + MOVE APART
+
+    Creates two cubes.
   */
 
   if(
-    !dualMode &&
+    !dualMode&&
     distance>.18
   ){
 
     splitCubes(a,b);
 
     return;
+
   }
 
 
   /*
-    PINCH + MOVE TOGETHER
+    BOTH PINCHING + MOVE TOGETHER
+
+    Merges two cubes.
   */
 
   if(
-    dualMode &&
+    dualMode&&
     distance<.14
   ){
 
     mergeCubes();
 
     return;
+
   }
 
 
   /*
-    AFTER SPLIT:
+    TWO CUBE SIZE CONTROL
 
-    CUBE 1 follows hand A
-    CUBE 2 follows hand B
+    Each hand controls
+    its own cube.
+
+    Bigger thumb-index gap
+    = bigger cube.
+
+    Smaller thumb-index gap
+    = smaller cube.
   */
 
   if(dualMode){
@@ -1188,8 +1398,6 @@ function twoHands(a,b){
     target1.ry=a.yaw;
     target1.rz=a.roll;
 
-    target1.scale=.5;
-
 
     target2.x=b.x;
     target2.y=b.y;
@@ -1198,19 +1406,42 @@ function twoHands(a,b){
     target2.ry=b.yaw;
     target2.rz=b.roll;
 
-    target2.scale=.5;
+
+    /*
+      Cube 1 size
+    */
+
+    target1.scale=
+      clamp(
+        a.size,
+        MIN_SPLIT_SIZE,
+        MAX_SPLIT_SIZE
+      );
+
+
+    /*
+      Cube 2 size
+    */
+
+    target2.scale=
+      clamp(
+        b.size,
+        MIN_SPLIT_SIZE,
+        MAX_SPLIT_SIZE
+      );
 
 
     setStatus(
-      "2 CUBES · HAND LINK ACTIVE"
+      "2 CUBES · SIZE CONTROL"
     );
 
-  }
-  else{
 
-    setStatus(
-      "BOTH PINCHING · MOVE APART"
-    );
+    sizeInfo.textContent=
+      "CUBE 1 "+
+      Math.round(target1.scale*100)+
+      "% · CUBE 2 "+
+      Math.round(target2.scale*100)+
+      "%";
 
   }
 
@@ -1271,6 +1502,7 @@ hands.onResults(
       );
 
       return;
+
     }
 
 
@@ -1289,10 +1521,20 @@ hands.onResults(
         );
 
 
-      hand.pinching=
-        isPinching(
+      const pinch=
+        getPinchData(
           landmarks[i]
         );
+
+
+      hand.pinching=
+        pinch.pinching;
+
+      hand.ratio=
+        pinch.ratio;
+
+      hand.size=
+        pinch.size;
 
 
       detected.push(hand);
@@ -1320,6 +1562,7 @@ hands.onResults(
       );
 
       return;
+
     }
 
 
@@ -1404,7 +1647,8 @@ async function startCamera(){
     processVideo();
 
 
-  }catch(error){
+  }
+  catch(error){
 
     loading.classList.add(
       "hidden"
@@ -1427,7 +1671,7 @@ async function startCamera(){
 
 
 /* =====================================================
-   CAMERA PROCESSING
+   PROCESS CAMERA
 ===================================================== */
 
 async function processVideo(){
@@ -1436,7 +1680,9 @@ async function processVideo(){
     return;
 
 
-  if(video.readyState>=2){
+  if(
+    video.readyState>=2
+  ){
 
     try{
 
@@ -1444,7 +1690,8 @@ async function processVideo(){
         image:video
       });
 
-    }catch(error){
+    }
+    catch(error){
 
       console.log(
         "Hand tracking error:",
@@ -1481,7 +1728,6 @@ function stopCamera(){
           track.stop();
         }
       );
-
 
     cameraStream=null;
 
