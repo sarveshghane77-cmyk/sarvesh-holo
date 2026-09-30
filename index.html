@@ -3,2145 +3,807 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SARVESH HOLO V6</title>
+<title>SARVESH HOLO V7</title>
 
 <style>
-
 *{
   box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 html,body{
-  margin:0;
-  padding:0;
   width:100%;
-  min-height:100%;
-}
-
-body{
-  background:#030712;
-  color:white;
-  font-family:Arial,sans-serif;
-  overflow-x:hidden;
-}
-
-.app{
-  min-height:100vh;
-  padding:16px;
-}
-
-header{
-  max-width:1000px;
-  margin:auto;
-  padding:16px 0;
-  border-bottom:1px solid #1e293b;
-}
-
-.logo{
-  font-size:23px;
-  font-weight:700;
-  letter-spacing:2px;
-}
-
-.sub{
-  margin-top:5px;
-  color:#64748b;
-  font-size:12px;
-  letter-spacing:1px;
-}
-
-.status{
-  display:inline-block;
-  margin-top:10px;
-  padding:6px 10px;
-  border:1px solid #334155;
-  border-radius:20px;
-  color:#94a3b8;
-  font-size:12px;
-}
-
-.lab{
-  max-width:1000px;
-  margin:18px auto;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-.panel{
-  background:#070d18;
-  border:1px solid #1e293b;
-  border-radius:20px;
-  padding:14px;
-}
-
-.title{
-  margin-bottom:10px;
-  color:#cbd5e1;
-  font-size:14px;
-  font-weight:bold;
-}
-
-.camera{
-  position:relative;
-  width:100%;
-  aspect-ratio:4/3;
+  height:100%;
   overflow:hidden;
-  border-radius:14px;
-  background:#020617;
+  background:#02040a;
+  color:#fff;
+  font-family:Arial,sans-serif;
 }
 
-video{
+#app{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,#10243b 0%,#050b14 45%,#010207 100%);
+}
+
+#camera{
+  position:absolute;
   width:100%;
   height:100%;
   object-fit:cover;
-  display:block;
   transform:scaleX(-1);
+  opacity:.18;
 }
 
-#handCanvas{
+#canvas{
   position:absolute;
   inset:0;
-  width:100%;
-  height:100%;
-  transform:scaleX(-1);
-}
-
-.pointer{
-  position:absolute;
-  width:18px;
-  height:18px;
-  border:2px solid white;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  display:none;
   pointer-events:none;
-  z-index:10;
 }
 
-.scene{
-  position:relative;
-  min-height:340px;
-  height:100%;
-  overflow:hidden;
-  border-radius:14px;
-
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(59,130,246,.14),
-      transparent 38%
-    ),
-    #020617;
-
-  perspective:900px;
-  perspective-origin:center center;
-}
-
-.grid{
+#holoArea{
   position:absolute;
-  width:160%;
-  height:70%;
-  left:-30%;
-  bottom:-20%;
-
-  background:
-    linear-gradient(
-      rgba(30,58,95,.8) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(30,58,95,.8) 1px,
-      transparent 1px
-    );
-
-  background-size:30px 30px;
-
-  transform:
-    perspective(160px)
-    rotateX(60deg);
-
-  opacity:.35;
+  inset:0;
+  perspective:900px;
+  pointer-events:none;
 }
-
-
-/*
-================================================
-3D CUBE SYSTEM
-================================================
-*/
 
 .cube{
   position:absolute;
-
+  width:160px;
+  height:160px;
   left:50%;
   top:50%;
-
-  width:110px;
-  height:110px;
-
   transform-style:preserve-3d;
-
-  transform:
-    translate3d(-50%,-50%,0)
-    rotateX(0deg)
-    rotateY(0deg)
-    rotateZ(0deg)
-    scale3d(1,1,1);
-
-  will-change:
-    left,
-    top,
-    transform;
-
-  transition:
-    opacity .18s ease;
+  transform:translate(-50%,-50%);
+  transition:none;
+  will-change:transform;
 }
-
-
-/*
-Each cube has six real 3D faces.
-*/
 
 .face{
   position:absolute;
-
-  width:110px;
-  height:110px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border:2px solid #60a5fa;
-
-  background:
-    rgba(59,130,246,.07);
-
-  color:#93c5fd;
-
-  font-size:10px;
-
+  width:160px;
+  height:160px;
+  border:2px solid rgba(0,220,255,.95);
+  background:rgba(0,180,255,.055);
   box-shadow:
-    inset 0 0 20px rgba(59,130,246,.06),
-    0 0 18px rgba(59,130,246,.15);
+    inset 0 0 25px rgba(0,220,255,.12),
+    0 0 18px rgba(0,220,255,.18);
+  backface-visibility:visible;
 }
 
-.front{
-  transform:
-    translateZ(55px);
+.front  { transform:translateZ(80px); }
+.back   { transform:rotateY(180deg) translateZ(80px); }
+.right  { transform:rotateY(90deg) translateZ(80px); }
+.left   { transform:rotateY(-90deg) translateZ(80px); }
+.top    { transform:rotateX(90deg) translateZ(80px); }
+.bottom { transform:rotateX(-90deg) translateZ(80px); }
+
+#cube2 .face{
+  border-color:rgba(180,80,255,.95);
+  box-shadow:
+    inset 0 0 25px rgba(180,80,255,.12),
+    0 0 18px rgba(180,80,255,.18);
 }
-
-.back{
-  transform:
-    rotateY(180deg)
-    translateZ(55px);
-}
-
-.right{
-  transform:
-    rotateY(90deg)
-    translateZ(55px);
-}
-
-.left{
-  transform:
-    rotateY(-90deg)
-    translateZ(55px);
-}
-
-.top{
-  transform:
-    rotateX(90deg)
-    translateZ(55px);
-}
-
-.bottom{
-  transform:
-    rotateX(-90deg)
-    translateZ(55px);
-}
-
-
-/*
-================================================
-SECOND CUBE
-================================================
-*/
 
 #cube2{
   display:none;
 }
 
+#hud{
+  position:absolute;
+  top:18px;
+  left:18px;
+  right:18px;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  pointer-events:none;
+}
 
-/*
-================================================
-CONTROLS
-================================================
-*/
+.title{
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:3px;
+}
 
-.controls{
-  max-width:1000px;
-  margin:auto;
+.subtitle{
+  margin-top:4px;
+  font-size:11px;
+  color:#6edfff;
+  letter-spacing:2px;
+}
 
+#status{
+  padding:9px 13px;
+  border:1px solid rgba(0,220,255,.35);
+  border-radius:12px;
+  background:rgba(0,10,20,.55);
+  color:#74e8ff;
+  font-size:11px;
+  letter-spacing:1px;
+  text-align:right;
+}
+
+#controls{
+  position:absolute;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  z-index:20;
   display:flex;
   gap:10px;
-  flex-wrap:wrap;
 }
 
 button{
-  padding:13px 18px;
-
-  border:1px solid #334155;
-  border-radius:12px;
-
-  background:#0f172a;
-  color:#e2e8f0;
-
-  font-size:14px;
+  border:1px solid rgba(0,220,255,.55);
+  background:rgba(0,15,25,.78);
+  color:#8eeeff;
+  padding:11px 16px;
+  border-radius:10px;
+  font-size:12px;
+  letter-spacing:1px;
+  cursor:pointer;
 }
 
 button:active{
-  transform:scale(.98);
+  transform:scale(.96);
 }
 
-.info{
-  max-width:1000px;
-  margin:14px auto;
-
-  padding:14px;
-
-  border:1px solid #1e293b;
-  border-radius:14px;
-
-  background:#070d18;
-
-  color:#94a3b8;
-
-  font-size:13px;
-  line-height:1.6;
+#info{
+  position:absolute;
+  left:50%;
+  bottom:75px;
+  transform:translateX(-50%);
+  z-index:10;
+  width:90%;
+  text-align:center;
+  font-size:11px;
+  color:rgba(220,245,255,.7);
+  line-height:1.5;
+  pointer-events:none;
 }
 
-@media(max-width:700px){
-
-  .lab{
-    grid-template-columns:1fr;
-  }
-
-  .scene{
-    min-height:300px;
-  }
-
+#loading{
+  position:absolute;
+  inset:0;
+  z-index:50;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#02040a;
+  color:#7deaff;
+  letter-spacing:3px;
 }
 
+.hidden{
+  display:none!important;
+}
 </style>
 </head>
 
-
 <body>
 
-<div class="app">
+<div id="app">
 
+  <video id="camera" autoplay playsinline muted></video>
+  <canvas id="canvas"></canvas>
 
-<header>
+  <div id="holoArea">
 
-<div class="logo">
-SARVESH HOLO
-</div>
+    <!-- ORIGINAL FULL-SIZE CUBE -->
+    <div id="cube1" class="cube">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face right"></div>
+      <div class="face left"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+    </div>
 
-<div class="sub">
-TOUCHLESS 3D INTERFACE · V6
-</div>
+    <!-- SECOND CUBE -->
+    <div id="cube2" class="cube">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face right"></div>
+      <div class="face left"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+    </div>
 
-<div
-id="status"
-class="status">
-● SYSTEM READY
-</div>
+  </div>
 
-</header>
+  <div id="hud">
+    <div>
+      <div class="title">SARVESH HOLO</div>
+      <div class="subtitle">TOUCHLESS 3D CONTROL · V7</div>
+    </div>
 
+    <div id="status">SYSTEM READY</div>
+  </div>
 
-<div class="lab">
+  <div id="info">
+    One hand: control the cube · Two hands: nothing changes ·
+    Pinch both hands + move apart: split · Bring pinched hands together: merge
+  </div>
 
+  <div id="controls">
+    <button id="startBtn">START CAMERA</button>
+    <button id="stopBtn">STOP CAMERA</button>
+    <button id="resetBtn">RESET</button>
+  </div>
 
-<!-- CAMERA -->
-
-<div class="panel">
-
-<div class="title">
-HAND SENSOR
-</div>
-
-<div class="camera">
-
-<video
-id="video"
-autoplay
-playsinline
-muted>
-</video>
-
-<canvas
-id="handCanvas">
-</canvas>
-
-<div
-id="pointer"
-class="pointer">
-</div>
-
-</div>
+  <div id="loading">INITIALIZING HOLOGRAM...</div>
 
 </div>
-
-
-<!-- HOLOGRAM -->
-
-<div class="panel">
-
-<div class="title">
-MULTI-HAND 3D HOLOGRAM
-</div>
-
-<div
-id="scene"
-class="scene">
-
-<div class="grid"></div>
-
-
-<!-- CUBE 1 -->
-
-<div
-id="cube1"
-class="cube">
-
-<div class="face front">
-3D CORE
-</div>
-
-<div class="face back">
-BACK
-</div>
-
-<div class="face right">
-RIGHT
-</div>
-
-<div class="face left">
-LEFT
-</div>
-
-<div class="face top">
-TOP
-</div>
-
-<div class="face bottom">
-BOTTOM
-</div>
-
-</div>
-
-
-<!-- CUBE 2 -->
-
-<div
-id="cube2"
-class="cube">
-
-<div class="face front">
-3D CORE
-</div>
-
-<div class="face back">
-BACK
-</div>
-
-<div class="face right">
-RIGHT
-</div>
-
-<div class="face left">
-LEFT
-</div>
-
-<div class="face top">
-TOP
-</div>
-
-<div class="face bottom">
-BOTTOM
-</div>
-
-</div>
-
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="controls">
-
-<button id="start">
-START CAMERA
-</button>
-
-<button id="stop">
-STOP CAMERA
-</button>
-
-<button id="reset">
-RESET
-</button>
-
-</div>
-
-
-<div
-id="info"
-class="info">
-
-Multi-hand 3D system ready.<br>
-Show one or two hands.
-
-</div>
-
-</div>
-
-
-<!-- MEDIAPIPE -->
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-
-
 <script>
+const video = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-/*
-==================================================
-ELEMENTS
-==================================================
-*/
+const cube1 = document.getElementById("cube1");
+const cube2 = document.getElementById("cube2");
 
-const video =
-document.getElementById("video");
+const statusEl = document.getElementById("status");
+const loading = document.getElementById("loading");
 
-const canvas =
-document.getElementById("handCanvas");
-
-const ctx =
-canvas.getContext("2d");
-
-const cube1 =
-document.getElementById("cube1");
-
-const cube2 =
-document.getElementById("cube2");
-
-const pointer =
-document.getElementById("pointer");
-
-const status =
-document.getElementById("status");
-
-const info =
-document.getElementById("info");
-
-const startButton =
-document.getElementById("start");
-
-const stopButton =
-document.getElementById("stop");
-
-const resetButton =
-document.getElementById("reset");
-
-
-/*
-==================================================
-SYSTEM
-==================================================
-*/
-
-let stream = null;
-
+let cameraStream = null;
 let running = false;
 
-let hands = null;
+let dualMode = false;
 
-let animationFrame = null;
-
-
-/*
-==================================================
-SINGLE CUBE STATE
-==================================================
-*/
-
-let single = {
-
+const state1 = {
   x:50,
   y:50,
-
-  targetX:50,
-  targetY:50,
-
   rx:0,
   ry:0,
   rz:0,
-
-  targetRX:0,
-  targetRY:0,
-  targetRZ:0,
-
-  scale:1,
-  targetScale:1
-
+  scale:1
 };
 
+const state2 = {
+  x:50,
+  y:50,
+  rx:0,
+  ry:0,
+  rz:0,
+  scale:.5
+};
 
-/*
-==================================================
-TWO CUBE STATE
-==================================================
-*/
+let target1 = {...state1};
+let target2 = {...state2};
 
-let dual = {
+function lerp(a,b,t){
+  return a+(b-a)*t;
+}
 
-  active:false,
+function smoothState(current,target,s=.28){
+  current.x = lerp(current.x,target.x,s);
+  current.y = lerp(current.y,target.y,s);
+  current.rx = lerp(current.rx,target.rx,s);
+  current.ry = lerp(current.ry,target.ry,s);
+  current.rz = lerp(current.rz,target.rz,s);
+  current.scale = lerp(current.scale,target.scale,s);
+}
 
-  cube1:{
-    x:35,
+function applyCube(el,state){
+  el.style.transform =
+    `translate(-50%,-50%)
+     translate(${state.x - 50}vw,${state.y - 50}vh)
+     rotateX(${state.rx}deg)
+     rotateY(${state.ry}deg)
+     rotateZ(${state.rz}deg)
+     scale3d(${state.scale},${state.scale},${state.scale})`;
+}
+
+function render(){
+  smoothState(state1,target1,.30);
+  smoothState(state2,target2,.30);
+
+  applyCube(cube1,state1);
+  applyCube(cube2,state2);
+
+  requestAnimationFrame(render);
+}
+
+render();
+
+function setStatus(text){
+  statusEl.textContent = text;
+}
+
+function resetCube(){
+  dualMode = false;
+
+  cube1.style.display = "block";
+  cube2.style.display = "none";
+
+  target1 = {
+    x:50,
     y:50,
-    targetX:35,
-    targetY:50,
-
     rx:0,
     ry:0,
     rz:0,
+    scale:1
+  };
 
-    targetRX:0,
-    targetRY:0,
-    targetRZ:0,
-
-    scale:.5,
-    targetScale:.5
-  },
-
-  cube2:{
-    x:65,
+  target2 = {
+    x:50,
     y:50,
-    targetX:65,
-    targetY:50,
-
     rx:0,
     ry:0,
     rz:0,
-
-    targetRX:0,
-    targetRY:0,
-    targetRZ:0,
-
-    scale:.5,
-    targetScale:.5
-  }
-
-};
-
-
-/*
-==================================================
-SMOOTHING
-==================================================
-*/
-
-const POSITION_SMOOTHING =
-0.20;
-
-const ROTATION_SMOOTHING =
-0.16;
-
-const SCALE_SMOOTHING =
-0.14;
-
-
-/*
-==================================================
-BASIC MATH
-==================================================
-*/
-
-function distance(a,b){
-
-  const dx =
-    a.x-b.x;
-
-  const dy =
-    a.y-b.y;
-
-  const dz =
-    (a.z || 0) -
-    (b.z || 0);
-
-  return Math.sqrt(
-    dx*dx +
-    dy*dy +
-    dz*dz
-  );
-
-}
-
-
-function subtract(a,b){
-
-  return {
-    x:a.x-b.x,
-    y:a.y-b.y,
-    z:(a.z||0)-(b.z||0)
+    scale:.5
   };
 
+  state1.x=50;
+  state1.y=50;
+  state1.rx=0;
+  state1.ry=0;
+  state1.rz=0;
+  state1.scale=1;
+
+  setStatus("SYSTEM READY");
 }
 
+function splitCubes(handA,handB){
 
-function length(v){
-
-  return Math.sqrt(
-    v.x*v.x +
-    v.y*v.y +
-    v.z*v.z
-  );
-
-}
-
-
-function normalize(v){
-
-  const l =
-    Math.max(
-      length(v),
-      .0001
-    );
-
-  return {
-    x:v.x/l,
-    y:v.y/l,
-    z:v.z/l
-  };
-
-}
-
-
-function cross(a,b){
-
-  return {
-
-    x:
-      a.y*b.z -
-      a.z*b.y,
-
-    y:
-      a.z*b.x -
-      a.x*b.z,
-
-    z:
-      a.x*b.y -
-      a.y*b.x
-
-  };
-
-}
-
-
-/*
-==================================================
-PINCH DETECTION
-==================================================
-*/
-
-function isPinching(p){
-
-  const thumb =
-    p[4];
-
-  const index =
-    p[8];
-
-  const wrist =
-    p[0];
-
-  const middle =
-    p[9];
-
-  const palmSize =
-    Math.max(
-      distance(
-        wrist,
-        middle
-      ),
-      .001
-    );
-
-
-  const pinchDistance =
-    distance(
-      thumb,
-      index
-    );
-
+  if(dualMode) return;
 
   /*
-  Relative threshold makes
-  pinch work at different
-  hand distances.
+    IMPORTANT V7 FIX:
+
+    The original cube is NOT resized.
+
+    It remains a full-size cube until this exact
+    split moment.
+
+    Then it is hidden FIRST.
+
+    Only after that are the two half-size cubes shown.
   */
 
-  return (
-    pinchDistance /
-    palmSize
-  ) < .42;
+  cube1.style.display = "none";
+  cube2.style.display = "block";
 
+  dualMode = true;
+
+  target1.scale = .5;
+  target2.scale = .5;
+
+  target1.x = handA.x;
+  target1.y = handA.y;
+
+  target2.x = handB.x;
+  target2.y = handB.y;
+
+  target1.rx = handA.pitch;
+  target1.ry = handA.yaw;
+  target1.rz = handA.roll;
+
+  target2.rx = handB.pitch;
+  target2.ry = handB.yaw;
+  target2.rz = handB.roll;
+
+  /*
+    Instantly synchronize the hidden cube states
+    so no tiny single cube can flash on screen.
+  */
+
+  state1.x = target1.x;
+  state1.y = target1.y;
+  state1.rx = target1.rx;
+  state1.ry = target1.ry;
+  state1.rz = target1.rz;
+  state1.scale = .5;
+
+  state2.x = target2.x;
+  state2.y = target2.y;
+  state2.rx = target2.rx;
+  state2.ry = target2.ry;
+  state2.rz = target2.rz;
+  state2.scale = .5;
+
+  setStatus("HOLOGRAM SPLIT · 2 CUBES");
 }
 
+function mergeCubes(){
 
-/*
-==================================================
-PALM DATA
-==================================================
-*/
+  if(!dualMode) return;
+
+  /*
+    First calculate the final merged position.
+  */
+
+  const x = (state1.x + state2.x) / 2;
+  const y = (state1.y + state2.y) / 2;
+
+  const rx = (state1.rx + state2.rx) / 2;
+  const ry = (state1.ry + state2.ry) / 2;
+  const rz = (state1.rz + state2.rz) / 2;
+
+  /*
+    Hide the second cube BEFORE showing the
+    full-size original cube.
+  */
+
+  cube2.style.display = "none";
+
+  target1 = {
+    x:x,
+    y:y,
+    rx:rx,
+    ry:ry,
+    rz:rz,
+    scale:1
+  };
+
+  state1.x=x;
+  state1.y=y;
+  state1.rx=rx;
+  state1.ry=ry;
+  state1.rz=rz;
+  state1.scale=1;
+
+  /*
+    Now show exactly one full-size cube.
+  */
+
+  cube1.style.display = "block";
+
+  dualMode = false;
+
+  setStatus("HOLOGRAM MERGED · 1 CUBE");
+}
 
 function getPalmData(p){
 
-  const wrist =
-    p[0];
+  const wrist = p[0];
+  const indexMCP = p[5];
+  const middleMCP = p[9];
+  const ringMCP = p[13];
+  const pinkyMCP = p[17];
 
-  const indexMCP =
-    p[5];
+  const cx =
+    (wrist.x +
+     indexMCP.x +
+     middleMCP.x +
+     ringMCP.x +
+     pinkyMCP.x) / 5;
 
-  const middleMCP =
-    p[9];
+  const cy =
+    (wrist.y +
+     indexMCP.y +
+     middleMCP.y +
+     ringMCP.y +
+     pinkyMCP.y) / 5;
 
-  const ringMCP =
-    p[13];
+  const mirrorX = 1-cx;
 
-  const pinkyMCP =
-    p[17];
+  const acrossX = pinkyMCP.x-indexMCP.x;
+  const acrossY = pinkyMCP.y-indexMCP.y;
 
+  const upX = middleMCP.x-wrist.x;
+  const upY = middleMCP.y-wrist.y;
 
-  /*
-  Palm center
-  */
+  const normalX =
+    acrossY*upX -
+    0*upY;
 
-  const palmX =
-    (
-      wrist.x +
-      indexMCP.x +
-      middleMCP.x +
-      ringMCP.x +
-      pinkyMCP.x
-    ) / 5;
+  const normalY =
+    0*upX -
+    acrossX*upY;
 
-
-  const palmY =
-    (
-      wrist.y +
-      indexMCP.y +
-      middleMCP.y +
-      ringMCP.y +
-      pinkyMCP.y
-    ) / 5;
-
-
-  /*
-  Camera mirror
-  */
-
-  const screenX =
-    1-palmX;
-
-
-  const screenY =
-    palmY;
-
-
-  /*
-  Palm orientation
-  */
-
-  const across =
-    normalize(
-      subtract(
-        pinkyMCP,
-        indexMCP
-      )
-    );
-
-
-  const up =
-    normalize(
-      subtract(
-        middleMCP,
-        wrist
-      )
-    );
-
-
-  const normal =
-    normalize(
-      cross(
-        across,
-        up
-      )
-    );
-
-
-  /*
-  Roll
-  */
+  const normalZ =
+    acrossX*upY -
+    acrossY*upX;
 
   const roll =
-    Math.atan2(
-      across.y,
-      across.x
-    ) *
-    180 /
-    Math.PI;
-
-
-  /*
-  Yaw
-  */
+    Math.atan2(acrossY,acrossX)*180/Math.PI;
 
   const yaw =
-    Math.atan2(
-      normal.x,
-      Math.max(
-        Math.abs(normal.z),
-        .001
-      )
-    ) *
-    180 /
-    Math.PI;
-
-
-  /*
-  Pitch
-  */
+    Math.atan2(normalX,Math.abs(normalZ))*180/Math.PI;
 
   const pitch =
-    Math.atan2(
-      normal.y,
-      Math.max(
-        Math.abs(normal.z),
-        .001
-      )
-    ) *
-    180 /
-    Math.PI;
+    Math.atan2(normalY,Math.abs(normalZ))*180/Math.PI;
 
+  const dx = middleMCP.x-wrist.x;
+  const dy = middleMCP.y-wrist.y;
 
-  /*
-  Palm size/depth
-  */
-
-  const palmWidth =
-    distance(
-      indexMCP,
-      pinkyMCP
-    );
-
-
-  let scale =
-    .65 +
-    palmWidth*5;
-
-
-  scale =
-    Math.max(
-      .65,
-      Math.min(
-        1.8,
-        scale
-      )
-    );
-
+  const palmSize =
+    Math.sqrt(dx*dx+dy*dy);
 
   return {
-
-    x:
-      Math.max(
-        8,
-        Math.min(
-          92,
-          screenX*100
-        )
-      ),
-
-    y:
-      Math.max(
-        8,
-        Math.min(
-          92,
-          screenY*100
-        )
-      ),
-
-    rx:
-      Math.max(
-        -70,
-        Math.min(
-          70,
-          pitch*1.2
-        )
-      ),
-
-    ry:
-      Math.max(
-        -80,
-        Math.min(
-          80,
-          yaw*1.4
-        )
-      ),
-
-    rz:
-      Math.max(
-        -90,
-        Math.min(
-          90,
-          -roll
-        )
-      ),
-
-    scale:scale
-
+    x:mirrorX*100,
+    y:cy*100,
+    roll:roll,
+    yaw:yaw,
+    pitch:pitch,
+    palmSize:palmSize
   };
-
 }
 
+function isPinching(p){
 
-/*
-==================================================
-START CAMERA
-==================================================
-*/
+  const thumb=p[4];
+  const index=p[8];
 
-async function startCamera(){
+  const dx=thumb.x-index.x;
+  const dy=thumb.y-index.y;
 
-  if(running){
-    return;
-  }
+  const distance=Math.sqrt(dx*dx+dy*dy);
 
+  const wrist=p[0];
+  const middle=p[9];
 
-  try{
+  const px=wrist.x-middle.x;
+  const py=wrist.y-middle.y;
 
-    if(
-      !navigator.mediaDevices ||
-      !navigator.mediaDevices.getUserMedia
-    ){
+  const palm=Math.sqrt(px*px+py*py);
 
-      throw new Error(
-        "Camera API unavailable."
-      );
-
-    }
-
-
-    stream =
-      await navigator.mediaDevices.getUserMedia({
-
-        video:{
-          facingMode:"user",
-
-          width:{
-            ideal:640
-          },
-
-          height:{
-            ideal:480
-          }
-
-        },
-
-        audio:false
-
-      });
-
-
-    video.srcObject =
-      stream;
-
-    running =
-      true;
-
-
-    status.textContent =
-      "● LOADING HAND TRACKING";
-
-
-    info.innerHTML =
-      "Camera started.<br>" +
-      "Initializing multi-hand 3D control...";
-
-
-    await video.play();
-
-
-    setupHands();
-
-    processCamera();
-
-    animate();
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    status.textContent =
-      "● CAMERA ERROR";
-
-    info.innerHTML =
-      error.name +
-      ": " +
-      error.message;
-
-  }
-
+  return distance/palm < .48;
 }
 
+function distanceBetween(a,b){
 
-/*
-==================================================
-MEDIAPIPE
-==================================================
-*/
+  const dx=a.x-b.x;
+  const dy=a.y-b.y;
 
-function setupHands(){
-
-  if(hands){
-    return;
-  }
-
-
-  hands =
-    new Hands({
-
-      locateFile:function(file){
-
-        return (
-          "https://cdn.jsdelivr.net/npm/" +
-          "@mediapipe/hands/" +
-          file
-        );
-
-      }
-
-    });
-
-
-  hands.setOptions({
-
-    /*
-    IMPORTANT:
-    V6 needs two hands.
-    */
-
-    maxNumHands:2,
-
-    modelComplexity:1,
-
-    minDetectionConfidence:.6,
-
-    minTrackingConfidence:.6
-
-  });
-
-
-  hands.onResults(
-    onResults
-  );
-
+  return Math.sqrt(dx*dx+dy*dy);
 }
 
+function updateSingleHand(hand){
 
-/*
-==================================================
-PROCESS
-==================================================
-*/
+  target1.x=hand.x;
+  target1.y=hand.y;
 
-async function processCamera(){
+  target1.rx=hand.pitch;
+  target1.ry=hand.yaw;
+  target1.rz=hand.roll;
 
-  if(!running){
-    return;
-  }
+  target1.scale=1;
 
-
-  if(video.readyState>=2){
-
-    try{
-
-      await hands.send({
-        image:video
-      });
-
-    }
-
-    catch(error){
-
-      console.error(
-        "Tracking error:",
-        error
-      );
-
-    }
-
-  }
-
-
-  requestAnimationFrame(
-    processCamera
-  );
-
+  setStatus("ONE HAND · 3D CONTROL");
 }
 
+function updateDualHands(a,b){
 
-/*
-==================================================
-RESULTS
-==================================================
-*/
-
-function onResults(results){
-
-  if(!running){
-    return;
-  }
-
-
-  const width =
-    video.videoWidth ||
-    640;
-
-  const height =
-    video.videoHeight ||
-    480;
-
-
-  canvas.width =
-    width;
-
-  canvas.height =
-    height;
-
-
-  ctx.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-
-  const detected =
-    results.multiHandLandmarks || [];
-
+  const d=distanceBetween(a,b);
 
   /*
-  ================================================
-  NO HAND
-  ================================================
+    Not both pinching:
+    absolutely nothing happens.
   */
 
-  if(detected.length===0){
+  if(!a.pinching || !b.pinching){
 
-    status.textContent =
-      "● SEARCHING FOR HANDS";
-
-    info.innerHTML =
-      "Show one or two hands.";
-
-    pointer.style.display =
-      "none";
+    setStatus("TWO HANDS · WAITING");
 
     return;
-
   }
 
-
   /*
-  ================================================
-  DRAW HANDS
-  ================================================
+    Both pinching and hands move apart.
   */
 
-  detected.forEach(
-    landmarks => {
+  if(!dualMode && d > .18){
 
-      drawConnectors(
-        ctx,
-        landmarks,
-        HAND_CONNECTIONS,
-        {
-          color:"#60a5fa",
-          lineWidth:3
-        }
-      );
-
-
-      drawLandmarks(
-        ctx,
-        landmarks,
-        {
-          color:"#ffffff",
-          lineWidth:1,
-          radius:4
-        }
-      );
-
-    }
-  );
-
+    splitCubes(a,b);
+    return;
+  }
 
   /*
-  ================================================
-  ONE HAND
-  ================================================
+    Already split and hands come together.
   */
+
+  if(dualMode && d < .14){
+
+    mergeCubes();
+    return;
+  }
+
+  /*
+    Two independent half-size cubes.
+  */
+
+  if(dualMode){
+
+    target1.x=a.x;
+    target1.y=a.y;
+
+    target1.rx=a.pitch;
+    target1.ry=a.yaw;
+    target1.rz=a.roll;
+
+    target1.scale=.5;
+
+    target2.x=b.x;
+    target2.y=b.y;
+
+    target2.rx=b.pitch;
+    target2.ry=b.yaw;
+    target2.rz=b.roll;
+
+    target2.scale=.5;
+
+    setStatus("2 CUBES · HAND LINK ACTIVE");
+
+  }else{
+
+    setStatus("BOTH PINCHING · MOVE APART");
+  }
+}
+
+const hands = new Hands({
+  locateFile:(file)=>{
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+  }
+});
+
+hands.setOptions({
+  maxNumHands:2,
+  modelComplexity:1,
+  minDetectionConfidence:.6,
+  minTrackingConfidence:.6
+});
+
+hands.onResults(results=>{
+
+  if(!running) return;
+
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const landmarks=results.multiHandLandmarks || [];
+
+  if(landmarks.length===0){
+
+    setStatus("SEARCHING FOR HAND");
+
+    return;
+  }
+
+  const detected=[];
+
+  for(let i=0;i<landmarks.length;i++){
+
+    const hand=getPalmData(landmarks[i]);
+
+    hand.pinching=isPinching(landmarks[i]);
+
+    detected.push(hand);
+  }
 
   if(detected.length===1){
 
     /*
-    If dual mode was previously active,
-    reset back to one cube.
+      If we were split and one hand disappears,
+      immediately return to one full cube.
     */
 
-    if(dual.active){
+    if(dualMode){
 
       mergeCubes();
-
     }
 
-
-    const palm =
-      getPalmData(
-        detected[0]
-      );
-
-
-    single.targetX =
-      palm.x;
-
-    single.targetY =
-      palm.y;
-
-
-    single.targetRX =
-      palm.rx;
-
-    single.targetRY =
-      palm.ry;
-
-    single.targetRZ =
-      palm.rz;
-
-    single.targetScale =
-      palm.scale;
-
-
-    status.textContent =
-      "● ONE-HAND 3D CONTROL";
-
-
-    info.innerHTML =
-      "✋ One hand detected.<br>" +
-      "Move, rotate and tilt your palm to control the 3D cube.";
+    updateSingleHand(detected[0]);
 
     return;
-
   }
 
+  if(detected.length>=2){
 
-  /*
-  ================================================
-  TWO HANDS
-  ================================================
-  */
-
-  const palmA =
-    getPalmData(
-      detected[0]
-    );
-
-  const palmB =
-    getPalmData(
+    updateDualHands(
+      detected[0],
       detected[1]
     );
-
-
-  const pinchA =
-    isPinching(
-      detected[0]
-    );
-
-  const pinchB =
-    isPinching(
-      detected[1]
-    );
-
-
-  /*
-  ================================================
-  TWO HANDS BUT NO DOUBLE PINCH
-  ================================================
-  */
-
-  if(
-    !(pinchA && pinchB)
-  ){
-
-    /*
-    IMPORTANT:
-    Two hands alone do NOT
-    change the cube.
-    */
-
-    status.textContent =
-      "● TWO HANDS DETECTED · WAITING";
-
-
-    info.innerHTML =
-      "Two hands detected.<br>" +
-      "Nothing changes until you pinch with BOTH hands.";
-
-    return;
-
   }
+});
 
+async function startCamera(){
 
-  /*
-  ================================================
-  BOTH HANDS PINCHING
-  ================================================
-  */
+  if(running) return;
 
-  status.textContent =
-    "● BOTH HANDS PINCHING";
+  try{
 
+    loading.classList.remove("hidden");
 
-  info.innerHTML =
-    "🤏 Both hands pinching.<br>" +
-    "Move your hands apart to split the 3D cube.";
+    cameraStream =
+      await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:"user",
+          width:{ideal:1280},
+          height:{ideal:720}
+        },
+        audio:false
+      });
 
+    video.srcObject=cameraStream;
 
-  /*
-  ================================================
-  DISTANCE BETWEEN HANDS
-  ================================================
-  */
+    await video.play();
 
-  const dx =
-    palmA.x -
-    palmB.x;
+    running=true;
 
-  const dy =
-    palmA.y -
-    palmB.y;
+    loading.classList.add("hidden");
 
+    setStatus("CAMERA ONLINE");
 
-  const handDistance =
-    Math.sqrt(
-      dx*dx +
-      dy*dy
+    processVideo();
+
+  }catch(error){
+
+    loading.classList.add("hidden");
+
+    setStatus("CAMERA ERROR");
+
+    alert(
+      "Camera could not start.\n\n" +
+      error.message
     );
-
-
-  /*
-  ================================================
-  SPLIT TRIGGER
-  ================================================
-  */
-
-  /*
-  Around 18% screen distance:
-  begin split.
-
-  Above 25%:
-  clearly split.
-  */
-
-  if(
-    !dual.active &&
-    handDistance > 18
-  ){
-
-    splitCubes();
-
   }
-
-
-  /*
-  ================================================
-  IF DUAL MODE
-  ================================================
-  */
-
-  if(dual.active){
-
-    /*
-    Merge when pinched hands
-    become close again.
-    */
-
-    if(
-      handDistance < 14
-    ){
-
-      mergeCubes();
-
-      return;
-
-    }
-
-
-    /*
-    ============================================
-    CUBE 1 FOLLOWS HAND 1
-    ============================================
-    */
-
-    dual.cube1.targetX =
-      palmA.x;
-
-    dual.cube1.targetY =
-      palmA.y;
-
-
-    dual.cube1.targetRX =
-      palmA.rx;
-
-    dual.cube1.targetRY =
-      palmA.ry;
-
-    dual.cube1.targetRZ =
-      palmA.rz;
-
-
-    /*
-    HALF SIZE
-    */
-
-    dual.cube1.targetScale =
-      .5;
-
-
-    /*
-    ============================================
-    CUBE 2 FOLLOWS HAND 2
-    ============================================
-    */
-
-    dual.cube2.targetX =
-      palmB.x;
-
-    dual.cube2.targetY =
-      palmB.y;
-
-
-    dual.cube2.targetRX =
-      palmB.rx;
-
-    dual.cube2.targetRY =
-      palmB.ry;
-
-    dual.cube2.targetRZ =
-      palmB.rz;
-
-
-    /*
-    HALF SIZE
-    */
-
-    dual.cube2.targetScale =
-      .5;
-
-
-    info.innerHTML =
-      "🤏🤏 DUAL 3D CONTROL ACTIVE.<br>" +
-      "Each pinched hand controls one half-size cube.<br>" +
-      "Bring them closer together to merge.";
-
-  }
-
 }
 
+async function processVideo(){
 
-/*
-==================================================
-SPLIT
-==================================================
-*/
+  if(!running) return;
 
-function splitCubes(){
+  if(video.readyState>=2){
 
-  dual.active =
-    true;
-
-
-  /*
-  Hide original
-  */
-
-  cube1.style.display =
-    "none";
-
-
-  /*
-  Show second cube
-  */
-
-  cube2.style.display =
-    "block";
-
-
-  /*
-  Start two cubes from
-  the current single cube.
-  */
-
-  const baseX =
-    single.x;
-
-  const baseY =
-    single.y;
-
-
-  dual.cube1.x =
-    baseX-5;
-
-  dual.cube1.y =
-    baseY;
-
-
-  dual.cube1.targetX =
-    baseX-5;
-
-  dual.cube1.targetY =
-    baseY;
-
-
-  dual.cube1.rx =
-    single.rx;
-
-  dual.cube1.ry =
-    single.ry;
-
-  dual.cube1.rz =
-    single.rz;
-
-
-  dual.cube1.targetRX =
-    single.rx;
-
-  dual.cube1.targetRY =
-    single.ry;
-
-  dual.cube1.targetRZ =
-    single.rz;
-
-
-  dual.cube1.scale =
-    .5;
-
-  dual.cube1.targetScale =
-    .5;
-
-
-  /*
-  Cube 2
-  */
-
-  dual.cube2.x =
-    baseX+5;
-
-  dual.cube2.y =
-    baseY;
-
-
-  dual.cube2.targetX =
-    baseX+5;
-
-  dual.cube2.targetY =
-    baseY;
-
-
-  dual.cube2.rx =
-    single.rx;
-
-  dual.cube2.ry =
-    single.ry;
-
-  dual.cube2.rz =
-    single.rz;
-
-
-  dual.cube2.targetRX =
-    single.rx;
-
-  dual.cube2.targetRY =
-    single.ry;
-
-  dual.cube2.targetRZ =
-    single.rz;
-
-
-  dual.cube2.scale =
-    .5;
-
-  dual.cube2.targetScale =
-    .5;
-
-
-  status.textContent =
-    "● 3D CORE SPLIT";
-
-}
-
-
-/*
-==================================================
-MERGE
-==================================================
-*/
-
-function mergeCubes(){
-
-  if(!dual.active){
-    return;
+    await hands.send({
+      image:video
+    });
   }
 
-
-  dual.active =
-    false;
-
-
-  /*
-  Hide second cube
-  */
-
-  cube2.style.display =
-    "none";
-
-
-  /*
-  Show original cube
-  */
-
-  cube1.style.display =
-    "block";
-
-
-  /*
-  Calculate center between
-  the two cubes.
-  */
-
-  single.targetX =
-    (
-      dual.cube1.x +
-      dual.cube2.x
-    ) / 2;
-
-
-  single.targetY =
-    (
-      dual.cube1.y +
-      dual.cube2.y
-    ) / 2;
-
-
-  /*
-  Use average orientation.
-  */
-
-  single.targetRX =
-    (
-      dual.cube1.rx +
-      dual.cube2.rx
-    ) / 2;
-
-
-  single.targetRY =
-    (
-      dual.cube1.ry +
-      dual.cube2.ry
-    ) / 2;
-
-
-  single.targetRZ =
-    (
-      dual.cube1.rz +
-      dual.cube2.rz
-    ) / 2;
-
-
-  /*
-  Return to full size.
-  */
-
-  single.targetScale =
-    1;
-
-
-  status.textContent =
-    "● 3D CORES MERGING";
-
-
-  info.innerHTML =
-    "🤏🤏 Hands brought together.<br>" +
-    "Two 3D cubes are merging into one.";
-
+  requestAnimationFrame(processVideo);
 }
-
-
-/*
-==================================================
-SMOOTH OBJECT
-==================================================
-*/
-
-function smoothObject(obj){
-
-  obj.x +=
-    (
-      obj.targetX -
-      obj.x
-    ) *
-    POSITION_SMOOTHING;
-
-
-  obj.y +=
-    (
-      obj.targetY -
-      obj.y
-    ) *
-    POSITION_SMOOTHING;
-
-
-  obj.rx +=
-    (
-      obj.targetRX -
-      obj.rx
-    ) *
-    ROTATION_SMOOTHING;
-
-
-  obj.ry +=
-    (
-      obj.targetRY -
-      obj.ry
-    ) *
-    ROTATION_SMOOTHING;
-
-
-  obj.rz +=
-    (
-      obj.targetRZ -
-      obj.rz
-    ) *
-    ROTATION_SMOOTHING;
-
-
-  obj.scale +=
-    (
-      obj.targetScale -
-      obj.scale
-    ) *
-    SCALE_SMOOTHING;
-
-}
-
-
-/*
-==================================================
-RENDER CUBE
-==================================================
-*/
-
-function renderCube(element,obj){
-
-  element.style.left =
-    obj.x + "%";
-
-
-  element.style.top =
-    obj.y + "%";
-
-
-  element.style.transform =
-    "translate3d(-50%,-50%,0)" +
-
-    " rotateX(" +
-    obj.rx +
-    "deg)" +
-
-    " rotateY(" +
-    obj.ry +
-    "deg)" +
-
-    " rotateZ(" +
-    obj.rz +
-    "deg)" +
-
-    " scale3d(" +
-    obj.scale +
-    "," +
-    obj.scale +
-    "," +
-    obj.scale +
-    ")";
-
-}
-
-
-/*
-==================================================
-ANIMATION
-==================================================
-*/
-
-function animate(){
-
-  if(!running){
-    return;
-  }
-
-
-  if(dual.active){
-
-    smoothObject(
-      dual.cube1
-    );
-
-    smoothObject(
-      dual.cube2
-    );
-
-
-    renderCube(
-      cube1,
-      dual.cube1
-    );
-
-
-    renderCube(
-      cube2,
-      dual.cube2
-    );
-
-  }
-
-  else{
-
-    smoothObject(
-      single
-    );
-
-
-    renderCube(
-      cube1,
-      single
-    );
-
-  }
-
-
-  animationFrame =
-    requestAnimationFrame(
-      animate
-    );
-
-}
-
-
-/*
-==================================================
-STOP
-==================================================
-*/
 
 function stopCamera(){
 
-  running =
-    false;
+  running=false;
 
+  if(cameraStream){
 
-  if(animationFrame){
-
-    cancelAnimationFrame(
-      animationFrame
+    cameraStream.getTracks().forEach(
+      track=>track.stop()
     );
 
-    animationFrame =
-      null;
-
+    cameraStream=null;
   }
 
+  video.srcObject=null;
 
-  if(stream){
-
-    stream
-      .getTracks()
-      .forEach(
-        track =>
-          track.stop()
-      );
-
-    stream =
-      null;
-
-  }
-
-
-  video.srcObject =
-    null;
-
-
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-
-  pointer.style.display =
-    "none";
-
-
-  cube2.style.display =
-    "none";
-
-
-  cube1.style.display =
-    "block";
-
-
-  dual.active =
-    false;
-
-
-  status.textContent =
-    "● CAMERA OFF";
-
-
-  info.innerHTML =
-    "Camera stopped.<br>" +
-    "Tap START CAMERA to begin.";
-
+  setStatus("CAMERA OFF");
 }
 
+document.getElementById("startBtn")
+  .addEventListener("click",startCamera);
 
-/*
-==================================================
-RESET
-==================================================
-*/
+document.getElementById("stopBtn")
+  .addEventListener("click",stopCamera);
 
-function resetHologram(){
+document.getElementById("resetBtn")
+  .addEventListener("click",resetCube);
 
-  dual.active =
-    false;
+window.addEventListener("resize",()=>{
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+});
 
+resetCube();
 
-  cube2.style.display =
-    "none";
-
-  cube1.style.display =
-    "block";
-
-
-  single.x =
-    50;
-
-  single.y =
-    50;
-
-  single.targetX =
-    50;
-
-  single.targetY =
-    50;
-
-
-  single.rx =
-    0;
-
-  single.ry =
-    0;
-
-  single.rz =
-    0;
-
-
-  single.targetRX =
-    0;
-
-  single.targetRY =
-    0;
-
-  single.targetRZ =
-    0;
-
-
-  single.scale =
-    1;
-
-  single.targetScale =
-    1;
-
-
-  status.textContent =
-    running
-      ? "● 3D SYSTEM READY"
-      : "● SYSTEM READY";
-
-
-  info.innerHTML =
-    "3D cube reset.<br>" +
-    "Ready for one-hand or two-hand control.";
-
-}
-
-
-/*
-==================================================
-BUTTONS
-==================================================
-*/
-
-startButton.addEventListener(
-  "click",
-  startCamera
-);
-
-stopButton.addEventListener(
-  "click",
-  stopCamera
-);
-
-resetButton.addEventListener(
-  "click",
-  resetHologram
-);
-
+setTimeout(()=>{
+  loading.classList.add("hidden");
+},1200);
 </script>
 
 </body>
